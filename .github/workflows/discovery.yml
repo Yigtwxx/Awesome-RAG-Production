@@ -23,11 +23,11 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install -r scrpt/requirements.txt
+          pip install -r scripts/requirements.txt
 
       - name: Run Discovery Engine
         run: |
-          python scrpt/discovery_engine.py
+          python scripts/discovery_engine.py
 
       - name: Commit and Push Changes
         run: |
