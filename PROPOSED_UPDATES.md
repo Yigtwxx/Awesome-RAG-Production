@@ -1,0 +1,23 @@
+# Proposed RAG Updates - 2025-12-19
+> Review these resources before adding them to the main README.
+
+* **[langchain](https://github.com/langchain-ai/langchain)** - 🦜🔗 The platform for reliable agents. (⭐ 122k)
+* **[dify](https://github.com/langgenius/dify)** - Production-ready platform for agentic workflow development. (⭐ 122k)
+* **[open-webui](https://github.com/open-webui/open-webui)** - User-friendly AI Interface (Supports Ollama, OpenAI API, ...) (⭐ 118k)
+* **[awesome-llm-apps](https://github.com/Shubhamsaboo/awesome-llm-apps)** - Collection of awesome LLM apps with AI Agents and RAG using OpenAI, Anthropic, Gemini and opensource models. (⭐ 83.4k)
+* **[ragflow](https://github.com/infiniflow/ragflow)** - RAGFlow is a leading open-source Retrieval-Augmented Generation (RAG) engine that fuses cutting-edge RAG with Agent capabilities to create a superior context layer for LLMs (⭐ 70.1k)
+* **[lobe-chat](https://github.com/lobehub/lobe-chat)** - 🤯 LobeHub - an open-source, modern design AI Agent Workspace. Supports multiple AI providers, Knowledge Base (file upload / RAG ), one click install MCP Marketplace and Artifacts / Thinking. One-click FREE deployment of your private AI Agent application. (⭐ 69.2k)
+* **[Prompt-Engineering-Guide](https://github.com/dair-ai/Prompt-Engineering-Guide)** - 🐙 Guides, papers, lessons, notebooks and resources for prompt engineering, context engineering, RAG, and AI Agents. (⭐ 67.9k)
+* **[PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)** - Turn any PDF or image document into structured data for your AI. A powerful, lightweight OCR toolkit that bridges the gap between images/PDFs and LLMs. Supports 100+ languages. (⭐ 66.5k)
+* **[anything-llm](https://github.com/Mintplex-Labs/anything-llm)** - The all-in-one Desktop & Docker AI application with built-in RAG, AI agents, No-code agent builder, MCP compatibility, and more. (⭐ 52.3k)
+* **[llm-app](https://github.com/pathwaycom/llm-app)** - Ready-to-run cloud templates for RAG, AI pipelines, and enterprise search with live data. 🐳Docker-friendly.⚡Always in sync with Sharepoint, Google Drive, S3, Kafka, PostgreSQL, real-time data APIs, and more. (⭐ 47.8k)
+* **[Flowise](https://github.com/FlowiseAI/Flowise)** - Build AI Agents, Visually (⭐ 47.4k)
+* **[llama_index](https://github.com/run-llama/llama_index)** - LlamaIndex is the leading framework for building LLM-powered agents over your data. (⭐ 45.9k)
+* **[JeecgBoot](https://github.com/jeecgboot/JeecgBoot)** - 🔥AI低代码平台，助力企业快速实现低代码开发和构建AI应用！ 成熟的AI应用平台：涵盖AI应用、AI模型、AI聊天助手、知识库、AI流程编排、MCP和插件，聊天式业务操作等，兼容多种大模型；提供强大代码生成器：实现前后端一键生成，无需手写代码! 引领AI开发模式：AI生成→在线配置→代码生成→手工合并，解决Java项目80%重复工作，提升效率节省成本，又不失灵活~ (⭐ 44.8k)
+* **[mem0](https://github.com/mem0ai/mem0)** - Universal memory layer for AI Agents (⭐ 44.5k)
+* **[milvus](https://github.com/milvus-io/milvus)** - Milvus is a high-performance, cloud-native vector database built for scalable vector ANN search (⭐ 41.7k)
+* **[chatgpt-on-wechat](https://github.com/zhayujie/chatgpt-on-wechat)** - 基于大模型搭建的聊天机器人，同时支持 微信公众号、企业微信应用、飞书、钉钉 等接入，可选择ChatGPT/Claude/DeepSeek/文心一言/讯飞星火/通义千问/ Gemini/GLM-4/Kimi/LinkAI，能处理文本、语音和图片，访问操作系统和互联网，支持基于自有知识库进行定制企业智能客服。 (⭐ 40.2k)
+* **[quivr](https://github.com/QuivrHQ/quivr)** - Opiniated RAG for integrating GenAI in your apps 🧠 Focus on your product rather than the RAG. Easy integration in existing products with customisation! Any LLM: GPT4, Groq, Llama. Any Vectorstore: PGVector, Faiss. Any Files. Anyway you want. (⭐ 38.7k)
+* **[mindsdb](https://github.com/mindsdb/mindsdb)** - Query Engine for AI - The only MCP Server you'll ever need (⭐ 38.1k)
+* **[Langchain-Chatchat](https://github.com/chatchat-space/Langchain-Chatchat)** - Langchain-Chatchat（原Langchain-ChatGLM）基于 Langchain 与 ChatGLM, Qwen 与 Llama 等语言模型的 RAG 与 Agent 应用 | Langchain-Chatchat (formerly langchain-ChatGLM), local knowledge based LLM (like ChatGLM, Qwen and Llama) RAG and Agent app with langchain (⭐ 36.8k)
+* **[khoj](https://github.com/khoj-ai/khoj)** - Your AI second brain. Self-hostable. Get answers from the web or your docs. Build custom agents, schedule automations, do deep research. Turn any online or local LLM into your personal, autonomous AI (gpt, claude, gemini, llama, qwen, mistral). Get started - free. (⭐ 32k)
