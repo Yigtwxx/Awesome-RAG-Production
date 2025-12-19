@@ -1,0 +1,8 @@
+# HTTP requests for web scraping
+requests>=2.31.0
+
+# HTML parsing and data extraction
+beautifulsoup4>=4.12.0
+
+# High-performance HTML/XML parser (optional but recommended)
+lxml>=4.9.0
