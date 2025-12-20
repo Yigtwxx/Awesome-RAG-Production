@@ -18,4 +18,4 @@ jobs:
         with:
           node-version: 18
       - run: npm install -g markdownlint-cli2
-      - run: markdownlint-cli2 --config ".markdownlint-cli2.jsonc" "**/*.md" "#node_modules"
+      - run: markdownlint-cli2 --config ".github/.markdownlint-cli2.jsonc" "**/*.md" "#node_modules"
