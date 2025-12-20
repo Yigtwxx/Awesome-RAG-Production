@@ -6,8 +6,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for your interest in contributing to Awesome RAG Production!
-        Please fill out the details below so we can review your suggestion faster.
+        **We appreciate your interest in improving Awesome RAG Production.**
+        
+        To help us maintain the high quality of this collection, please provide the details below. We prioritize resources that solve real-world engineering challenges.
 
   - type: input
     id: resource_name
