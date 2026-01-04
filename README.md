@@ -164,7 +164,7 @@ An advanced retrieval method that constructs a knowledge graph from documents. I
 
 ## 📊 Evaluation & Benchmarking
 Reliable RAG requires measuring the **RAG Triad**: Context Relevance, Groundedness, and Answer Relevance.
-- [Ares](https://github.com/ares-ai/ares) - An automated evaluation system that helps you evaluate RAG systems with fewer human labels. It uses prediction-powered inference to provide statistical confidence intervals for your system's performance.
+- [Ares](https://github.com/stanford-futuredata/ARES) - An automated evaluation system that helps you evaluate RAG systems with fewer human labels. It uses prediction-powered inference to provide statistical confidence intervals for your system's performance.
 - [Braintrust](https://www.braintrust.dev/) - An enterprise-grade platform for evaluating and logging LLM outputs. It excels at "Online Evaluation," allowing you to score real-world user interactions and feed that data back into your development set.
 - [DeepEval](https://github.com/confident-ai/deepeval) - The "Pytest for LLMs". It offers a unit-testing framework for RAG, integrating seamlessly into CI/CD pipelines to catch regression in retrieval quality or hallucination rates before deployment.
 - [Ragas](https://github.com/explodinggradients/ragas) - A framework that uses an "LLM-as-a-Judge" to evaluate your pipeline. It calculates metrics like Faithfulness (did the answer come from the context?) and Answer Relevancy without needing human-labeled ground truth.
