@@ -38,9 +38,9 @@ Before adding a new resource, please check if it is already in the list or if a 
 
 To keep the list clean, please follow the existing format:
 
--   **Alphabetical Order:** Add your resource to the appropriate category in alphabetical order.
--   **Link Format:** `- [Resource Name](URL) - Short, descriptive sentence (1 sentence) ending with a period.`
--   **Citations (Optional):** If the resource is backed by a specific benchmark or paper, feel free to mention it.
+- **Alphabetical Order:** Add your resource to the appropriate category in alphabetical order.
+- **Link Format:** `- [Resource Name](URL) - Short, descriptive sentence (1 sentence) ending with a period.`
+- **Citations (Optional):** If the resource is backed by a specific benchmark or paper, feel free to mention it.
 
 ### 4. Commit and Push
 
