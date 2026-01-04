@@ -20,7 +20,7 @@ production system is filled with challenges—from data parsing at scale to
 ensuring retrieval precision and system observability. This repository focuses
 on the **Engineering** side of AI.
 
-Contribution Guide · [Explore Categories](#-contents) · [Report Bug](https://github.com/Yigtwxx/Awesome-RAG-Production/issues)
+Contribution Guide · [Explore Categories](#contents) · [Report Bug](https://github.com/Yigtwxx/Awesome-RAG-Production/issues)
 
 ---
 
