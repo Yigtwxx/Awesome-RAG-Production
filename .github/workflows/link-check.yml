@@ -17,7 +17,7 @@ jobs:
         uses: lycheeverse/lychee-action@v1.9.1
         with:
           # Check all markdown files
-          args: --verbose --no-progress --no-cache '*.md' '**/*.md'
+          args: --verbose --no-progress '*.md' '**/*.md'
           # Fail the action if broken links are found
           fail: true
         env:
