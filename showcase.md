@@ -19,7 +19,7 @@ running Retrieval-Augmented Generation at scale.
 
 ### **[Notion AI](https://www.notion.so/)**
 
-- **[Design & Engineering behind Notion AI](https://www.notion.so/blog/how-we-built-notion-ai-rewriting-notion-in-ai)**
+- **[Design & Engineering behind Notion AI](https://www.notion.com/blog/how-we-built-notion-ai)**
   - How Notion integrated RAG into a collaborative workspace with millions of non-technical users.
   - *Key Takeaways:* Privacy-first architecture, context window management for large docs.
 
@@ -63,8 +63,7 @@ running Retrieval-Augmented Generation at scale.
 
 - **[Building RAG at Enterprise Scale (NVIDIA)](https://www.youtube.com/watch?v=1F2b6k32b3U)**
   - Focus on security and governance.
-- **[The State of RAG in Production (Arize AI)](https://www.youtube.com/watch?v=Ex3w1rQ5iZs)**
-  - Real stats on hallucination rates and latency trade-offs.
+
 
 ---
 
