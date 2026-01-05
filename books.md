@@ -10,7 +10,7 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
 - **[RAG-Driven Generative AI](https://www.amazon.com/dp/1835089381)**
   - Denis Rothman (2024). Build custom retrieval augmented generation pipelines
     with LlamaIndex, Deep Lake, and Pinecone.
-- **[Building AI Agents with LLMs, RAG, and Knowledge Graphs](https://www.packtpub.com/en-us/product/building-ai-agents-with-llms-rag-and-knowledge-graphs-9781835086847)**
+- **[Building AI Agents with LLMs, RAG, and Knowledge Graphs](https://www.packtpub.com/en-us/product/building-ai-agents-with-llms-rag-and-knowledge-graphs-9781835087060)**
   - Salvatore Raieli, Gabriele Iuculano (2025). Learn to build intelligent
     agents that leverage RAG and Knowledge Graphs for grounded responses.
 
