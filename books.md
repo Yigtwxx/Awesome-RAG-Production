@@ -4,15 +4,9 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
 
 ## 🔍 Retrieval Augmented Generation (RAG)
 
-- **[Retrieval Augmented Generation (RAG) AI](https://www.amazon.com/Retrieval-Augmented-Generation-RAG-Comprehensive/dp/B0CXKW1V1F)**
-  - Et Tu Code (2024). A comprehensive guide to building and deploying
-    intelligent systems with RAG.
-- **[RAG-Driven Generative AI](https://www.amazon.com/dp/1835089381)**
-  - Denis Rothman (2024). Build custom retrieval augmented generation pipelines
-    with LlamaIndex, Deep Lake, and Pinecone.
-- **[Building AI Agents with LLMs, RAG, and Knowledge Graphs](https://www.amazon.com/Building-Agents-LLMs-Knowledge-Graphs/dp/1835086846)**
-  - Salvatore Raieli, Gabriele Iuculano (2025). Learn to build intelligent
-    agents that leverage RAG and Knowledge Graphs for grounded responses.
+
+
+
 
 ## 🧠 Deep Learning (DL) & NLP
 
@@ -37,9 +31,7 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
 - **[The LLM Engineering Handbook](https://www.packtpub.com/product/the-llm-engineering-handbook/9781836200079)**
   - Paul Iusztin, Maxime Labonne (2024). A practical guide for building,
     deploying, and scaling large language model-based applications.
-- **[Generative AI with LangChain](https://www.packtpub.com/product/generative-ai-with-langchain-9781835083468)**
-  - Ben Auffarth (2024). Build large language model applications with Python,
-    ChatGPT, and other LLMs.
+
 
 ## 📊 Machine Learning (ML) & Data Science
 
