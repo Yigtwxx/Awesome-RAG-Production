@@ -67,9 +67,6 @@ A curated collection of high-quality blogs and resources for staying up-to-date 
 - **[Machine Learning Mastery](https://machinelearningmastery.com/)** - Jason Brownlee.
   - Practical "how-to" guides and tutorials for developers getting started with
     ML. _(Focus: Applied ML, Algorithms)_
-- **[KDnuggets](https://www.kdnuggets.com/)** - Matthew Mayo.
-  - A leading site for AI, Analytics, Big Data, Data Mining, and Data Science
-    news. _(Focus: Data Science, News)_
 - **[Fast.ai Blog](https://www.fast.ai/)** - Jeremy Howard.
   - Making neural nets uncool again; focused on accessible deep learning
     education. _(Focus: Practical DL)_
