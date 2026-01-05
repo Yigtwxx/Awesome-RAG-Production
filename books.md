@@ -5,9 +5,6 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
 ## 🔍 Retrieval Augmented Generation (RAG)
 
 
-
-
-
 ## 🧠 Deep Learning (DL) & NLP
 
 - **[Deep Learning](https://www.deeplearningbook.org/)**
@@ -31,7 +28,6 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
 - **[The LLM Engineering Handbook](https://www.packtpub.com/product/the-llm-engineering-handbook/9781836200079)**
   - Paul Iusztin, Maxime Labonne (2024). A practical guide for building,
     deploying, and scaling large language model-based applications.
-
 
 ## 📊 Machine Learning (ML) & Data Science
 
