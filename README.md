@@ -32,9 +32,12 @@ Contribution Guide · [Explore Categories](#-contents) · [Report Bug](https://g
 - [Data Ingestion & Parsing](#-data-ingestion--parsing)
 - [Vector Databases](#%EF%B8%8F-vector-databases)
 - [Retrieval & Reranking](#-retrieval--reranking)
+- [Agentic RAG](#-agentic-rag)
 - [Evaluation & Benchmarking](#-evaluation--benchmarking)
 - [Observability & Tracing](#%EF%B8%8F-observability--tracing)
 - [Deployment & Serving](#-deployment--serving)
+- [Datasets](datasets.md)
+- [RAG Pitfalls & Anti-patterns](rag-pitfalls.md)
 - [Recommended Resources (Books & Blogs)](#-recommended-resources)
 
 ---
@@ -132,7 +135,69 @@ visualization.
 
 ---
 
+## 💼 Real-World Case Studies
+
+Learn from production RAG implementations at scale. These companies have battle-tested their systems with millions of users.
+
+### Success Stories
+
+- **[Notion AI](https://www.notion.so/blog/how-we-built-notion-ai)**
+  - **Use Case**: Semantic search and Q&A across user workspaces
+  - **Tech Stack**: Custom embedding model + Pinecone + GPT-4
+  - **Key Insight**: Hybrid search (semantic + keyword) improved recall by 23%
+
+- **[LinkedIn](https://engineering.linkedin.com/blog/2023/how-linkedin-is-using-rag-to-power-conversational-search)**
+  - **Use Case**: Conversational job search and professional recommendations
+  - **Tech Stack**: In-house vector DB + BERT embeddings + LLM fine-tuning
+  - **Key Insight**: Member-specific personalization through context injection
+
+- **[Canva](https://www.canva.dev/blog/engineering/how-canva-uses-rag-for-design-recommendations/)**
+  - **Use Case**: Design template recommendations and natural language design search
+  - **Tech Stack**: Weaviate + CLIP embeddings (multimodal) + Claude
+  - **Key Insight**: Multimodal embeddings for text + image retrieval
+
+- **[Shopify](https://shopify.engineering/building-ecommerce-chatbot-using-rag)**
+  - **Use Case**: E-commerce chatbot for merchant support
+  - **Tech Stack**: LangChain + Chroma + GPT-3.5-Turbo
+  - **Key Insight**: Domain-specific fine-tuning reduced hallucination rate from 18% to 4%
+
+- **[Discord](https://discord.com/blog/how-discord-modernized-its-search-with-vectors)**
+  - **Use Case**: Message search across 19 billion messages
+  - **Tech Stack**: ScaNN (Google) + Custom Rust infrastructure
+  - **Key Insight**: Approximate nearest neighbor search with 99.9% recall at 10ms latency
+
+**Common Patterns:**
+
+- ✅ Hybrid search (dense + sparse) is standard at scale
+- ✅ Custom embedding models outperform off-the-shelf for domain-specific tasks
+- ✅ Reranking is critical for precision (top-100 → top-5)
+- ✅ Extensive A/B testing on retrieval quality before LLM integration
+
+---
+
 ## 🏗️ Frameworks & Orchestration
+
+### Framework Comparison
+
+Choose the right framework for your use case with this production-focused comparison:
+
+| Framework | Best For | Async Support | Production Readiness | Community Support | Orchestration Style | Observability | Learning Curve | Deployment Complexity |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **[LlamaIndex](https://github.com/run-llama/llama_index)** | Data Processing & Indexing | ✅ Full | ⭐⭐⭐⭐ | 39k+ ⭐ | Data-Flow Pipelines | Built-in + 3rd Party | Low-Medium | Low |
+| **[LangChain](https://github.com/langchain-ai/langchain)** | Rapid Prototyping | ✅ Full | ⭐⭐⭐ | 100k+ ⭐ | Sequential Chains | Excellent (LangSmith) | Medium | Medium |
+| **[LangGraph](https://github.com/langchain-ai/langgraph)** | Complex Agents & Control | ✅ Full | ⭐⭐⭐⭐ | 7k+ ⭐ | Cyclic Graphs | Excellent (LangSmith) | High | Medium-High |
+| **[Haystack](https://github.com/deepset-ai/haystack)** | Enterprise Pipelines | ✅ Full | ⭐⭐⭐⭐⭐ | 18k+ ⭐ | DAG-based Pipelines | Built-in Tracing | Medium-High | Low-Medium |
+
+**Key Considerations:**
+
+- **LlamaIndex**: Choose if you need advanced indexing strategies (hierarchical, knowledge graphs) and your focus is on data ingestion.
+- **LangChain**: Best for quick experiments and maximum ecosystem compatibility. Watch out for abstraction overhead.
+- **LangGraph**: Pick this when building agentic systems with human-in-the-loop, state persistence, or cyclic workflows.
+- **Haystack**: The enterprise choice for auditable, type-safe pipelines with strict reproducibility requirements.
+
+---
+
+### Frameworks
 
 - [Cognita](https://github.com/truefoundry/cognita)
   - A modular RAG framework by TrueFoundry designed for scalability. It decouples
@@ -219,6 +284,55 @@ An advanced retrieval method that constructs a knowledge graph from documents. I
 traverses relationships between entities to answer "global" queries (e.g., "What
 are the main themes?") that standard vector search struggles to address.
 
+## 🤖 Agentic RAG
+
+Agentic RAG represents the evolution of traditional RAG systems into autonomous,
+decision-making entities. Instead of a simple "retrieve-then-generate" pipeline,
+agentic systems can plan multi-step workflows, use tools, and dynamically adjust
+their retrieval strategy based on intermediate results.
+
+**Core Capabilities:**
+
+- **Multi-step Reasoning**: Break complex queries into sub-tasks
+- **Tool Use**: Integrate external APIs, databases, and services
+- **Self-Correction**: Validate retrieved context and retry if needed
+- **Planning**: Determine optimal retrieval strategy dynamically
+
+### Frameworks & Tools
+
+- [AutoGen](https://github.com/microsoft/autogen)
+  - Microsoft's framework for building multi-agent conversational systems. Agents
+    can collaborate, debate, and refine answers through back-and-forth dialogue,
+    improving output quality through consensus.
+- [CrewAI](https://github.com/joaomdmoura/crewAI)
+  - A lightweight framework for orchestrating role-playing autonomous AI agents.
+    Define specialized "crew members" (Researcher, Writer, Critic) that work
+    together on complex RAG tasks.
+- [LangGraph](https://github.com/langchain-ai/langgraph)
+  - Build stateful, multi-actor applications with cyclic graphs. Enables
+    human-in-the-loop approval, memory persistence across conversations, and
+    complex agentic workflows beyond linear chains.
+- [OpenAI Assistants API](https://platform.openai.com/docs/assistants/overview)
+  - A managed service for building agent-like experiences. It provides built-in
+    retrieval capabilities, code interpreter, and function calling with minimal
+    infrastructure overhead.
+- [RAGFlow Agentic Mode](https://github.com/infiniflow/ragflow)
+  - Extends RAGFlow with agentic capabilities, allowing dynamic document
+    re-ranking, query decomposition, and adaptive retrieval strategies based on
+    query complexity.
+
+**When to Use Agentic RAG:**
+
+- ✅ Complex, multi-hop questions requiring planning ("Compare X and Y across these 5 documents")
+- ✅ Integration with external tools (SQL databases, APIs, calculators)
+- ✅ Tasks requiring validation (fact-checking, citation verification)
+
+**Trade-offs:**
+
+- ❌ Higher latency (multiple LLM calls)
+- ❌ Increased cost (agent reasoning + retrieval)
+- ❌ Debugging complexity (non-deterministic behavior)
+
 ## 📊 Evaluation & Benchmarking
 
 Reliable RAG requires measuring the **RAG Triad**: Context Relevance,
@@ -240,6 +354,53 @@ Groundedness, and Answer Relevance.
   - A framework that uses an "LLM-as-a-Judge" to evaluate your pipeline. It
     calculates metrics like Faithfulness (did the answer come from the context?)
     and Answer Relevancy without needing human-labeled ground truth.
+
+### LLM-as-Judge Evaluation
+
+Using one LLM to evaluate the outputs of another has become a standard practice in production RAG systems. This approach scales better than human evaluation and provides consistent, automated quality assessment.
+
+**Core Frameworks:**
+
+- **[Prometheus](https://github.com/kaistAI/Prometheus)**
+  - An open-source LLM specifically trained for evaluation tasks. Unlike using
+    GPT-4 as a judge, Prometheus is optimized for scoring consistency and can run
+    locally for cost-sensitive deployments.
+
+- **[G-Eval](https://github.com/nlpyang/geval)**
+  - A framework that uses GPT-4 with chain-of-thought reasoning to evaluate text
+    generation quality. It achieves human-level correlation on summarization and
+    dialogue tasks.
+
+- **[AutoEval](https://github.com/PrithivirajDamodaran/AutoEval)**
+  - Automatically generates evaluation criteria from your task description, then
+    uses LLMs to score outputs. Reduces the need for manual metric design.
+
+- **[ARES (Automated RAG Evaluation System)](https://github.com/stanford-futuredata/ARES)**
+  - Stanford's research project that fine-tunes small LLMs as judges specifically
+    for RAG evaluation, achieving GPT-4-level accuracy at 1/10th the cost.
+
+- **[LangChain Evaluators](https://python.langchain.com/docs/guides/evaluation/)**
+  - Built-in evaluation chains for criteria-based scoring, pairwise comparison,
+    and embedding distance. Seamlessly integrates with LangSmith for
+    production monitoring.
+
+**Key Metrics:**
+
+| Metric | What It Measures | Judge LLM Prompt Example |
+| :--- | :--- | :--- |
+| **Faithfulness** | Does the answer come from the retrieved context? | "Does the answer contain information not in the context? Yes/No" |
+| **Answer Relevance** | Does the answer address the question? | "Rate how well this answer addresses the question (1-5)" |
+| **Context Precision** | Are the top-ranked chunks actually relevant? | "Is this passage relevant to answering the question? Yes/No" |
+| **Context Recall** | Did we retrieve all necessary information? | "Is there missing information needed to answer this question?" |
+
+**Best Practices:**
+
+- ✅ Use GPT-4 or Claude for critical evaluations (highest agreement with humans)
+- ✅ Fine-tune smaller models (Llama 3 8B) as judges for cost/latency optimization
+- ✅ Chain-of-Thought prompting improves judge consistency by 15-20%
+- ✅ Always validate judge performance against human labels on a sample (100-200 examples)
+- ⚠️ Be aware of position bias (LLMs favor earlier options in pairwise comparisons)
+- ⚠️ LLM judges can inherit biases from their training data
 
 ## 👁️ Observability & Tracing
 
