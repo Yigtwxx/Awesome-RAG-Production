@@ -61,9 +61,6 @@ running Retrieval-Augmented Generation at scale.
 
 ## 📹 Must-Watch Talks
 
-
-
-
 ---
 
 ([back to main resource](README.md#contents))

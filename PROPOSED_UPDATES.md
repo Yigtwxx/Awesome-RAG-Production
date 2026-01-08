@@ -1,4 +1,5 @@
 # 🚀 Smart RAG Discovery - 2025-12-19
+>
 > **Filters Applied:** Stars >= 100, Updated in last 90 days.
 
 | Project | Stars | Description | Last Update |

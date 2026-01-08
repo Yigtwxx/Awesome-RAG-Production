@@ -4,7 +4,6 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
 
 ## 🔍 Retrieval Augmented Generation (RAG)
 
-
 ## 🧠 Deep Learning (DL) & NLP
 
 - **[Deep Learning](https://www.deeplearningbook.org/)**
