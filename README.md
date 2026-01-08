@@ -1,5 +1,7 @@
 # Awesome RAG Production <a> </a>
 
+> A curated collection of battle-tested tools, frameworks, and best practices for building, scaling, and monitoring production-grade Retrieval-Augmented Generation (RAG) systems.
+
 [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
 <!-- markdownlint-disable MD033 -->
@@ -13,16 +15,9 @@
 </div>
 <!-- markdownlint-enable MD033 -->
 
-> A curated collection of battle-tested tools, frameworks, and best practices for
-> building, scaling, and monitoring production-grade
-> Retrieval-Augmented Generation (RAG) systems.
+The transition from a "Hello World" RAG tutorial to a scalable, reliable production system is filled with challenges—from data parsing at scale to ensuring retrieval precision and system observability. This repository focuses on the **Engineering** side of AI.
 
-The transition from a "Hello World" RAG tutorial to a scalable, reliable
-production system is filled with challenges—from data parsing at scale to
-ensuring retrieval precision and system observability. This repository focuses
-on the **Engineering** side of AI.
-
-Contribution Guide · [Explore Categories](#-contents) · [Report Bug](https://github.com/Yigtwxx/Awesome-RAG-Production/issues)
+[Contribution Guide](CONTRIBUTING.md) · [Explore Categories](#-contents) · [Report Bug](https://github.com/Yigtwxx/Awesome-RAG-Production/issues)
 
 ---
 
