@@ -1,4 +1,4 @@
-# Awesome RAG Production
+# Awesome RAG Production <a> </a>
 
 [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
