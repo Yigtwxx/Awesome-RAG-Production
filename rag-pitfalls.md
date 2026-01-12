@@ -306,7 +306,7 @@ Your future self (and your on-call rotation) will thank you.
 **Further Reading:**
 
 - [Anthropic: Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)
-- [Pinecone: Retrieval Best Practices](https://www.pinecone.io/learn/retrieval-best-practices/)
+- [Pinecone: Learning Hub](https://www.pinecone.io/learn/)
 - [LlamaIndex: Production Patterns](https://docs.llamaindex.ai/en/stable/optimizing/production_rag/)
 
 ([back to main resource](README.md))

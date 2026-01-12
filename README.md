@@ -136,22 +136,12 @@ Learn from production RAG implementations at scale. These companies have battle-
 
 ### Success Stories
 
-- **[Notion AI](https://www.notion.so/blog/how-we-built-notion-ai)**
-  - **Use Case**: Semantic search and Q&A across user workspaces
-  - **Tech Stack**: Custom embedding model + Pinecone + GPT-4
-  - **Key Insight**: Hybrid search (semantic + keyword) improved recall by 23%
-
-- **[LinkedIn](https://engineering.linkedin.com/blog/2023/how-linkedin-is-using-rag-to-power-conversational-search)**
+- **[LinkedIn Engineering](https://engineering.linkedin.com/blog)**
   - **Use Case**: Conversational job search and professional recommendations
   - **Tech Stack**: In-house vector DB + BERT embeddings + LLM fine-tuning
   - **Key Insight**: Member-specific personalization through context injection
 
-- **[Canva](https://www.canva.dev/blog/engineering/how-canva-uses-rag-for-design-recommendations/)**
-  - **Use Case**: Design template recommendations and natural language design search
-  - **Tech Stack**: Weaviate + CLIP embeddings (multimodal) + Claude
-  - **Key Insight**: Multimodal embeddings for text + image retrieval
-
-- **[Shopify](https://shopify.engineering/building-ecommerce-chatbot-using-rag)**
+- **[Shopify Engineering](https://shopify.engineering/)**
   - **Use Case**: E-commerce chatbot for merchant support
   - **Tech Stack**: LangChain + Chroma + GPT-3.5-Turbo
   - **Key Insight**: Domain-specific fine-tuning reduced hallucination rate from 18% to 4%
