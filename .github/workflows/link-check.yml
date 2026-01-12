@@ -16,8 +16,8 @@ jobs:
       - name: Link Checker
         uses: lycheeverse/lychee-action@v1.9.1
         with:
-          # Check all markdown files
-          args: --verbose --no-progress '*.md' '**/*.md'
+          # Check all markdown files, exclude sites with bot protection
+          args: --verbose --no-progress --exclude 'sebastianraschka.com' '*.md' '**/*.md'
           # Fail the action if broken links are found
           fail: true
         env:

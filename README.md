@@ -356,9 +356,9 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
     generation quality. It achieves human-level correlation on summarization and
     dialogue tasks.
 
-- **[AutoEval](https://github.com/PrithivirajDamodaran/AutoEval)**
-  - Automatically generates evaluation criteria from your task description, then
-    uses LLMs to score outputs. Reduces the need for manual metric design.
+- **[AutoEvals](https://github.com/braintrustdata/autoevals)**
+  - A tool for quickly and easily evaluating AI model outputs using best
+    practices, including LLM-as-a-judge and heuristic methods.
 
 - **[ARES (Automated RAG Evaluation System)](https://github.com/stanford-futuredata/ARES)**
   - Stanford's research project that fine-tunes small LLMs as judges specifically
