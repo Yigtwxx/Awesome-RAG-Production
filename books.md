@@ -31,7 +31,7 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
 - **[Designing Machine Learning Systems](https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/)**
   - Chip Huyen (2022). An iterative process for production-ready applications,
     critical for real-world ML engineering.
-- **[Machine Learning Yearning](https://www.deeplearning.ai/the-batch/machine-learning-yearning/)**
+- **[Machine Learning Yearning](https://github.com/ajaymache/machine-learning-yearning)**
   - Andrew Ng (2018). Technical strategy for AI engineers, focusing on how to
     structure ML projects.
 - **[Pattern Recognition and Machine Learning](https://www.microsoft.com/en-us/research/people/cmbishop/prml-book/)**
