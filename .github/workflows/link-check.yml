@@ -29,8 +29,10 @@ jobs:
             --exclude 'hastie.su.domains'
             --exclude 'openai.com'
             --exclude 'towardsdatascience.com'
-            --exclude 'medium.com/airbnb-engineering'
-            --exclude 'medium.com/pinterest-engineering'
+            --exclude 'medium.com'
+            --exclude 'doordash.engineering'
+            --exclude 'engineering.linkedin.com'
+            --exclude 'shopify.engineering'
             '*.md' '**/*.md'
           # Fail the action if broken links are found
           fail: true
