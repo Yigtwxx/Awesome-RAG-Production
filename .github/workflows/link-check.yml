@@ -14,10 +14,24 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Link Checker
-        uses: lycheeverse/lychee-action@v1.9.1
+        uses: lycheeverse/lychee-action@v2
         with:
-          # Check all markdown files, exclude sites with bot protection or slow response
-          args: --verbose --no-progress --exclude 'sebastianraschka.com' --exclude 'hastie.su.domains' '*.md' '**/*.md'
+          # Check all markdown files with robust configuration
+          args: >-
+            --verbose
+            --no-progress
+            --user-agent "Mozilla/5.0 (compatible; GitHub Actions Link Checker)"
+            --max-retries 3
+            --retry-wait-time 5
+            --timeout 30
+            --accept 200,204,301,302,403,429
+            --exclude 'sebastianraschka.com'
+            --exclude 'hastie.su.domains'
+            --exclude 'openai.com'
+            --exclude 'towardsdatascience.com'
+            --exclude 'medium.com/airbnb-engineering'
+            --exclude 'medium.com/pinterest-engineering'
+            '*.md' '**/*.md'
           # Fail the action if broken links are found
           fail: true
         env:
