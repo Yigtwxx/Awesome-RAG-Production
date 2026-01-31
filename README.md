@@ -184,6 +184,10 @@ Choose the right framework for your use case with this production-focused compar
 
 ### Frameworks
 
+- [Agentset](https://github.com/agentset-ai/agentset)
+  - Open-source production-ready RAG infrastructure with built-in agentic
+    reasoning, hybrid search, and multimodal support. Designed for scalable
+    deployments with automatic citations and enterprise-grade reliability.
 - [Cognita](https://github.com/truefoundry/cognita)
   - A modular RAG framework by TrueFoundry designed for scalability. It decouples
     the RAG components (Indexer, Retriever, Parser), allowing for independent
