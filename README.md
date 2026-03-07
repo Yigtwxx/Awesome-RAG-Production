@@ -343,6 +343,12 @@ Groundedness, and Answer Relevance.
   - A framework that uses an "LLM-as-a-Judge" to evaluate your pipeline. It
     calculates metrics like Faithfulness (did the answer come from the context?)
     and Answer Relevancy without needing human-labeled ground truth.
+- [WFGY Problem Map](https://github.com/onestardao/WFGY/blob/main/ProblemMap/README.md)
+  - A framework-agnostic 16-problem RAG failure taxonomy and troubleshooting
+    checklist for diagnosing and debugging retrieval-augmented generation
+    pipelines across different frameworks and agent systems.
+
+    
 
 ### LLM-as-Judge Evaluation
 
