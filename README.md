@@ -225,6 +225,8 @@ Choose the right framework for your use case with this production-focused compar
   - Specialized parsing for complex PDFs with table extraction capabilities.
 - [Marker](https://github.com/VikParuchuri/marker)
   - High-efficiency PDF, EPUB to Markdown converter using vision models.
+- [pdfmux](https://github.com/NameetP/pdfmux)
+  - Smart PDF-to-Markdown router with per-page confidence scoring and self-healing extraction. Routes pages to optimal backends, audits quality, re-extracts failures.
 - [OmniParse](https://github.com/adithya-s-k/omniparse)
   - Universal parser for ingesting any data type (documents, multimedia, web)
     into RAG-ready formats.
