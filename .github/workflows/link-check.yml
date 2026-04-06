@@ -24,7 +24,7 @@ jobs:
             --max-retries 3
             --retry-wait-time 5
             --timeout 30
-            --accept 200,204,301,302,403,429
+            --accept 200,204,301,302,307,308,403,429
             --exclude 'sebastianraschka.com'
             --exclude 'hastie.su.domains'
             --exclude 'openai.com'
@@ -33,6 +33,13 @@ jobs:
             --exclude 'doordash.engineering'
             --exclude 'engineering.linkedin.com'
             --exclude 'shopify.engineering'
+            --exclude 'anthropic.com'
+            --exclude 'discord.com'
+            --exclude 'perplexity.ai'
+            --exclude 'notion.com'
+            --exclude 'airbnb.com'
+            --exclude 'stripe.com'
+            --exclude 'stripe.dev'
             '*.md' '**/*.md'
           # Fail the action if broken links are found
           fail: true

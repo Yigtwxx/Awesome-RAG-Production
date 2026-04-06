@@ -17,7 +17,7 @@ running Retrieval-Augmented Generation at scale.
   - Insights into serving 70B models with low latency for search.
   - *Key Takeaways:* Speculative decoding, aggressive caching, and search index optimization.
 
-### **[Notion AI](https://www.notion.so/)**
+### **[Notion AI](https://www.notion.com/)**
 
 - **[Notion AI](https://www.notion.com/product/ai)**
   - How Notion integrated RAG into a collaborative workspace with millions of non-technical users.
@@ -36,7 +36,7 @@ running Retrieval-Augmented Generation at scale.
 
 ### **[Stripe](https://stripe.com/)**
 
-- **[Stripe Radar & ML Infrastructure](https://stripe.com/blog/how-we-built-it-stripe-radar)**
+- **[Stripe Radar & ML Infrastructure](https://stripe.dev/blog/how-we-built-it-stripe-radar)**
   - Using embeddings for fraud detection (retrieval-based classification).
   - *Key Takeaways:* Real-time feature extraction, low-latency vector lookups.
 

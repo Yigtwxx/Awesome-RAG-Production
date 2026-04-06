@@ -7,9 +7,9 @@
 <!-- markdownlint-disable MD033 -->
 <div align="center">
 
-[![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](http://creativecommons.org/publicdomain/zero/1.0/)
+[![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Yigtwxx/Awesome-RAG-Production/graphs/commit-activity)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
 [![GitHub stars](https://img.shields.io/github/stars/Yigtwxx/Awesome-RAG-Production?style=social)](https://github.com/Yigtwxx/Awesome-RAG-Production/stargazers)
 
 </div>
@@ -146,10 +146,10 @@ Learn from production RAG implementations at scale. These companies have battle-
   - **Tech Stack**: LangChain + Chroma + GPT-3.5-Turbo
   - **Key Insight**: Domain-specific fine-tuning reduced hallucination rate from 18% to 4%
 
-- **[Discord](https://discord.com/blog/how-discord-modernized-its-search-with-vectors)**
-  - **Use Case**: Message search across 19 billion messages
-  - **Tech Stack**: ScaNN (Google) + Custom Rust infrastructure
-  - **Key Insight**: Approximate nearest neighbor search with 99.9% recall at 10ms latency
+- **[Discord](https://discord.com/blog/how-discord-stores-trillions-of-messages)**
+  - **Use Case**: Message search across trillions of messages
+  - **Tech Stack**: ScaNN (Google) + Custom Rust infrastructure + ScyllaDB
+  - **Key Insight**: Rust-based microservices with approximate nearest neighbor search at scale
 
 **Common Patterns:**
 
@@ -219,11 +219,11 @@ Choose the right framework for your use case with this production-focused compar
 
 ## 📥 Data Ingestion & Parsing
 
-- [Firecrawl](https://github.com/mendableai/firecrawl)
+- [Firecrawl](https://github.com/firecrawl/firecrawl)
   - Effortlessly turn websites into clean, LLM-ready markdown.
-- [LlamaParse](https://github.com/run-llama/llama_parse)
+- [LlamaParse](https://github.com/run-llama/llama-cloud-services)
   - Specialized parsing for complex PDFs with table extraction capabilities.
-- [Marker](https://github.com/VikParuchuri/marker)
+- [Marker](https://github.com/datalab-to/marker)
   - High-efficiency PDF, EPUB to Markdown converter using vision models.
 - [OmniParse](https://github.com/adithya-s-k/omniparse)
   - Universal parser for ingesting any data type (documents, multimedia, web)
@@ -262,7 +262,7 @@ zero-shot retrieval performance.
   - A lightweight, serverless-friendly reranking library. It runs quantized
     cross-encoder models directly in the CPU (no Torch/GPU required), making it
     ideal for edge deployments or cost-sensitive architectures.
-- [RAGatouille](https://github.com/bclavie/RAGatouille)
+- [RAGatouille](https://github.com/AnswerDotAI/RAGatouille)
   - A library that makes ColBERT (Contextualized Late Interaction over BERT)
     easy to use. ColBERT offers fine-grained token-level matching, providing
     superior retrieval quality compared to standard single-vector dense
@@ -293,7 +293,7 @@ their retrieval strategy based on intermediate results.
   - Microsoft's framework for building multi-agent conversational systems. Agents
     can collaborate, debate, and refine answers through back-and-forth dialogue,
     improving output quality through consensus.
-- [CrewAI](https://github.com/joaomdmoura/crewAI)
+- [CrewAI](https://github.com/crewAIInc/crewAI)
   - A lightweight framework for orchestrating role-playing autonomous AI agents.
     Define specialized "crew members" (Researcher, Writer, Critic) that work
     together on complex RAG tasks.
@@ -339,7 +339,7 @@ Groundedness, and Answer Relevance.
   - The "Pytest for LLMs". It offers a unit-testing framework for RAG,
     integrating seamlessly into CI/CD pipelines to catch regression in retrieval
     quality or hallucination rates before deployment.
-- [Ragas](https://github.com/explodinggradients/ragas)
+- [Ragas](https://github.com/vibrantlabsai/ragas)
   - A framework that uses an "LLM-as-a-Judge" to evaluate your pipeline. It
     calculates metrics like Faithfulness (did the answer come from the context?)
     and Answer Relevancy without needing human-labeled ground truth.
@@ -350,7 +350,7 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
 
 **Core Frameworks:**
 
-- **[Prometheus](https://github.com/kaistAI/Prometheus)**
+- **[Prometheus](https://github.com/prometheus-eval/prometheus)**
   - An open-source LLM specifically trained for evaluation tasks. Unlike using
     GPT-4 as a judge, Prometheus is optimized for scoring consistency and can run
     locally for cost-sensitive deployments.
@@ -368,7 +368,7 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
   - Stanford's research project that fine-tunes small LLMs as judges specifically
     for RAG evaluation, achieving GPT-4-level accuracy at 1/10th the cost.
 
-- **[LangChain Evaluators](https://python.langchain.com/docs/guides/evaluation/)**
+- **[LangChain Evaluators](https://docs.langchain.com/oss/python/langchain/overview)**
   - Built-in evaluation chains for criteria-based scoring, pairwise comparison,
     and embedding distance. Seamlessly integrates with LangSmith for
     production monitoring.
@@ -401,7 +401,7 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
   - An open-source engineering platform for LLM observability. It captures full
     execution traces (latency, token usage, cost) and allows for "Prompt
     Management," letting you version-control prompts decoupled from your code.
-- [LangSmith](https://www.langchain.com/langsmith)
+- [LangSmith](https://www.langchain.com/langsmith/observability)
   - Built by the LangChain team, this is the gold standard for debugging complex
     chains. It provides a "Playground" to rerun specific traces with modified
     prompts to iterate on edge cases instantly.
@@ -440,7 +440,7 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
   - A comprehensive toolkit for sanitizing inputs and outputs. It detects
     invisible text, prompt injections, and anonymizes sensitive data, ensuring
     full compliance with data privacy standards.
-- [NeMo Guardrails](https://github.com/NVIDIA/NeMo-Guardrails)
+- [NeMo Guardrails](https://github.com/NVIDIA-NeMo/Guardrails)
   - The standard for adding programmable guardrails to LLM-based conversational
     systems. It prevents "Jailbreaking" and ensures models stay on topic,
     critical for enterprise chatbots.
