@@ -221,7 +221,7 @@ Choose the right framework for your use case with this production-focused compar
 
 - [Firecrawl](https://github.com/firecrawl/firecrawl)
   - Effortlessly turn websites into clean, LLM-ready markdown.
-- [LlamaParse](https://github.com/run-llama/llama-cloud-services)
+- [LlamaParse](https://github.com/run-llama/llama_cloud_services)
   - Specialized parsing for complex PDFs with table extraction capabilities.
 - [Marker](https://github.com/datalab-to/marker)
   - High-efficiency PDF, EPUB to Markdown converter using vision models.

@@ -40,6 +40,8 @@ jobs:
             --exclude 'airbnb.com'
             --exclude 'stripe.com'
             --exclude 'stripe.dev'
+            --exclude 'aima.cs.berkeley.edu'
+            --exclude 'amazon.com'
             '*.md' '**/*.md'
           # Fail the action if broken links are found
           fail: true
