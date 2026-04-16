@@ -324,6 +324,9 @@ their retrieval strategy based on intermediate results.
 
 ## 📊 Evaluation & Benchmarking
 
+- [FutureAGI traceAI](https://github.com/future-agi/traceAI)
+- [FutureAGI ai-evaluation](https://github.com/future-agi/ai-evaluation)
+
 Reliable RAG requires measuring the **RAG Triad**: Context Relevance,
 Groundedness, and Answer Relevance.
 
