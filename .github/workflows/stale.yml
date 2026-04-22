@@ -17,7 +17,7 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         stale-issue-message: 'This issue hasn''t seen any activity for 60 days. To keep the focus on active development, I''m marking it as stale. If this is still relevant, please leave a comment.'
-        stale-pr-message: 'This PR has been quiet for 45 days. We want to ensure all merged code is fresh and relevant. If you''re still working on this, please let us know; otherwise, it will be closed in 7 days.'
+        stale-pr-message: 'This PR has been quiet for 60 days. We want to ensure all merged code is fresh and relevant. If you''re still working on this, please let us know; otherwise, it will be closed in 7 days.'
         stale-issue-label: 'no-issue-activity'
         stale-pr-label: 'no-pr-activity'
         days-before-stale: 60

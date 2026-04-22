@@ -46,9 +46,11 @@ body:
         - Data Ingestion & Parsing
         - Vector Databases
         - Retrieval & Reranking
+        - Agentic RAG
         - Evaluation & Benchmarking
         - Observability & Tracing
         - Deployment & Serving
+        - Security & Compliance
         - Books & Blogs
         - Other
     validations:

@@ -1,4 +1,4 @@
-# Awesome RAG Production <a> </a>
+# Awesome RAG Production
 
 > A curated collection of battle-tested tools, frameworks, and best practices for building, scaling, and monitoring production-grade Retrieval-Augmented Generation (RAG) systems.
 
@@ -31,6 +31,7 @@
 - [Evaluation & Benchmarking](#-evaluation--benchmarking)
 - [Observability & Tracing](#%EF%B8%8F-observability--tracing)
 - [Deployment & Serving](#-deployment--serving)
+- [Security & Compliance](#%EF%B8%8F-security--compliance)
 - [Datasets](datasets.md)
 - [RAG Pitfalls & Anti-patterns](rag-pitfalls.md)
 - [Recommended Resources (Books & Blogs)](#-recommended-resources)
@@ -193,10 +194,10 @@ Choose the right framework for your use case with this production-focused compar
     the RAG components (Indexer, Retriever, Parser), allowing for independent
     scaling and easier AB testing of different RAG strategies.
 - [Haystack](https://github.com/deepset-ai/haystack)
-  - A modular framework focused on production readiness. It emphasizes audible
+  - A modular framework focused on production readiness. It emphasizes auditable
     pipelines, strict type-checking, and reproducibility, making it ideal for
     enterprise-grade RAG where reliability is paramount.
-- [LangGraph](https://github.com/langchain-ai/langchain)
+- [LangGraph](https://github.com/langchain-ai/langgraph)
   - A library for building stateful, multi-actor applications with LLMs. Unlike
     simple chains, it enables cyclic graphs for complex, agentic workflows with
     human-in-the-loop control and persistence.
@@ -260,7 +261,7 @@ zero-shot retrieval performance.
     (often boosting MRR by 10-20%) with minimal code changes.
 - [FlashRank](https://github.com/PrithivirajDamodaran/FlashRank)
   - A lightweight, serverless-friendly reranking library. It runs quantized
-    cross-encoder models directly in the CPU (no Torch/GPU required), making it
+    cross-encoder models directly on the CPU (no Torch/GPU required), making it
     ideal for edge deployments or cost-sensitive architectures.
 - [RAGatouille](https://github.com/AnswerDotAI/RAGatouille)
   - A library that makes ColBERT (Contextualized Late Interaction over BERT)
@@ -327,22 +328,18 @@ their retrieval strategy based on intermediate results.
 Reliable RAG requires measuring the **RAG Triad**: Context Relevance,
 Groundedness, and Answer Relevance.
 
-- [Ares](https://github.com/stanford-futuredata/ARES)
-  - An automated evaluation system that helps you evaluate RAG systems with fewer
-    human labels. It uses prediction-powered inference to provide statistical
-    confidence intervals for your system's performance.
 - [Braintrust](https://www.braintrust.dev/)
   - An enterprise-grade platform for evaluating and logging LLM outputs. It
     excels at "Online Evaluation," allowing you to score real-world user
     interactions and feed that data back into your development set.
 - [DeepEval](https://github.com/confident-ai/deepeval)
   - The "Pytest for LLMs". It offers a unit-testing framework for RAG,
-    integrating seamlessly into CI/CD pipelines to catch regression in retrieval
+    integrating seamlessly into CI/CD pipelines to catch regressions in retrieval
     quality or hallucination rates before deployment.
 - [Ragas](https://github.com/vibrantlabsai/ragas)
   - A framework that uses an "LLM-as-a-Judge" to evaluate your pipeline. It
     calculates metrics like Faithfulness (did the answer come from the context?)
-    and Answer Relevancy without needing human-labeled ground truth.
+    and Answer Relevance without needing human-labeled ground truth.
 
 ### LLM-as-Judge Evaluation
 
@@ -350,25 +347,21 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
 
 **Core Frameworks:**
 
-- **[Prometheus](https://github.com/prometheus-eval/prometheus)**
+- [Prometheus](https://github.com/prometheus-eval/prometheus)
   - An open-source LLM specifically trained for evaluation tasks. Unlike using
     GPT-4 as a judge, Prometheus is optimized for scoring consistency and can run
     locally for cost-sensitive deployments.
-
-- **[G-Eval](https://github.com/nlpyang/geval)**
+- [G-Eval](https://github.com/nlpyang/geval)
   - A framework that uses GPT-4 with chain-of-thought reasoning to evaluate text
     generation quality. It achieves human-level correlation on summarization and
     dialogue tasks.
-
-- **[AutoEvals](https://github.com/braintrustdata/autoevals)**
+- [AutoEvals](https://github.com/braintrustdata/autoevals)
   - A tool for quickly and easily evaluating AI model outputs using best
     practices, including LLM-as-a-judge and heuristic methods.
-
-- **[ARES (Automated RAG Evaluation System)](https://github.com/stanford-futuredata/ARES)**
+- [ARES (Automated RAG Evaluation System)](https://github.com/stanford-futuredata/ARES)
   - Stanford's research project that fine-tunes small LLMs as judges specifically
     for RAG evaluation, achieving GPT-4-level accuracy at 1/10th the cost.
-
-- **[LangChain Evaluators](https://docs.langchain.com/oss/python/langchain/overview)**
+- [LangChain Evaluators](https://docs.langchain.com/oss/python/langchain/overview)
   - Built-in evaluation chains for criteria-based scoring, pairwise comparison,
     and embedding distance. Seamlessly integrates with LangSmith for
     production monitoring.
@@ -440,7 +433,7 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
   - A comprehensive toolkit for sanitizing inputs and outputs. It detects
     invisible text, prompt injections, and anonymizes sensitive data, ensuring
     full compliance with data privacy standards.
-- [NeMo Guardrails](https://github.com/NVIDIA-NeMo/Guardrails)
+- [NeMo Guardrails](https://github.com/NVIDIA/NeMo-Guardrails)
   - The standard for adding programmable guardrails to LLM-based conversational
     systems. It prevents "Jailbreaking" and ensures models stay on topic,
     critical for enterprise chatbots.

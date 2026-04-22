@@ -44,7 +44,11 @@ similar PR is already open.
 To keep the list clean, please follow the existing format:
 
 - **Alphabetical Order:** Add your resource to the appropriate category in alphabetical order.
-- **Link Format:** `- [Resource Name](URL) - Short, descriptive sentence (1 sentence) ending with a period.`
+- **Link Format:**
+  ```markdown
+  - [Resource Name](URL)
+    - Short, descriptive explanation of the tool and its production relevance.
+  ```
 - **Citations (Optional):** If the resource is backed by a specific benchmark or paper, feel free to mention it.
 
 ### 4. Commit and Push
