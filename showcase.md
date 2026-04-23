@@ -61,6 +61,26 @@ running Retrieval-Augmented Generation at scale.
 
 ## Must-Watch Talks
 
+- **[Jerry Liu (LlamaIndex) - Building Production-Ready RAG Applications](https://www.youtube.com/watch?v=TRjq7t2Ms5I)**
+  - *Venue:* AI Engineer Summit, 2023
+  - *Why watch:* Canonical tour of why "basic RAG" fails and the specific levers — chunking, metadata filtering, small-to-big retrieval, multi-document agents — that move it toward production.
+
+- **[Jason Liu - Systematically Improving RAG Applications](https://www.youtube.com/watch?v=e668bTot45w)**
+  - *Venue:* AI Engineer World's Fair, 2024
+  - *Why watch:* A data-driven flywheel for RAG: synthetic eval generation, leading vs. lagging metrics, segmentation, and query routing. The clearest answer to "what do I actually measure?"
+
+- **[Douwe Kiela (Contextual AI) - Retrieval Augmented Language Models](https://www.youtube.com/watch?v=mE7IDf2SmJg)**
+  - *Venue:* Stanford CS25 V3, 2023
+  - *Why watch:* Academic grounding from one of the original RAG paper authors — parametric vs. non-parametric memory, joint training, and why hybrid retrieval exists.
+
+- **[Yan, Bischof, Frye, Husain, Liu, Shankar - What We Learned from a Year of Building with LLMs](https://www.youtube.com/watch?v=c0gcsprsFig)**
+  - *Venue:* AI Engineer World's Fair, 2024 (closing keynote)
+  - *Why watch:* Six practitioners compress a year of production lessons into one session — evals, cost, ops, and org design. Pairs with the O'Reilly written series.
+
+- **[Harrison Chase (LangChain) - 3 Ingredients for Building Reliable Enterprise Agents](https://www.youtube.com/watch?v=kTnfJszFxCg)**
+  - *Venue:* AI Engineer, 2024
+  - *Why watch:* Covers the prototype-to-production gap for agentic RAG specifically — state management, human-in-the-loop, and failure modes at scale.
+
 ---
 
 ([back to main resource](README.md#contents))
