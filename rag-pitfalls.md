@@ -1,4 +1,4 @@
-# ⚠️ Common RAG Pitfalls & Anti-patterns
+# Common RAG Pitfalls & Anti-patterns
 
 Moving RAG from prototype to production exposes hidden complexity. This guide
 catalogs the most frequent mistakes teams make when scaling RAG systems, along
@@ -6,7 +6,7 @@ with concrete solutions.
 
 ---
 
-## 🔴 Data Ingestion & Chunking
+## Data Ingestion & Chunking
 
 ### ❌ Anti-pattern: Fixed Chunk Size Everywhere
 
@@ -49,7 +49,7 @@ embeddings.
 
 ---
 
-## 🔴 Retrieval Strategy
+## Retrieval Strategy
 
 ### ❌ Anti-pattern: Pure Vector Search Only
 
@@ -93,7 +93,7 @@ embeddings.
 
 ---
 
-## 🔴 Embedding Model Selection
+## Embedding Model Selection
 
 ### ❌ Anti-pattern: Using Default OpenAI Embeddings Without Testing
 
@@ -118,7 +118,7 @@ your domain.
 
 ---
 
-## 🔴 Prompt Engineering
+## Prompt Engineering
 
 ### ❌ Anti-pattern: No Explicit Instruction to Use Context
 
@@ -158,7 +158,7 @@ Answer:
 
 ---
 
-## 🔴 Evaluation & Monitoring
+## Evaluation & Monitoring
 
 ### ❌ Anti-pattern: No Evaluation Dataset
 
@@ -196,7 +196,7 @@ failed.
 
 ---
 
-## 🔴 Production Deployment
+## Production Deployment
 
 ### ❌ Anti-pattern: Synchronous Retrieval in API
 
@@ -231,7 +231,7 @@ API quotas.
 
 ---
 
-## 🔴 Security & Compliance
+## Security & Compliance
 
 ### ❌ Anti-pattern: No PII Filtering
 
@@ -256,7 +256,7 @@ passwords"`
 
 ---
 
-## 🔴 Cost Optimization
+## Cost Optimization
 
 ### ❌ Anti-pattern: Using GPT-4 for Every Query
 
@@ -279,7 +279,7 @@ passwords"`
 
 ---
 
-## 📚 Quick Reference: Production Checklist
+## Quick Reference: Production Checklist
 
 Before deploying RAG to production, ensure:
 
@@ -296,7 +296,7 @@ Before deploying RAG to production, ensure:
 
 ---
 
-## 🎯 Summary
+## Summary
 
 The difference between a demo and a production RAG system is **resilience to edge
 cases**. The patterns above aren't theoretical—they're battle scars from real
