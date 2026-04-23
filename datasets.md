@@ -1,4 +1,4 @@
-# 💾 Datasets for RAG Benchmarking
+# Datasets for RAG Benchmarking
 
 You cannot improve what you cannot measure. Production-grade RAG requires rigorous
 evaluation against ground-truth datasets. This list covers general-purpose
@@ -6,7 +6,7 @@ benchmarks and domain-specific corpora.
 
 ---
 
-## 🏅 The Leaderboards
+## The Leaderboards
 
 Before choosing a model, check these live leaderboards:
 
@@ -20,7 +20,7 @@ Before choosing a model, check these live leaderboards:
 
 ---
 
-## 📚 General Knowledge (Open Domain QA)
+## General Knowledge (Open Domain QA)
 
 - **[MS MARCO](https://microsoft.github.io/msmarco/)** - 1M+ Queries.
   - Making AI the first truly conversational search engine.
@@ -38,7 +38,7 @@ Before choosing a model, check these live leaderboards:
 
 ---
 
-## 📑 Long-Context & Document Understanding
+## Long-Context & Document Understanding
 
 - **[SQuAD 2.0](https://rajpurkar.github.io/SQuAD-explorer/)** - Stanford Question Answering Dataset.
   - Includes unanswerable questions.
@@ -51,7 +51,7 @@ Before choosing a model, check these live leaderboards:
 
 ---
 
-## 🧪 Synthetic Data Generation
+## Synthetic Data Generation
 
 Don't have a dataset? Generate one from your own internal documents.
 
