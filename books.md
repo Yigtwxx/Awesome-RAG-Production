@@ -1,8 +1,8 @@
-# 📚 Recommended Books
+# Recommended Books
 
 A curated collection of essential books for Retrieval Augmented Generation (RAG), Machine Learning, Deep Learning, and Artificial Intelligence.
 
-## 🧠 Deep Learning (DL) & NLP
+## Deep Learning (DL) & NLP
 
 - **[Deep Learning](https://www.deeplearningbook.org/)**
   - Ian Goodfellow, Yoshua Bengio, Aaron Courville (2016). The definitive
@@ -17,7 +17,7 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
   - Lewis Tunstall, Leandro von Werra, Thomas Wolf (2022). Build, train, and
     deploy state-of-the-art NLP models using the Hugging Face ecosystem.
 
-## 🤖 Artificial Intelligence (AI) & Agents
+## Artificial Intelligence (AI) & Agents
 
 - **[Artificial Intelligence: A Modern Approach](http://aima.cs.berkeley.edu/)**
   - Stuart Russell, Peter Norvig (2020). The standard university textbook on AI,
@@ -26,7 +26,7 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
   - Paul Iusztin, Maxime Labonne (2024). A practical guide for building,
     deploying, and scaling large language model-based applications.
 
-## 📊 Machine Learning (ML) & Data Science
+## Machine Learning (ML) & Data Science
 
 - **[Designing Machine Learning Systems](https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/)**
   - Chip Huyen (2022). An iterative process for production-ready applications,
