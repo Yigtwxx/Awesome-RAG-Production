@@ -1,4 +1,4 @@
-# 🏆 RAG in Production: Operations & Case Studies
+# RAG in Production: Operations & Case Studies
 
 Theory is great, but production is where the rubber meets the road. This section
 curates deep-dive engineering blogs, whitepapers, and talks from companies
@@ -9,7 +9,7 @@ running Retrieval-Augmented Generation at scale.
 
 ---
 
-## 🦄 High-Scale Consumer Apps
+## High-Scale Consumer Apps
 
 ### **[Perplexity.ai](https://www.perplexity.ai/)**
 
@@ -32,7 +32,7 @@ running Retrieval-Augmented Generation at scale.
 
 ---
 
-## 🏢 Enterprise & B2B
+## Enterprise & B2B
 
 ### **[Stripe](https://stripe.com/)**
 
@@ -48,7 +48,7 @@ running Retrieval-Augmented Generation at scale.
 
 ---
 
-## 🛠️ Lessons from the Trenches (Engineering Blogs)
+## Lessons from the Trenches (Engineering Blogs)
 
 - **[DoorDash] - [Personalized Store Feed with Vector Retrieval](https://doordash.engineering/2023/08/01/improving-store-feed-ranking-with-vector-retrieval/)**
   - *Focus:* Replacing heuristic rules with semantic retrieval for better recommendations.
@@ -59,7 +59,7 @@ running Retrieval-Augmented Generation at scale.
 
 ---
 
-## 📹 Must-Watch Talks
+## Must-Watch Talks
 
 ---
 
