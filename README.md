@@ -17,35 +17,35 @@
 
 **Retrieval-Augmented Generation (RAG)** is revolutionizing how LLMs access and utilize external knowledge. This repository bridges the gap between prototype RAG tutorials and **production-grade systems** at scale. Whether you're building semantic search, question-answering systems, or AI-powered assistants, you'll find battle-tested frameworks, vector databases, evaluation tools, and observability solutions for **production RAG deployments**. Focus on the **Engineering** side of AI—from data ingestion and retrieval optimization to monitoring, security, and deployment strategies for real-world LLM applications.
 
-[Contribution Guide](CONTRIBUTING.md) · [Explore Categories](#-contents) · [Report Bug](https://github.com/Yigtwxx/Awesome-RAG-Production/issues)
+[Contribution Guide](CONTRIBUTING.md) · [Explore Categories](#contents) · [Report Bug](https://github.com/Yigtwxx/Awesome-RAG-Production/issues)
 
 ---
 
-## 📑 Contents
+## Contents
 
-- [Frameworks & Orchestration](#%EF%B8%8F-frameworks--orchestration)
-- [Data Ingestion & Parsing](#-data-ingestion--parsing)
-- [Vector Databases](#%EF%B8%8F-vector-databases)
-- [Retrieval & Reranking](#-retrieval--reranking)
-- [Agentic RAG](#-agentic-rag)
-- [Evaluation & Benchmarking](#-evaluation--benchmarking)
-- [Observability & Tracing](#%EF%B8%8F-observability--tracing)
-- [Deployment & Serving](#-deployment--serving)
-- [Security & Compliance](#%EF%B8%8F-security--compliance)
+- [Frameworks & Orchestration](#frameworks--orchestration)
+- [Data Ingestion & Parsing](#data-ingestion--parsing)
+- [Vector Databases](#vector-databases)
+- [Retrieval & Reranking](#retrieval--reranking)
+- [Agentic RAG](#agentic-rag)
+- [Evaluation & Benchmarking](#evaluation--benchmarking)
+- [Observability & Tracing](#observability--tracing)
+- [Deployment & Serving](#deployment--serving)
+- [Security & Compliance](#security--compliance)
 - [Datasets](datasets.md)
 - [RAG Pitfalls & Anti-patterns](rag-pitfalls.md)
-- [Recommended Resources (Books & Blogs)](#-recommended-resources)
+- [Recommended Resources (Books & Blogs)](#recommended-resources)
 
 ---
 
-## 🧭 Decision Guide: How to Choose
+## Decision Guide: How to Choose
 
 Not sure where to start? Use this high-level decision tree to pick the right
 tools for your scale and use case.
 
 ```mermaid
 graph TD
-    Start([🚀 Start Project]) --> UseCase{What is your primary goal?}
+    Start([Start Project]) --> UseCase{What is your primary goal?}
     
     %% Framework Selection
     UseCase -->|Complex Agents & Control| LangGraph[🦜🕸️ LangGraph]
@@ -55,7 +55,7 @@ graph TD
     %% Vector DB Selection
     UseCase --> DB{Which Vector DB?}
     DB -->|Serverless / Zero Ops| Pinecone[🌲 Pinecone]
-    DB -->|Massive Scale >100M| Milvus[🚀 Milvus]
+    DB -->|Massive Scale >100M| Milvus[Milvus]
     DB -->|Running Locally| Chroma[🧪 Chroma]
     DB -->|Postgres Ecosystem| PGVector[🐘 pgvector]
     
@@ -71,7 +71,7 @@ graph TD
 
 ---
 
-## 🧱 Reference Architectures
+## Reference Architectures
 
 Stop guessing. Here are three battle-tested stacks for different stages of
 maturity.
@@ -131,7 +131,7 @@ visualization.
 
 ---
 
-## 💼 Real-World Case Studies
+## Real-World Case Studies
 
 Learn from production RAG implementations at scale. These companies have battle-tested their systems with millions of users.
 
@@ -161,7 +161,7 @@ Learn from production RAG implementations at scale. These companies have battle-
 
 ---
 
-## 🏗️ Frameworks & Orchestration
+## Frameworks & Orchestration
 
 ### Framework Comparison
 
@@ -218,7 +218,7 @@ Choose the right framework for your use case with this production-focused compar
     application that comes pre-configured with best practices for chunking,
     embedding, and retrieval out of the box.
 
-## 📥 Data Ingestion & Parsing
+## Data Ingestion & Parsing
 
 - [Firecrawl](https://github.com/firecrawl/firecrawl)
   - Effortlessly turn websites into clean, LLM-ready markdown.
@@ -232,7 +232,7 @@ Choose the right framework for your use case with this production-focused compar
 - [Unstructured](https://github.com/Unstructured-IO/unstructured)
   - Open-source pipelines for preprocessing complex, unstructured data.
 
-## 🗄️ Vector Databases
+## Vector Databases
 
 | Tool | Best For | Key Strength |
 | :--- | :--- | :--- |
@@ -243,7 +243,7 @@ Choose the right framework for your use case with this production-focused compar
 | **[Qdrant](https://github.com/qdrant/qdrant)** | <50M vectors | Best filtering support and free tier. |
 | **[Weaviate](https://github.com/weaviate/weaviate)** | Hybrid Search | Native integration of vector and keyword search. |
 
-## 🔍 Retrieval & Reranking
+## Retrieval & Reranking
 
 **Hybrid Search:**
 A retrieval strategy that linearly combines Dense Vector Search (semantic
@@ -274,7 +274,7 @@ An advanced retrieval method that constructs a knowledge graph from documents. I
 traverses relationships between entities to answer "global" queries (e.g., "What
 are the main themes?") that standard vector search struggles to address.
 
-## 🤖 Agentic RAG
+## Agentic RAG
 
 Agentic RAG represents the evolution of traditional RAG systems into autonomous,
 decision-making entities. Instead of a simple "retrieve-then-generate" pipeline,
@@ -323,7 +323,7 @@ their retrieval strategy based on intermediate results.
 - ❌ Increased cost (agent reasoning + retrieval)
 - ❌ Debugging complexity (non-deterministic behavior)
 
-## 📊 Evaluation & Benchmarking
+## Evaluation & Benchmarking
 
 Reliable RAG requires measuring the **RAG Triad**: Context Relevance,
 Groundedness, and Answer Relevance.
@@ -384,7 +384,7 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
 - ⚠️ Be aware of position bias (LLMs favor earlier options in pairwise comparisons)
 - ⚠️ LLM judges can inherit biases from their training data
 
-## 👁️ Observability & Tracing
+## Observability & Tracing
 
 - [Arize Phoenix](https://github.com/Arize-ai/phoenix)
   - A tool specifically designed for troubleshooting retrieval issues. It
@@ -403,7 +403,7 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
     Prometheus/Grafana or Datadog, OpenLIT drops into your existing stack to
     provide standardized LLM metrics (GPU usage, token throughput).
 
-## 🚀 Deployment & Serving
+## Deployment & Serving
 
 - [BentoML](https://github.com/bentoml/BentoML)
   - A framework for packaging models into standardized APIs (Bentos). It handles
@@ -423,7 +423,7 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
     GPU memory utilization, allowing you to serve larger models or handle higher
     concurrency with lower latency than standard Hugging Face Transformers.
 
-## 🛡️ Security & Compliance
+## Security & Compliance
 
 - [Lakera Guard](https://www.lakera.ai/)
   - A low-latency security API that protects applications against prompt
@@ -446,12 +446,12 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
     offline. It ensures 100% data privacy by keeping all ingestion and inference
     local, perfect for highly regulated industries.
 
-## 🧠 Recommended Resources
+## Recommended Resources
 
 Deepen your knowledge with curated lists of books and blogs from industry
 experts.
 
-### 📚 [Books](books.md)
+### [Books](books.md)
 
 A curated list of **Essential Books** covering RAG, Deep Learning, and AI
 Engineering.
@@ -459,7 +459,7 @@ Engineering.
 - *Featuring: "Designing Machine Learning Systems" by Chip Huyen, "Deep
   Learning" by Goodfellow et al.*
 
-### 🌐 [Blogs & News](blogs.md)
+### [Blogs & News](blogs.md)
 
 Stay updated with the **Best Engineering Blogs**.
 
@@ -467,7 +467,7 @@ Stay updated with the **Best Engineering Blogs**.
 
 ---
 
-## 🛠️ Selection Criteria
+## Selection Criteria
 
 To keep this list high-quality, we only include resources that are:
 
@@ -479,13 +479,13 @@ To keep this list high-quality, we only include resources that are:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md)
 file for guidelines on how to submit a new resource.
 
 ---
 
-## 📜 License
+## License
 
 This repository is licensed under [CC0 1.0 Universal](LICENSE).
