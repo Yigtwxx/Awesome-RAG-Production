@@ -1,8 +1,8 @@
-# 🌐 Recommended Blogs & Resources
+# Recommended Blogs & Resources
 
 A curated collection of high-quality blogs and resources for staying up-to-date with Retrieval Augmented Generation (RAG), Machine Learning, Deep Learning, and Artificial Intelligence.
 
-## 🔍 Retrieval Augmented Generation (RAG) & LLMs
+## Retrieval Augmented Generation (RAG) & LLMs
 
 - **[OpenAI Blog](https://openai.com/blog)** - OpenAI.
   - Insights into cutting-edge AI research, GPT models, and safety from the
@@ -23,7 +23,7 @@ A curated collection of high-quality blogs and resources for staying up-to-date 
   - The community hub for open-source AI, featuring model releases, tutorials,
     and demos. _(Focus: Open Source AI, NLP)_
 
-## 🧠 Deep Learning (DL) & Research
+## Deep Learning (DL) & Research
 
 - **[Google DeepMind Blog](https://deepmind.google/discover/blog/)** - Google DeepMind.
   - Groundbreaking research in deep learning, reinforcement learning, and
@@ -41,7 +41,7 @@ A curated collection of high-quality blogs and resources for staying up-to-date 
   - Research findings and perspectives from one of the top academic AI labs in
     the world. _(Focus: Academic Research)_
 
-## 🤖 Artificial Intelligence (AI) & Engineering
+## Artificial Intelligence (AI) & Engineering
 
 - **[Lil'Log](https://lilianweng.github.io/)** - Lilian Weng (OpenAI).
   - In-depth technical blog posts on agents, medical AI, and transformer
@@ -59,7 +59,7 @@ A curated collection of high-quality blogs and resources for staying up-to-date 
   - Thoughts on building searching, recommendation, and machine learning systems
     in production. _(Focus: RecSys, Applied ML)_
 
-## 📊 Machine Learning (ML) & Data Science
+## Machine Learning (ML) & Data Science
 
 - **[Towards Data Science](https://towardsdatascience.com/)** - Medium Publication.
   - A massive collection of articles covering everything from basic ML concepts
