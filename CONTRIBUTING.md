@@ -9,7 +9,7 @@ contribution process.
 
 ---
 
-## 🛠️ Quality Standards
+## Quality Standards
 
 We don't just collect links; we curate **engineering excellence**. To be
 accepted, a resource must meet the following criteria:
@@ -21,7 +21,7 @@ accepted, a resource must meet the following criteria:
 
 ---
 
-## 🚀 How to Contribute
+## How to Contribute
 
 Please follow these steps to propose a change:
 
@@ -66,7 +66,7 @@ git commit -m "Add [Resource Name] to [Category Name]"
 
 ---
 
-## ⚖️ License
+## License
 
 By contributing, you agree that your contributions will be licensed under the
 **CC0 1.0 Universal** license of this repository.
