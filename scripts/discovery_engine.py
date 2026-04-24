@@ -46,7 +46,7 @@ def run_discovery():
         return
 
     # Write results
-    output_file = "../PROPOSED_UPDATES.md"
+    output_file = "../.github/PROPOSED_UPDATES.md"
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(f"# 🚀 Smart RAG Discovery - {datetime.date.today()}\n")
         f.write(f"> **Filters Applied:** Stars >= {MIN_STARS}, Updated in last {DAYS_LIMIT} days.\n\n")
