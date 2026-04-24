@@ -32,9 +32,13 @@
 - [Observability & Tracing](#observability--tracing)
 - [Deployment & Serving](#deployment--serving)
 - [Security & Compliance](#security--compliance)
+- [Case Studies & Production Talks](showcase.md)
 - [Datasets](datasets.md)
 - [RAG Pitfalls & Anti-patterns](rag-pitfalls.md)
 - [Recommended Resources (Books & Blogs)](#recommended-resources)
+- [Contributing](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [License](#license)
 
 ---
 
@@ -137,17 +141,17 @@ Learn from production RAG implementations at scale. These companies have battle-
 
 ### Success Stories
 
-- **[LinkedIn Engineering](https://engineering.linkedin.com/blog)**
+- [LinkedIn Engineering](https://engineering.linkedin.com/blog)
   - **Use Case**: Conversational job search and professional recommendations
   - **Tech Stack**: In-house vector DB + BERT embeddings + LLM fine-tuning
   - **Key Insight**: Member-specific personalization through context injection
 
-- **[Shopify Engineering](https://shopify.engineering/)**
+- [Shopify Engineering](https://shopify.engineering/)
   - **Use Case**: E-commerce chatbot for merchant support
   - **Tech Stack**: LangChain + Chroma + GPT-3.5-Turbo
   - **Key Insight**: Domain-specific fine-tuning reduced hallucination rate from 18% to 4%
 
-- **[Discord](https://discord.com/blog/how-discord-stores-trillions-of-messages)**
+- [Discord](https://discord.com/blog/how-discord-stores-trillions-of-messages)
   - **Use Case**: Message search across trillions of messages
   - **Tech Stack**: ScaNN (Google) + Custom Rust infrastructure + ScyllaDB
   - **Key Insight**: Rust-based microservices with approximate nearest neighbor search at scale
@@ -169,10 +173,10 @@ Choose the right framework for your use case with this production-focused compar
 
 | Framework | Best For | Async Support | Production Readiness | Community Support | Orchestration Style | Observability | Learning Curve | Deployment Complexity |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **[LlamaIndex](https://github.com/run-llama/llama_index)** | Data Processing & Indexing | ✅ Full | ⭐⭐⭐⭐ | 39k+ ⭐ | Data-Flow Pipelines | Built-in + 3rd Party | Low-Medium | Low |
-| **[LangChain](https://github.com/langchain-ai/langchain)** | Rapid Prototyping | ✅ Full | ⭐⭐⭐ | 100k+ ⭐ | Sequential Chains | Excellent (LangSmith) | Medium | Medium |
-| **[LangGraph](https://github.com/langchain-ai/langgraph)** | Complex Agents & Control | ✅ Full | ⭐⭐⭐⭐ | 7k+ ⭐ | Cyclic Graphs | Excellent (LangSmith) | High | Medium-High |
-| **[Haystack](https://github.com/deepset-ai/haystack)** | Enterprise Pipelines | ✅ Full | ⭐⭐⭐⭐⭐ | 18k+ ⭐ | DAG-based Pipelines | Built-in Tracing | Medium-High | Low-Medium |
+| [LlamaIndex](https://github.com/run-llama/llama_index) | Data Processing & Indexing | ✅ Full | ⭐⭐⭐⭐ | 39k+ ⭐ | Data-Flow Pipelines | Built-in + 3rd Party | Low-Medium | Low |
+| [LangChain](https://github.com/langchain-ai/langchain) | Rapid Prototyping | ✅ Full | ⭐⭐⭐ | 100k+ ⭐ | Sequential Chains | Excellent (LangSmith) | Medium | Medium |
+| [LangGraph](https://github.com/langchain-ai/langgraph) | Complex Agents & Control | ✅ Full | ⭐⭐⭐⭐ | 7k+ ⭐ | Cyclic Graphs | Excellent (LangSmith) | High | Medium-High |
+| [Haystack](https://github.com/deepset-ai/haystack) | Enterprise Pipelines | ✅ Full | ⭐⭐⭐⭐⭐ | 18k+ ⭐ | DAG-based Pipelines | Built-in Tracing | Medium-High | Low-Medium |
 
 **Key Considerations:**
 
@@ -236,12 +240,12 @@ Choose the right framework for your use case with this production-focused compar
 
 | Tool | Best For | Key Strength |
 | :--- | :--- | :--- |
-| **[Chroma](https://github.com/chroma-core/chroma)** | Local/Dev & Mid-scale | Developer-friendly, open-source embedding database. |
-| **[Milvus](https://github.com/milvus-io/milvus)** | Billions of vectors | Most popular OSS for massive scale. |
-| **[pgvector](https://github.com/pgvector/pgvector)** | PostgreSQL Ecosystem | Vector search capability directly within PostgreSQL. |
-| **[Pinecone](https://www.pinecone.io/)** | 10M-100M+ vectors | Zero-ops, serverless architecture. |
-| **[Qdrant](https://github.com/qdrant/qdrant)** | <50M vectors | Best filtering support and free tier. |
-| **[Weaviate](https://github.com/weaviate/weaviate)** | Hybrid Search | Native integration of vector and keyword search. |
+| [Chroma](https://github.com/chroma-core/chroma) | Local/Dev & Mid-scale | Developer-friendly, open-source embedding database. |
+| [Milvus](https://github.com/milvus-io/milvus) | Billions of vectors | Most popular OSS for massive scale. |
+| [pgvector](https://github.com/pgvector/pgvector) | PostgreSQL Ecosystem | Vector search capability directly within PostgreSQL. |
+| [Pinecone](https://www.pinecone.io/) | 10M-100M+ vectors | Zero-ops, serverless architecture. |
+| [Qdrant](https://github.com/qdrant/qdrant) | <50M vectors | Best filtering support and free tier. |
+| [Weaviate](https://github.com/weaviate/weaviate) | Hybrid Search | Native integration of vector and keyword search. |
 
 ## Retrieval & Reranking
 
@@ -347,24 +351,24 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
 
 **Core Frameworks:**
 
-- [Prometheus](https://github.com/prometheus-eval/prometheus)
-  - An open-source LLM specifically trained for evaluation tasks. Unlike using
-    GPT-4 as a judge, Prometheus is optimized for scoring consistency and can run
-    locally for cost-sensitive deployments.
+- [ARES (Automated RAG Evaluation System)](https://github.com/stanford-futuredata/ARES)
+  - Stanford's research project that fine-tunes small LLMs as judges specifically
+    for RAG evaluation, achieving GPT-4-level accuracy at 1/10th the cost.
+- [AutoEvals](https://github.com/braintrustdata/autoevals)
+  - A tool for quickly and easily evaluating AI model outputs using best
+    practices, including LLM-as-a-judge and heuristic methods.
 - [G-Eval](https://github.com/nlpyang/geval)
   - A framework that uses GPT-4 with chain-of-thought reasoning to evaluate text
     generation quality. It achieves human-level correlation on summarization and
     dialogue tasks.
-- [AutoEvals](https://github.com/braintrustdata/autoevals)
-  - A tool for quickly and easily evaluating AI model outputs using best
-    practices, including LLM-as-a-judge and heuristic methods.
-- [ARES (Automated RAG Evaluation System)](https://github.com/stanford-futuredata/ARES)
-  - Stanford's research project that fine-tunes small LLMs as judges specifically
-    for RAG evaluation, achieving GPT-4-level accuracy at 1/10th the cost.
 - [LangChain Evaluators](https://docs.langchain.com/oss/python/langchain/overview)
   - Built-in evaluation chains for criteria-based scoring, pairwise comparison,
     and embedding distance. Seamlessly integrates with LangSmith for
     production monitoring.
+- [Prometheus](https://github.com/prometheus-eval/prometheus)
+  - An open-source LLM specifically trained for evaluation tasks. Unlike using
+    GPT-4 as a judge, Prometheus is optimized for scoring consistency and can run
+    locally for cost-sensitive deployments.
 
 **Key Metrics:**
 
