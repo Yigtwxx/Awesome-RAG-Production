@@ -36,6 +36,10 @@ def run_discovery():
     print(f"    - Filter: Stars >= {MIN_STARS}")
     print(f"    - Filter: Updated after {cutoff_date}")
 
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    output_file = os.path.join(repo_root, ".github", "PROPOSED_UPDATES.md")
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
     try:
         response = requests.get(URL, headers=headers, params=params, timeout=10)
         response.raise_for_status()
@@ -43,10 +47,12 @@ def run_discovery():
         projects = data.get("items", [])
     except Exception as e:
         print(f"[-] Critical Error impacting discovery: {e}")
+        with open(output_file, "w", encoding="utf-8") as f:
+            f.write(f"# Smart RAG Discovery - {datetime.date.today()}\n\n")
+            f.write(f"> Discovery failed this run: {e}\n")
         return
 
     # Write results
-    output_file = "../.github/PROPOSED_UPDATES.md"
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(f"# 🚀 Smart RAG Discovery - {datetime.date.today()}\n")
         f.write(f"> **Filters Applied:** Stars >= {MIN_STARS}, Updated in last {DAYS_LIMIT} days.\n\n")
