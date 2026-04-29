@@ -2,6 +2,21 @@
 
 A curated collection of essential books for Retrieval Augmented Generation (RAG), Machine Learning, Deep Learning, and Artificial Intelligence.
 
+## Retrieval Augmented Generation (RAG)
+
+- [Building LLMs for Production](https://towardsai.net/book)
+  - Louis-François Bouchard, Louie Peters (2024). End-to-end LLM engineering
+    with substantial coverage of retrieval pipelines, chunking strategies, and
+    RAG evaluation in production settings.
+- [RAG-Driven Generative AI](https://www.packtpub.com/en-us/product/rag-driven-generative-ai-9781836200918)
+  - Denis Rothman (2024). Hands-on construction of RAG systems with vector
+    stores, knowledge graphs, and LlamaIndex, focused on practical
+    implementation patterns.
+- [Unlocking Data with Generative AI and RAG](https://www.packtpub.com/en-us/product/unlocking-data-with-generative-ai-and-rag-9781835887905)
+  - Keith Bourne (2024). Building retrieval-augmented systems with attention
+    to vector stores, evaluation, governance, and security — written from a
+    production-readiness lens.
+
 ## Deep Learning (DL) & NLP
 
 - [Deep Learning](https://www.deeplearningbook.org/)
