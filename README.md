@@ -2,7 +2,7 @@
 
 > A curated collection of battle-tested tools, frameworks, and best practices for building, scaling, and monitoring production-grade Retrieval-Augmented Generation (RAG) systems.
 
-[![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+[![Awesome](https://awesome.re/badge.svg)](https://github.com/sindresorhus/awesome)
 
 <!-- markdownlint-disable MD033 -->
 <div align="center">
@@ -437,7 +437,7 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
   - A comprehensive toolkit for sanitizing inputs and outputs. It detects
     invisible text, prompt injections, and anonymizes sensitive data, ensuring
     full compliance with data privacy standards.
-- [NeMo Guardrails](https://github.com/NVIDIA/NeMo-Guardrails)
+- [NeMo Guardrails](https://github.com/NVIDIA-NeMo/Guardrails)
   - The standard for adding programmable guardrails to LLM-based conversational
     systems. It prevents "Jailbreaking" and ensures models stay on topic,
     critical for enterprise chatbots.
