@@ -307,6 +307,6 @@ Your future self (and your on-call rotation) will thank you.
 
 - [Anthropic: Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)
 - [Pinecone: Learning Hub](https://www.pinecone.io/learn/)
-- [LlamaIndex: Production Patterns](https://docs.llamaindex.ai/en/stable/optimizing/production_rag/)
+- [LlamaIndex: Production Patterns](https://developers.llamaindex.ai/python/framework/optimizing/production_rag/)
 
 ([back to main resource](README.md))
