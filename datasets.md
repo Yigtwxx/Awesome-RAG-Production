@@ -13,9 +13,9 @@ Before choosing a model, check these live leaderboards:
 - [MTEB (Massive Text Embedding Benchmark)](https://huggingface.co/spaces/mteb/leaderboard)
   - The gold standard for choosing an embedding model (Retrieval, Clustering,
     Reranking quality).
-- [Open Compass](https://opencompass.org.cn/leaderboard-llm)
+- [Open Compass](https://rank.opencompass.org.cn/leaderboard-llm-v2)
   - Comprehensive LLM evaluation which includes retrieving capabilities.
-- [Hugging Face Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)
+- [Hugging Face Open LLM Leaderboard](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard)
   - General LLM performance.
 
 ---
@@ -28,7 +28,7 @@ Before choosing a model, check these live leaderboards:
 - [HotpotQA](https://hotpotqa.github.io/) - 113k pairs.
   - Question answering requiring multi-hop reasoning.
   - _(Best For: Reasoning)_
-- [Natural Questions (NQ)](https://ai.google.com/research/NaturalQuestions) - 300k+.
+- [Natural Questions (NQ)](https://ai.google.com/research/NaturalQuestions/) - 300k+.
   - Real user queries issued to Google Search.
   - _(Best For: Realism)_
 - [TriviaQA](https://nlp.cs.washington.edu/triviaqa/) - 95k.
@@ -43,9 +43,9 @@ Before choosing a model, check these live leaderboards:
 - [SQuAD 2.0](https://rajpurkar.github.io/SQuAD-explorer/) - Stanford Question Answering Dataset.
   - Includes unanswerable questions.
   - _(Best For: Hallucination Detection)_
-- [Qasper](https://allenai.org/data/qasper) - Question answering over NLP papers.
+- [Qasper](https://huggingface.co/datasets/allenai/qasper) - Question answering over NLP papers.
   - _(Best For: Technical/Scientific)_
-- [NarrativeQA](https://github.com/deepmind/narrativeqa) - QA over collected stories
+- [NarrativeQA](https://github.com/google-deepmind/narrativeqa) - QA over collected stories
   (books and movie scripts).
   - _(Best For: Long Context)_
 
@@ -72,16 +72,16 @@ types — spanning bio-medical IR, fact-checking, argument retrieval, and more.
 
 ## Legal & Contracts
 
-- [CUAD](https://www.atticusprojectai.org/cuad) - 13k+ labels, 510 contracts.
+- [CUAD](https://www.atticusprojectai.org/cuad/) - 13k+ labels, 510 contracts.
   - Expert-annotated commercial contracts across 41 clause categories.
   - _(Best For: Clause Extraction)_
 - [LegalBench](https://hazyresearch.stanford.edu/legalbench/) - 162 tasks.
   - Collaborative benchmark for legal reasoning, built with practicing lawyers.
   - _(Best For: Legal Reasoning)_
-- [CaseHOLD](https://reglab.stanford.edu/data/casehold/) - 53k+ holdings.
+- [CaseHOLD](https://reglab.stanford.edu/data/casehold-benchmark/) - 53k+ holdings.
   - Multiple-choice case-holding identification over US legal opinions.
   - _(Best For: Case Law Retrieval)_
-- [Open Australian Legal Corpus](https://huggingface.co/datasets/umarbutler/open-australian-legal-corpus) - 200k+ documents.
+- [Open Australian Legal Corpus](https://huggingface.co/datasets/isaacus/open-australian-legal-corpus) - 200k+ documents.
   - Largest open, permissively licensed (CC-BY) legal corpus suitable for
     pretraining and fine-tuning.
   - _(Best For: Legal Pretraining)_
@@ -93,7 +93,7 @@ types — spanning bio-medical IR, fact-checking, argument retrieval, and more.
 - [PubMedQA](https://pubmedqa.github.io/) - 1k expert + 211k auto.
   - Yes/No/Maybe QA over biomedical research abstracts.
   - _(Best For: Biomedical QA)_
-- [BioASQ](http://bioasq.org/) - Annual challenge.
+- [BioASQ](https://bioasq.org/) - Annual challenge.
   - Large-scale biomedical semantic indexing and question answering
     (registration required).
   - _(Best For: Semantic Indexing)_
@@ -101,7 +101,7 @@ types — spanning bio-medical IR, fact-checking, argument retrieval, and more.
   - Medical board exam questions across English, Chinese, and Taiwanese
     licensure.
   - _(Best For: Clinical Reasoning)_
-- [MIMIC-IV](https://physionet.org/content/mimiciv/) - De-identified clinical notes.
+- [MIMIC-IV](https://physionet.org/content/mimiciv/3.1/) - De-identified clinical notes.
   - ICU and ED records from Beth Israel Deaconess; PhysioNet credentialing
     required.
   - _(Best For: Clinical Notes)_
@@ -126,9 +126,9 @@ types — spanning bio-medical IR, fact-checking, argument retrieval, and more.
 
 Don't have a dataset? Generate one from your own internal documents.
 
-- [Ragas Synthetic Data Generator](https://docs.ragas.io/)
+- [Ragas Synthetic Data Generator](https://docs.ragas.io/en/stable/)
   - create "Golden Datasets" (Question-Answer-Context triples) automatically.
-- [LlamaIndex Data Generator](https://docs.llamaindex.ai/)
+- [LlamaIndex Data Generator](https://developers.llamaindex.ai/python/framework/)
   - Built-in utils to generate questions from your indexed nodes.
 
 ---
