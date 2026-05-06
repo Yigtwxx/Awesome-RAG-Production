@@ -28,9 +28,11 @@
 - [Vector Databases](#vector-databases)
 - [Retrieval & Reranking](#retrieval--reranking)
 - [Agentic RAG](#agentic-rag)
+- [Multimodal RAG](#multimodal-rag)
 - [Evaluation & Benchmarking](#evaluation--benchmarking)
 - [Observability & Tracing](#observability--tracing)
 - [Deployment & Serving](#deployment--serving)
+- [Caching & Performance](#caching--performance)
 - [Security & Compliance](#security--compliance)
 - [Case Studies & Production Talks](showcase.md)
 - [Datasets](datasets.md)
@@ -327,6 +329,84 @@ their retrieval strategy based on intermediate results.
 - ❌ Increased cost (agent reasoning + retrieval)
 - ❌ Debugging complexity (non-deterministic behavior)
 
+## Multimodal RAG
+
+Production RAG increasingly operates on documents that combine text, images,
+tables, and charts — financial reports, technical manuals, and product catalogs
+that defeat pure-text chunking. Multimodal RAG extends classical retrieval by
+embedding and querying across modalities in a shared vector space, or by treating
+document pages as images (ColPali-style), bypassing the OCR → chunk → embed
+pipeline and preserving layout information that text extraction destroys.
+
+**Core Capabilities:**
+
+- **Vision-document retrieval**: Index full document pages as images; retrieve
+  without OCR pre-processing, preserving tables, charts, and diagrams
+- **Aligned text/image embedding spaces**: Represent queries and mixed documents
+  in a shared vector space for cross-modal search
+- **Cross-modal queries**: A text query retrieves image results and vice versa
+- **Layout-aware understanding**: Figures, schematics, and tables are searchable
+  by their visual content, not just surrounding text
+
+| Tool | Best For | Modalities | Retrieval Style | Production Maturity |
+| :--- | :--- | :--- | :--- | :--- |
+| [Byaldi](https://github.com/AnswerDotAI/byaldi) | Quick ColPali deployment | Document pages (image) | Late interaction | Early Production |
+| [ColPali](https://github.com/illuin-tech/colpali) | Layout-rich PDF retrieval | Document pages (image) | Late interaction | Research → Production |
+| [Jina CLIP v2](https://huggingface.co/jinaai/jina-clip-v2) | Multilingual vision search | Text + Image | Bi-encoder | Production |
+| [LlamaIndex Multi-Modal](https://docs.llamaindex.ai/en/stable/module_guides/models/multi_modal/) | End-to-end multimodal RAG | Text + Image | Framework module | Production |
+| [Marqo](https://github.com/marqo-ai/marqo) | Hybrid multimodal search | Text + Image | CLIP-based | Production |
+| [Nomic Embed Vision](https://huggingface.co/nomic-ai/nomic-embed-vision-v1.5) | Drop-in cross-modal search | Text + Image | Bi-encoder | Production |
+| [Voyage Multimodal-3](https://docs.voyageai.com/docs/multimodal-embeddings) | Mixed text-image documents | Text + Image | Managed API | Production |
+
+### Frameworks & Tools
+
+- [Byaldi](https://github.com/AnswerDotAI/byaldi)
+  - A thin, production-friendly wrapper around ColPali that provides a simple
+    index/query API for late-interaction vision-document retrieval. The fastest
+    path to deploying ColPali without writing research code.
+- [ColPali](https://github.com/illuin-tech/colpali)
+  - A vision-language model that achieves state-of-the-art results on the ViDoRe
+    document retrieval benchmark by treating each page as an image. It eliminates
+    the fragile OCR → text-chunk → embed pipeline, preserving layout, tables, and
+    diagrams that plain text extraction loses.
+- [Jina CLIP v2](https://huggingface.co/jinaai/jina-clip-v2)
+  - A multilingual text-image embedding model supporting 89 languages with
+    competitive retrieval benchmarks. Available as open weights and a managed API,
+    it is suited for global products that need cross-lingual visual search.
+- [LlamaIndex Multi-Modal](https://docs.llamaindex.ai/en/stable/module_guides/models/multi_modal/)
+  - First-class multimodal support within the LlamaIndex ecosystem: dedicated
+    loaders, indexes, and query engines for mixing text and images in a single
+    production pipeline without switching frameworks.
+- [Marqo](https://github.com/marqo-ai/marqo)
+  - An open-source multimodal vector engine with CLIP-family models built in. It
+    handles the full ingestion-to-search pipeline in one self-hosted service,
+    reducing integration overhead for image-heavy corpora.
+- [Nomic Embed Vision](https://huggingface.co/nomic-ai/nomic-embed-vision-v1.5)
+  - A vision encoder that shares the same embedding space as
+    `nomic-embed-text-v1.5`. This alignment enables drop-in cross-modal search
+    on existing text indexes — add image retrieval without re-indexing.
+- [Voyage Multimodal-3](https://docs.voyageai.com/docs/multimodal-embeddings)
+  - A managed API for embedding interleaved text-and-image documents (e.g., PDFs
+    with inline figures). A single API call embeds a mixed document page as one
+    vector, slotting into existing retrieval pipelines with minimal code changes.
+
+**When to Use Multimodal RAG:**
+
+- ✅ Documents with complex layouts: financial reports, scientific papers, or
+  technical schematics where tables and charts carry critical information
+- ✅ Product catalogs and e-commerce: image-to-image or text-to-image queries
+- ✅ Screenshot or UI documentation retrieval where text extraction is noisy
+- ✅ Medical imaging paired with reports — query by image or clinical description
+
+**Trade-offs:**
+
+- ❌ Storage overhead: page-image indexes are 10–50× larger than text-chunk
+  indexes; plan for object storage and increased embedding costs
+- ❌ GPU requirements: vision encoders and ColPali-style late interaction require
+  GPU for production throughput; CPU-only deployments face significant latency
+- ❌ Evaluation complexity: no universal benchmark for domain-specific multimodal
+  retrieval quality — custom human annotation sets are required
+
 ## Evaluation & Benchmarking
 
 Reliable RAG requires measuring the **RAG Triad**: Context Relevance,
@@ -426,6 +506,90 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
   - A high-performance inference engine known for PagedAttention. It maximizes
     GPU memory utilization, allowing you to serve larger models or handle higher
     concurrency with lower latency than standard Hugging Face Transformers.
+
+## Caching & Performance
+
+Caching is one of the highest-leverage optimizations in production RAG: it
+directly reduces cost, cuts p99 latency, and absorbs traffic spikes without
+scaling infrastructure. Four distinct cache layers exist, each targeting a
+different bottleneck — deploying them in combination yields compounding returns.
+
+**Cache Layers:**
+
+- **Exact-match** — key-value lookup on the full prompt string; instant but only
+  hits on byte-identical queries
+- **Semantic** — vector similarity search over recent queries; higher hit-rate
+  at the cost of a tuned similarity threshold to control false positives
+- **Prompt-prefix / Provider-side** — automatic caching of shared context
+  prefixes at the LLM provider level (Anthropic, OpenAI); no code changes, up to
+  90% token cost reduction on long shared prefixes
+- **KV-cache / Prefix caching** — inference-engine-level attention state reuse
+  (vLLM, SGLang) for self-hosted models with repeated system prompts
+
+| Tool | Cache Type | Layer | Backend | Best For |
+| :--- | :--- | :--- | :--- | :--- |
+| [Anthropic Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) | Prompt prefix | Provider | Anthropic infra | Long system prompts, large contexts |
+| [GPTCache](https://github.com/zilliztech/GPTCache) | Exact + Semantic | Application | Redis / Milvus / SQLite | Reducing duplicate LLM calls |
+| [LangChain Cache](https://python.langchain.com/docs/integrations/llm_caching/) | Exact + Semantic | Application | In-memory / Redis / SQLite | LangChain-native pipelines |
+| [LiteLLM Cache](https://docs.litellm.ai/docs/proxy/caching) | Exact + Semantic | Gateway | Redis / S3 / Disk | Multi-provider routing with cache |
+| [OpenAI Prompt Caching](https://platform.openai.com/docs/guides/prompt-caching) | Prompt prefix | Provider | OpenAI infra | GPT-4o / o-series, shared prefixes |
+| [RedisVL Semantic Cache](https://github.com/redis/redis-vl-python) | Semantic | Application | Redis Stack | Existing Redis infra, sub-ms lookup |
+| [vLLM Automatic Prefix Caching](https://docs.vllm.ai/en/latest/features/automatic_prefix_caching.html) | KV-cache | Inference engine | GPU memory | Self-hosted RAG, shared system prompts |
+
+### Tools
+
+- [Anthropic Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
+  - Provider-side prefix cache for Claude models that delivers up to 90% cost
+    reduction and 85% latency reduction on cached context. Add a `cache_control`
+    breakpoint in the API request — no infrastructure changes required.
+- [GPTCache](https://github.com/zilliztech/GPTCache)
+  - The canonical open-source semantic cache for LLM applications. It intercepts
+    LLM calls, runs similarity search over a cache store, and returns hits without
+    calling the model — with pluggable similarity functions, eviction policies,
+    and storage backends (Redis, Milvus, SQLite).
+- [LangChain Cache](https://python.langchain.com/docs/integrations/llm_caching/)
+  - Built-in exact-match and semantic LLM caching across a broad backend matrix
+    (in-memory, Redis, SQLite, MongoDB, Cassandra, GPTCache). One-line setup for
+    LangChain-native pipelines with no architecture changes.
+- [LiteLLM Cache](https://docs.litellm.ai/docs/proxy/caching)
+  - Gateway-level caching across 100+ LLM providers with per-route TTL control,
+    Redis/S3/Disk backends, and cache-control headers. Pairs with the LiteLLM
+    proxy for a unified cost-management and caching layer.
+- [OpenAI Prompt Caching](https://platform.openai.com/docs/guides/prompt-caching)
+  - Automatic prefix caching for GPT-4o and o-series models; requires zero code
+    changes and delivers a 50% input-token discount on cache hits. Effective when
+    system prompts or retrieved context blocks exceed 1 024 tokens.
+- [RedisVL Semantic Cache](https://github.com/redis/redis-vl-python)
+  - A Redis Stack–backed semantic cache library with sub-millisecond lookup
+    latency. Leverages Redis Vector Sets for similarity search and supports
+    configurable thresholds, TTL, and integration with existing Redis
+    infrastructure.
+- [vLLM Automatic Prefix Caching](https://docs.vllm.ai/en/latest/features/automatic_prefix_caching.html)
+  - Server-side KV-cache reuse that detects shared prompt prefixes across requests
+    and reuses their computed attention states. Significant throughput and latency
+    gains for self-hosted RAG deployments where a long system prompt is repeated
+    across all queries.
+
+**When to Cache What:**
+
+- ✅ **Exact-match** for FAQ bots and narrow-domain assistants with high query
+  repetition (support portals, internal knowledge bases)
+- ✅ **Semantic** for general Q&A where phrasing varies but intent repeats (e.g.,
+  "What is the refund policy?" ≈ "How do I get a refund?")
+- ✅ **Prompt-prefix** whenever system prompts or retrieved contexts exceed 1 024
+  tokens — activate Anthropic or OpenAI prompt caching for instant cost savings
+- ✅ **KV-cache** for self-hosted inference where the same system prompt is
+  prepended to every request; configure vLLM's APC for immediate throughput gains
+
+**Trade-offs:**
+
+- ❌ **Staleness**: Cached responses become outdated when the underlying knowledge
+  base changes; design TTL and invalidation strategies alongside cache deployment
+- ❌ **Semantic false positives**: Similarity-based hits may return answers to
+  slightly different questions; tune thresholds per domain and monitor hit quality
+- ❌ **Observability complexity**: Multi-layer caching obscures which layer served
+  a response; instrument cache hit/miss metrics per layer for meaningful cost and
+  latency attribution
 
 ## Security & Compliance
 
