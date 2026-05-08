@@ -50,7 +50,7 @@ A curated collection of high-quality blogs and resources for staying up-to-date 
   - Thoughts on building searching, recommendation, and machine learning systems
     in production. _(Focus: RecSys, Applied ML)_
 - [Lil'Log](https://lilianweng.github.io/) - Lilian Weng (OpenAI).
-  - In-depth technical blog posts on agents, medical AI, and transformer
+  - In-depth technical blog posts on agents, multi-modal AI, and transformer
     architectures. _(Focus: AI Engineering, Agents)_
 - [Sebastian Raschka's Blog](https://sebastianraschka.com/blog/) - Sebastian Raschka.
   - Tutorials and articles on deep learning, PyTorch, and LLMs with a focus on
