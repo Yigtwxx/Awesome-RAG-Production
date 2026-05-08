@@ -2,6 +2,9 @@
 awesome-*/
 Awesome-*/
 
+# Auto-generated discovery output (posted as issue comment by discovery.yml)
+.github/PROPOSED_UPDATES.md
+
 # Python bytecode (scripts/discovery_engine.py)
 __pycache__/
 *.pyc
