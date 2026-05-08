@@ -3,17 +3,8 @@
 > A curated collection of battle-tested tools, frameworks, and best practices for building, scaling, and monitoring production-grade Retrieval-Augmented Generation (RAG) systems.
 
 [![Awesome](https://awesome.re/badge.svg)](https://github.com/sindresorhus/awesome)
-
-<!-- markdownlint-disable MD033 -->
-<div align="center">
-
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Yigtwxx/Awesome-RAG-Production/graphs/commit-activity)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
-[![GitHub stars](https://img.shields.io/github/stars/Yigtwxx/Awesome-RAG-Production?style=social)](https://github.com/Yigtwxx/Awesome-RAG-Production/stargazers)
-
-</div>
-<!-- markdownlint-enable MD033 -->
 
 **Retrieval-Augmented Generation (RAG)** is revolutionizing how LLMs access and utilize external knowledge. This repository bridges the gap between prototype RAG tutorials and **production-grade systems** at scale. Whether you're building semantic search, question-answering systems, or AI-powered assistants, you'll find battle-tested frameworks, vector databases, evaluation tools, and observability solutions for **production RAG deployments**. Focus on the **Engineering** side of AI—from data ingestion and retrieval optimization to monitoring, security, and deployment strategies for real-world LLM applications.
 
@@ -23,18 +14,27 @@
 
 ## Contents
 
+- [Decision Guide](#decision-guide-how-to-choose)
+- [Reference Architectures](#reference-architectures)
+- [Real-World Case Studies](#real-world-case-studies)
 - [Frameworks & Orchestration](#frameworks--orchestration)
 - [Data Ingestion & Parsing](#data-ingestion--parsing)
+- [Embedding Models](#embedding-models)
 - [Vector Databases](#vector-databases)
+- [Chunking & Document Processing](#chunking--document-processing)
 - [Retrieval & Reranking](#retrieval--reranking)
+- [Query Transformation & Routing](#query-transformation--routing)
 - [Agentic RAG](#agentic-rag)
 - [Multimodal RAG](#multimodal-rag)
 - [Evaluation & Benchmarking](#evaluation--benchmarking)
 - [Observability & Tracing](#observability--tracing)
 - [Deployment & Serving](#deployment--serving)
 - [Caching & Performance](#caching--performance)
+- [LLM Gateways & Routing](#llm-gateways--routing)
 - [Security & Compliance](#security--compliance)
+- [Selection Criteria](#selection-criteria)
 - [Case Studies & Production Talks](showcase.md)
+- [Benchmarks & Evidence](benchmarks.md)
 - [Datasets](datasets.md)
 - [RAG Pitfalls & Anti-patterns](rag-pitfalls.md)
 - [Recommended Resources (Books & Blogs)](#recommended-resources)
@@ -100,6 +100,11 @@ scaling.
 
 **Observability Checklist:** `print()` statements and basic logging.
 
+*Public latency / cost envelope: No public end-to-end benchmark for this stack
+combination — performance is entirely hardware-dependent. Component-level
+data: see [benchmarks.md](benchmarks.md#1-vector-databases) (Chroma) and
+[benchmarks.md](benchmarks.md#9-gaps--not-publicly-measured).*
+
 ### 2. The Mid-Scale / Production Stack (Speed to Market)
 
 **Goal:** High precision, developer velocity, minimal infra management.
@@ -118,6 +123,12 @@ lock-in).
 **Observability Checklist:** Latency tracking, Token usage costs, Trace
 visualization.
 
+*Public latency / cost envelope: No public end-to-end benchmark for this exact
+stack combination. Component-level data available: Qdrant self-published
+benchmarks [\[V\]](benchmarks.md#1-vector-databases), Anthropic / OpenAI caching
+figures [\[V\]](benchmarks.md#4-caching-prompt--semantic). For reranking latency,
+see [benchmarks.md § Gaps](benchmarks.md#9-gaps--not-publicly-measured).*
+
 ### 3. The Enterprise / High-Scale Stack (The 1%)
 
 **Goal:** Throughput maximization, data sovereignty, full control.
@@ -135,6 +146,13 @@ visualization.
 
 **Observability Checklist:** Distributed tracing, Embedding drift detection, Custom SLA alerts, GPU utilization metrics.
 
+*Public latency / cost envelope: No public end-to-end benchmark for this exact
+stack. Component-level data: Milvus benchmarks [\[V\]](benchmarks.md#1-vector-databases),
+vLLM 2–4× throughput vs FasterTransformer [\[3P\]](benchmarks.md#5-llm-serving),
+ANN-Benchmarks [\[3P\]](benchmarks.md#1-vector-databases). Enterprise stack
+cost depends entirely on cluster sizing — no public reference architecture
+pricing exists.*
+
 ---
 
 ## Real-World Case Studies
@@ -143,27 +161,21 @@ Learn from production RAG implementations at scale. These companies have battle-
 
 ### Success Stories
 
-- [LinkedIn Engineering](https://engineering.linkedin.com/blog)
-  - **Use Case**: Conversational job search and professional recommendations
-  - **Tech Stack**: In-house vector DB + BERT embeddings + LLM fine-tuning
-  - **Key Insight**: Member-specific personalization through context injection
+- [LinkedIn Engineering — Conversational Job Search](https://engineering.linkedin.com/blog)
+  - In-house vector DB + BERT embeddings + LLM fine-tuning for professional recommendations. Key insight: member-specific personalization at scale through context injection.
 
-- [Shopify Engineering](https://shopify.engineering/)
-  - **Use Case**: E-commerce chatbot for merchant support
-  - **Tech Stack**: LangChain + Chroma + GPT-3.5-Turbo
-  - **Key Insight**: Domain-specific fine-tuning reduced hallucination rate from 18% to 4%
+- [Shopify Engineering — E-commerce Merchant Support](https://shopify.engineering/)
+  - LangChain + Chroma + GPT-3.5-Turbo chatbot for merchant support. Domain-specific fine-tuning significantly reduced hallucination rate (specific figures unverified — see [benchmarks.md](benchmarks.md#9-gaps--not-publicly-measured)).
 
-- [Discord](https://discord.com/blog/how-discord-stores-trillions-of-messages)
-  - **Use Case**: Message search across trillions of messages
-  - **Tech Stack**: ScaNN (Google) + Custom Rust infrastructure + ScyllaDB
-  - **Key Insight**: Rust-based microservices with approximate nearest neighbor search at scale
+- [Discord — Message Search at Trillion Scale](https://discord.com/blog/how-discord-stores-trillions-of-messages)
+  - Custom ANN search + Rust microservices + ScyllaDB for indexing and retrieving trillions of messages. Key insight: Rust-based infrastructure enables ANN search at this scale.
 
 **Common Patterns:**
 
-- ✅ Hybrid search (dense + sparse) is standard at scale
-- ✅ Custom embedding models outperform off-the-shelf for domain-specific tasks
-- ✅ Reranking is critical for precision (top-100 → top-5)
-- ✅ Extensive A/B testing on retrieval quality before LLM integration
+- Hybrid search (dense + sparse) is standard at scale.
+- Custom embedding models outperform off-the-shelf for domain-specific tasks.
+- Reranking is critical for precision (top-100 → top-5).
+- Extensive A/B testing on retrieval quality before LLM integration.
 
 ---
 
@@ -173,12 +185,12 @@ Learn from production RAG implementations at scale. These companies have battle-
 
 Choose the right framework for your use case with this production-focused comparison:
 
-| Framework | Best For | Async Support | Production Readiness | Community Support | Orchestration Style | Observability | Learning Curve | Deployment Complexity |
+| Framework | Best For | Async Support | Production Readiness | Orchestration Style | Observability | Learning Curve | Deployment Complexity | Evidence |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| [LlamaIndex](https://github.com/run-llama/llama_index) | Data Processing & Indexing | ✅ Full | ⭐⭐⭐⭐ | 39k+ ⭐ | Data-Flow Pipelines | Built-in + 3rd Party | Low-Medium | Low |
-| [LangChain](https://github.com/langchain-ai/langchain) | Rapid Prototyping | ✅ Full | ⭐⭐⭐ | 100k+ ⭐ | Sequential Chains | Excellent (LangSmith) | Medium | Medium |
-| [LangGraph](https://github.com/langchain-ai/langgraph) | Complex Agents & Control | ✅ Full | ⭐⭐⭐⭐ | 7k+ ⭐ | Cyclic Graphs | Excellent (LangSmith) | High | Medium-High |
-| [Haystack](https://github.com/deepset-ai/haystack) | Enterprise Pipelines | ✅ Full | ⭐⭐⭐⭐⭐ | 18k+ ⭐ | DAG-based Pipelines | Built-in Tracing | Medium-High | Low-Medium |
+| [LlamaIndex](https://github.com/run-llama/llama_index) | Data Processing & Indexing | Full | High | Data-Flow Pipelines | Built-in + 3rd Party | Low–Medium | Low | — |
+| [LangChain](https://github.com/langchain-ai/langchain) | Rapid Prototyping | Full | Medium–High | Sequential Chains | Excellent (LangSmith) | Medium | Medium | — |
+| [LangGraph](https://github.com/langchain-ai/langgraph) | Complex Agents & Control | Full | High | Cyclic Graphs | Excellent (LangSmith) | High | Medium–High | — |
+| [Haystack](https://github.com/deepset-ai/haystack) | Enterprise Pipelines | Full | Very High | DAG-based Pipelines | Built-in Tracing | Medium–High | Low–Medium | — |
 
 **Key Considerations:**
 
@@ -238,16 +250,88 @@ Choose the right framework for your use case with this production-focused compar
 - [Unstructured](https://github.com/Unstructured-IO/unstructured)
   - Open-source pipelines for preprocessing complex, unstructured data.
 
+## Embedding Models
+
+Choosing the right embedding model is one of the highest-leverage decisions in a RAG pipeline — the wrong choice silently degrades retrieval before the LLM ever sees the context. The [MTEB Leaderboard](https://huggingface.co/spaces/mteb/leaderboard) \[3P\] is the canonical benchmark for retrieval quality (nDCG@10 on BEIR datasets); see [benchmarks.md §2](benchmarks.md#2-embeddings--retrieval) for a snapshot with source citations.
+
+| Model | Strengths | Context Window | Hosting | Best For | Evidence |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| [OpenAI text-embedding-3-large](https://platform.openai.com/docs/guides/embeddings) | High retrieval nDCG@10 | 8,191 tokens | API | General English retrieval | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
+| [Cohere embed-v4](https://docs.cohere.com/docs/embed-2) | Multilingual, int8 support | 512 tokens | API + self-host | Multilingual + cost-efficient | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
+| [Voyage voyage-3](https://docs.voyageai.com/docs/embeddings) | Top MTEB retrieval scores | 32,000 tokens | API | Long-context retrieval | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
+| [BAAI BGE-M3](https://huggingface.co/BAAI/bge-m3) | Multi-lingual, multi-granularity | 8,192 tokens | Self-host | Open-weight multilingual | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
+| [Nomic nomic-embed-text-v1.5](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5) | Long context, Apache 2.0 license | 8,192 tokens | Self-host / API | Open, long-context | — |
+| [Alibaba gte-multilingual-base](https://huggingface.co/Alibaba-NLP/gte-multilingual-base) | 70+ languages, compact | 8,192 tokens | Self-host | Multilingual, cost-sensitive | — |
+| [Jina jina-embeddings-v3](https://huggingface.co/jinaai/jina-embeddings-v3) | Task-adaptive LoRA adapters | 8,192 tokens | Self-host / API | Task-specific fine-tuning | — |
+
+**Selection guide:**
+
+- Use **MTEB Retrieval** scores (nDCG@10 on BEIR) as the primary benchmark — not overall MTEB average, which includes tasks irrelevant to RAG.
+- For **domain-specific corpora** (legal, medical, code), fine-tune a base model with `sentence-transformers` on your own labeled pairs; generic MTEB rankings will not predict your performance.
+- **Always use the same model** for indexing and querying — mismatched models are a silent recall killer (see [rag-pitfalls.md](rag-pitfalls.md#embedding-model-selection)).
+- For **multilingual** pipelines: BGE-M3, Cohere embed-v4, or jina-embeddings-v3 with task adapters.
+
+**Trade-offs:**
+
+- API-hosted models (OpenAI, Cohere, Voyage) eliminate GPU ops overhead but create vendor dependency and add per-token costs at scale.
+- Self-hosted open models (BGE-M3, nomic-embed) require GPU at production throughput but unlock full data sovereignty.
+- Larger context windows (nomic-embed 8k, voyage-3 32k) are critical for long-document retrieval but increase embedding latency and cost per document.
+
+---
+
 ## Vector Databases
 
-| Tool | Best For | Key Strength |
+| Tool | Best For | Key Strength | Evidence |
+| :--- | :--- | :--- | :--- |
+| [Chroma](https://github.com/chroma-core/chroma) | Local/Dev & Mid-scale | Developer-friendly, open-source embedding database. | — |
+| [Milvus](https://github.com/milvus-io/milvus) | Billions of vectors | Most popular OSS for massive scale. | [\[V\]](benchmarks.md#1-vector-databases) |
+| [pgvector](https://github.com/pgvector/pgvector) | PostgreSQL Ecosystem | Vector search capability directly within PostgreSQL. | — |
+| [Pinecone](https://www.pinecone.io/) | 10M-100M+ vectors | Zero-ops, serverless architecture. | — |
+| [Qdrant](https://github.com/qdrant/qdrant) | <50M vectors | Best filtering support and free tier. | [\[V\]](benchmarks.md#1-vector-databases) [\[3P\]](benchmarks.md#1-vector-databases) |
+| [Weaviate](https://github.com/weaviate/weaviate) | Hybrid Search | Native integration of vector and keyword search. | — |
+
+## Chunking & Document Processing
+
+How you split documents into chunks is one of the most underrated decisions in a RAG pipeline. The wrong chunking strategy silently degrades retrieval quality regardless of how good your embedding model is. See [rag-pitfalls.md — Fixed Chunk Size Everywhere](rag-pitfalls.md#data-ingestion--chunking) for the failure modes.
+
+**Chunking strategies at a glance:**
+
+| Strategy | When to Use | Trade-off |
 | :--- | :--- | :--- |
-| [Chroma](https://github.com/chroma-core/chroma) | Local/Dev & Mid-scale | Developer-friendly, open-source embedding database. |
-| [Milvus](https://github.com/milvus-io/milvus) | Billions of vectors | Most popular OSS for massive scale. |
-| [pgvector](https://github.com/pgvector/pgvector) | PostgreSQL Ecosystem | Vector search capability directly within PostgreSQL. |
-| [Pinecone](https://www.pinecone.io/) | 10M-100M+ vectors | Zero-ops, serverless architecture. |
-| [Qdrant](https://github.com/qdrant/qdrant) | <50M vectors | Best filtering support and free tier. |
-| [Weaviate](https://github.com/weaviate/weaviate) | Hybrid Search | Native integration of vector and keyword search. |
+| Fixed-size (token count) | Baseline; simple corpora | Splits mid-sentence/table; safe starting point |
+| Recursive character split | General text, mixed formats | Respects paragraph → sentence → word boundaries |
+| Semantic chunking | Heterogeneous corpora, varying density | Higher quality; requires an embedding model at index time |
+| Document-type aware | PDFs, code, tables, HTML | Best recall; requires per-type parsers |
+| Hierarchical / small-to-big | Multi-hop retrieval | Retrieves small chunks, returns parent context to LLM |
+
+- [chonkie](https://github.com/chonkie-ai/chonkie)
+  - A fast, lightweight chunking library purpose-built for RAG. Supports token,
+    sentence, semantic, recursive, and late-chunking strategies in a single API
+    with minimal dependencies. Optimized for throughput — suitable for batch
+    indexing pipelines.
+- [LlamaIndex SemanticSplitterNodeParser](https://docs.llamaindex.ai/en/stable/module_guides/loading/node_parsers/modules/)
+  - Splits documents at semantically meaningful boundaries by embedding adjacent
+    sentences and measuring cosine distance. Produces more coherent chunks than
+    fixed-size splitting for narrative and technical content.
+- [LangChain RecursiveCharacterTextSplitter](https://python.langchain.com/docs/how_to/recursive_text_splitter/)
+  - The de facto default for general-purpose chunking. Recursively tries separators
+    (`\n\n`, `\n`, ` `) to split at natural boundaries within a target token
+    window — robust, fast, no extra dependencies.
+- [semchunk](https://github.com/umarbutler/semchunk)
+  - A pure-Python semantic chunking library that requires no embedding model at
+    chunk time; it uses statistical sentence boundaries for fast, low-cost semantic
+    splitting suitable for large-scale batch indexing.
+- [Unstructured](https://github.com/Unstructured-IO/unstructured) — see [Data Ingestion & Parsing](#data-ingestion--parsing) for the full entry.
+  - Provides document-type aware parsing (PDF, DOCX, HTML, images) as the upstream
+    step before chunking. Pair it with any splitter above for a robust ingestion pipeline.
+
+**Trade-offs:**
+
+- Fixed-size chunking is fast and dependency-free but degrades retrieval on tables, code, and structured content.
+- Semantic chunking improves recall on heterogeneous corpora but adds embedding cost at index time and is slower.
+- Chunk size affects both retrieval recall (too large = coarse matching) and LLM context quality (too small = missing context); 256–512 tokens is a common starting point — tune on your own corpus with Ragas or DeepEval.
+
+---
 
 ## Retrieval & Reranking
 
@@ -263,8 +347,10 @@ zero-shot retrieval performance.
     commercial-grade performance for self-hosted pipelines.
 - [Cohere Rerank](https://cohere.com/rerank)
   - A powerful API-based reranking model. By re-scoring the initial top-K
-    documents from a cheaper/faster retriever, it drastically improves precision
-    (often boosting MRR by 10-20%) with minimal code changes.
+    documents from a cheaper/faster retriever, it substantially improves retrieval
+    precision with minimal code changes. Independent benchmarks show cross-encoder
+    rerankers outperform bi-encoders by 4+ nDCG@10 points on BEIR
+    (\[3P\] [benchmarks.md](benchmarks.md#3-reranking)).
 - [FlashRank](https://github.com/PrithivirajDamodaran/FlashRank)
   - A lightweight, serverless-friendly reranking library. It runs quantized
     cross-encoder models directly on the CPU (no Torch/GPU required), making it
@@ -276,9 +362,73 @@ zero-shot retrieval performance.
     retrieval.
 
 **GraphRAG:**
+
 An advanced retrieval method that constructs a knowledge graph from documents. It
 traverses relationships between entities to answer "global" queries (e.g., "What
 are the main themes?") that standard vector search struggles to address.
+
+- [Microsoft GraphRAG](https://github.com/microsoft/graphrag)
+  - Microsoft Research's production-grade graph-based RAG framework. Builds a
+    community-aware knowledge graph from documents, enabling both local
+    (entity-centric) and global (theme-level) queries with LLM-generated summaries.
+- [nano-graphrag](https://github.com/gusye1234/nano-graphrag)
+  - A lightweight, hackable implementation of the GraphRAG pipeline (~1k lines).
+    Ideal for understanding the algorithm or embedding it into custom systems
+    without the full Microsoft GraphRAG dependency footprint.
+- [LlamaIndex KnowledgeGraphIndex](https://docs.llamaindex.ai/en/stable/module_guides/indexing/kg_index/)
+  - First-class knowledge graph indexing within the LlamaIndex ecosystem.
+    Extracts entity-relationship triples from documents and stores them in graph
+    backends (Nebula, Neo4j, TigerGraph) for traversal-based retrieval.
+- [Neo4j LLM Knowledge Graph Builder](https://github.com/neo4j-labs/llm-graph-builder)
+  - An end-to-end application that extracts knowledge graphs from unstructured
+    documents into Neo4j using LLMs. Provides a UI for exploring the resulting
+    graph and integrates with LangChain's Neo4j vector + graph retrieval.
+
+## Query Transformation & Routing
+
+Raw user queries are rarely optimal for retrieval — they may be ambiguous, contain typos, be too vague, or require multi-hop reasoning. Query transformation is the pre-retrieval step that rewrites or expands the query to maximize recall. Query routing dispatches queries to different retrievers or indexes based on intent classification. See [rag-pitfalls.md — No Query Transformation](rag-pitfalls.md#retrieval-strategy) for the failure mode.
+
+**Core transformation techniques:**
+
+| Technique | What it does | Best For |
+| :--- | :--- | :--- |
+| HyDE (Hypothetical Document Embeddings) | Generate a hypothetical answer, embed it instead of the query | Technical / domain-specific corpora |
+| Multi-Query | Generate N paraphrases of the query, retrieve for each, merge results | Broad coverage, handling ambiguity |
+| Step-Back Prompting | Ask a more abstract version of the query first, then retrieve | Multi-hop reasoning, "why/how" questions |
+| Query Decomposition | Break a complex query into sub-queries, retrieve independently | Comparative and multi-document tasks |
+| Query Routing | Classify query intent and dispatch to the appropriate retriever | Multi-index or multi-domain deployments |
+
+- [LlamaIndex Query Transformations](https://docs.llamaindex.ai/en/stable/module_guides/querying/query_engine/)
+  - First-class support for HyDE, multi-query, step-back, and sub-question
+    decomposition within the LlamaIndex query engine. Each transformation is a
+    composable module that slots into existing pipelines without restructuring.
+- [LangChain Multi-Query Retriever](https://python.langchain.com/docs/how_to/MultiQueryRetriever/)
+  - Generates multiple rephrasings of the input query using an LLM, runs each
+    against the vector store, and deduplicates results — improving recall for
+    ambiguous or under-specified user queries with minimal code.
+- [semantic-router](https://github.com/aurelio-labs/semantic-router)
+  - A high-speed semantic decision layer for routing queries to the appropriate
+    retriever, index, or tool. Classifies incoming queries by semantic similarity
+    to predefined route examples (no LLM inference required for routing itself).
+- [LlamaIndex RouterQueryEngine](https://docs.llamaindex.ai/en/stable/module_guides/querying/router/)
+  - LLM-powered query router that selects the best retriever or tool from a
+    defined set based on query content — suitable for multi-index RAG deployments
+    where different document types live in separate stores.
+
+**When to Transform Queries:**
+
+- HyDE: when your corpus is highly technical and query/document vocabulary mismatch degrades recall.
+- Multi-Query: when user queries are short or ambiguous and you have headroom for 2–3× retrieval calls.
+- Decomposition: when queries require comparing or aggregating information from multiple documents.
+- Routing: when you have multiple indexes (e.g., SQL + vector + web search) and want deterministic dispatch.
+
+**Trade-offs:**
+
+- Each transformation adds at least one extra LLM call — latency and cost scale with the number of sub-queries.
+- Multi-query and decomposition increase the number of retrieved chunks fed to the reranker; budget for reranker latency accordingly.
+- HyDE can introduce hallucinations in the hypothetical document if the generating model is weak; validate recall improvement on your own eval set before committing.
+
+---
 
 ## Agentic RAG
 
@@ -304,30 +454,26 @@ their retrieval strategy based on intermediate results.
   - A lightweight framework for orchestrating role-playing autonomous AI agents.
     Define specialized "crew members" (Researcher, Writer, Critic) that work
     together on complex RAG tasks.
-- [LangGraph](https://github.com/langchain-ai/langgraph)
-  - Build stateful, multi-actor applications with cyclic graphs. Enables
-    human-in-the-loop approval, memory persistence across conversations, and
-    complex agentic workflows beyond linear chains.
+- [LangGraph](https://github.com/langchain-ai/langgraph) — see [Frameworks & Orchestration](#frameworks--orchestration) for the full entry.
+  - The canonical choice for cyclic, stateful agentic workflows with human-in-the-loop control and memory persistence.
 - [OpenAI Assistants API](https://platform.openai.com/docs/assistants/overview)
   - A managed service for building agent-like experiences. It provides built-in
     retrieval capabilities, code interpreter, and function calling with minimal
     infrastructure overhead.
-- [RAGFlow Agentic Mode](https://github.com/infiniflow/ragflow)
-  - Extends RAGFlow with agentic capabilities, allowing dynamic document
-    re-ranking, query decomposition, and adaptive retrieval strategies based on
-    query complexity.
+- [RAGFlow](https://github.com/infiniflow/ragflow) — see [Frameworks & Orchestration](#frameworks--orchestration) for the full entry.
+  - Extends the core RAGFlow engine with agentic capabilities: dynamic document re-ranking, query decomposition, and adaptive retrieval strategies based on query complexity.
 
 **When to Use Agentic RAG:**
 
-- ✅ Complex, multi-hop questions requiring planning ("Compare X and Y across these 5 documents")
-- ✅ Integration with external tools (SQL databases, APIs, calculators)
-- ✅ Tasks requiring validation (fact-checking, citation verification)
+- Complex, multi-hop questions requiring planning ("Compare X and Y across these 5 documents").
+- Integration with external tools (SQL databases, APIs, calculators).
+- Tasks requiring validation (fact-checking, citation verification).
 
 **Trade-offs:**
 
-- ❌ Higher latency (multiple LLM calls)
-- ❌ Increased cost (agent reasoning + retrieval)
-- ❌ Debugging complexity (non-deterministic behavior)
+- Higher latency (multiple LLM calls).
+- Increased cost (agent reasoning + retrieval).
+- Debugging complexity (non-deterministic behavior).
 
 ## Multimodal RAG
 
@@ -348,15 +494,15 @@ pipeline and preserving layout information that text extraction destroys.
 - **Layout-aware understanding**: Figures, schematics, and tables are searchable
   by their visual content, not just surrounding text
 
-| Tool | Best For | Modalities | Retrieval Style | Production Maturity |
-| :--- | :--- | :--- | :--- | :--- |
-| [Byaldi](https://github.com/AnswerDotAI/byaldi) | Quick ColPali deployment | Document pages (image) | Late interaction | Early Production |
-| [ColPali](https://github.com/illuin-tech/colpali) | Layout-rich PDF retrieval | Document pages (image) | Late interaction | Research → Production |
-| [Jina CLIP v2](https://huggingface.co/jinaai/jina-clip-v2) | Multilingual vision search | Text + Image | Bi-encoder | Production |
-| [LlamaIndex Multi-Modal](https://docs.llamaindex.ai/en/stable/module_guides/models/multi_modal/) | End-to-end multimodal RAG | Text + Image | Framework module | Production |
-| [Marqo](https://github.com/marqo-ai/marqo) | Hybrid multimodal search | Text + Image | CLIP-based | Production |
-| [Nomic Embed Vision](https://huggingface.co/nomic-ai/nomic-embed-vision-v1.5) | Drop-in cross-modal search | Text + Image | Bi-encoder | Production |
-| [Voyage Multimodal-3](https://docs.voyageai.com/docs/multimodal-embeddings) | Mixed text-image documents | Text + Image | Managed API | Production |
+| Tool | Best For | Modalities | Retrieval Style | Production Maturity | Evidence |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| [Byaldi](https://github.com/AnswerDotAI/byaldi) | Quick ColPali deployment | Document pages (image) | Late interaction | Early Production | — |
+| [ColPali](https://github.com/illuin-tech/colpali) | Layout-rich PDF retrieval | Document pages (image) | Late interaction | Research → Production | [\[3P\]](benchmarks.md#9-gaps--not-publicly-measured) |
+| [Jina CLIP v2](https://huggingface.co/jinaai/jina-clip-v2) | Multilingual vision search | Text + Image | Bi-encoder | Production | — |
+| [LlamaIndex Multi-Modal](https://docs.llamaindex.ai/en/stable/module_guides/models/multi_modal/) | End-to-end multimodal RAG | Text + Image | Framework module | Production | — |
+| [Marqo](https://github.com/marqo-ai/marqo) | Hybrid multimodal search | Text + Image | CLIP-based | Production | — |
+| [Nomic Embed Vision](https://huggingface.co/nomic-ai/nomic-embed-vision-v1.5) | Drop-in cross-modal search | Text + Image | Bi-encoder | Production | — |
+| [Voyage Multimodal-3](https://docs.voyageai.com/docs/multimodal-embeddings) | Mixed text-image documents | Text + Image | Managed API | Production | — |
 
 ### Frameworks & Tools
 
@@ -392,20 +538,22 @@ pipeline and preserving layout information that text extraction destroys.
 
 **When to Use Multimodal RAG:**
 
-- ✅ Documents with complex layouts: financial reports, scientific papers, or
-  technical schematics where tables and charts carry critical information
-- ✅ Product catalogs and e-commerce: image-to-image or text-to-image queries
-- ✅ Screenshot or UI documentation retrieval where text extraction is noisy
-- ✅ Medical imaging paired with reports — query by image or clinical description
+- Documents with complex layouts: financial reports, scientific papers, or
+  technical schematics where tables and charts carry critical information.
+- Product catalogs and e-commerce: image-to-image or text-to-image queries.
+- Screenshot or UI documentation retrieval where text extraction is noisy.
+- Medical imaging paired with reports — query by image or clinical description.
 
 **Trade-offs:**
 
-- ❌ Storage overhead: page-image indexes are 10–50× larger than text-chunk
-  indexes; plan for object storage and increased embedding costs
-- ❌ GPU requirements: vision encoders and ColPali-style late interaction require
-  GPU for production throughput; CPU-only deployments face significant latency
-- ❌ Evaluation complexity: no universal benchmark for domain-specific multimodal
-  retrieval quality — custom human annotation sets are required
+- Storage overhead: multi-vector page-image indexes are substantially larger
+  than text-chunk indexes (ColPali: ~257.5 KB/page at D=128 vs. ~6 KB/vector for
+  standard text embeddings — \[3P\] [ColPali paper](https://arxiv.org/abs/2407.01449),
+  ICLR 2025); plan for object storage and increased embedding costs.
+- GPU requirements: vision encoders and ColPali-style late interaction require
+  GPU for production throughput; CPU-only deployments face significant latency.
+- Evaluation complexity: no universal benchmark for domain-specific multimodal
+  retrieval quality — custom human annotation sets are required.
 
 ## Evaluation & Benchmarking
 
@@ -420,7 +568,7 @@ Groundedness, and Answer Relevance.
   - The "Pytest for LLMs". It offers a unit-testing framework for RAG,
     integrating seamlessly into CI/CD pipelines to catch regressions in retrieval
     quality or hallucination rates before deployment.
-- [Ragas](https://github.com/vibrantlabsai/ragas)
+- [Ragas](https://github.com/explodinggradients/ragas)
   - A framework that uses an "LLM-as-a-Judge" to evaluate your pipeline. It
     calculates metrics like Faithfulness (did the answer come from the context?)
     and Answer Relevance without needing human-labeled ground truth.
@@ -461,12 +609,12 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
 
 **Best Practices:**
 
-- ✅ Use GPT-4 or Claude for critical evaluations (highest agreement with humans)
-- ✅ Fine-tune smaller models (Llama 3 8B) as judges for cost/latency optimization
-- ✅ Chain-of-Thought prompting improves judge consistency by 15-20%
-- ✅ Always validate judge performance against human labels on a sample (100-200 examples)
-- ⚠️ Be aware of position bias (LLMs favor earlier options in pairwise comparisons)
-- ⚠️ LLM judges can inherit biases from their training data
+- Use frontier models (GPT-4o, Claude Opus) for critical evaluations — highest agreement with humans.
+- Fine-tune smaller models (Llama 3 8B) as judges for cost/latency optimization.
+- Chain-of-Thought prompting improves judge consistency and human alignment (G-Eval, EACL 2024).
+- Always validate judge performance against human labels on a sample (100–200 examples).
+- Be aware of position bias — LLMs tend to favor earlier options in pairwise comparisons.
+- LLM judges can inherit biases from their training data; audit regularly.
 
 ## Observability & Tracing
 
@@ -506,6 +654,8 @@ Using one LLM to evaluate the outputs of another has become a standard practice 
   - A high-performance inference engine known for PagedAttention. It maximizes
     GPU memory utilization, allowing you to serve larger models or handle higher
     concurrency with lower latency than standard Hugging Face Transformers.
+    PagedAttention delivers 2–4× throughput improvement at the same latency SLO
+    (\[3P\] [Kwon et al., SOSP 2023](https://arxiv.org/abs/2309.06180)).
 
 ## Caching & Performance
 
@@ -521,27 +671,30 @@ different bottleneck — deploying them in combination yields compounding return
 - **Semantic** — vector similarity search over recent queries; higher hit-rate
   at the cost of a tuned similarity threshold to control false positives
 - **Prompt-prefix / Provider-side** — automatic caching of shared context
-  prefixes at the LLM provider level (Anthropic, OpenAI); no code changes, up to
-  90% token cost reduction on long shared prefixes
+  prefixes at the LLM provider level (Anthropic, OpenAI); no code changes,
+  up to 90% token cost reduction on long shared prefixes
+  (\[V\] [benchmarks.md](benchmarks.md#4-caching-prompt--semantic))
 - **KV-cache / Prefix caching** — inference-engine-level attention state reuse
   (vLLM, SGLang) for self-hosted models with repeated system prompts
 
-| Tool | Cache Type | Layer | Backend | Best For |
-| :--- | :--- | :--- | :--- | :--- |
-| [Anthropic Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) | Prompt prefix | Provider | Anthropic infra | Long system prompts, large contexts |
-| [GPTCache](https://github.com/zilliztech/GPTCache) | Exact + Semantic | Application | Redis / Milvus / SQLite | Reducing duplicate LLM calls |
-| [LangChain Cache](https://python.langchain.com/docs/integrations/llm_caching/) | Exact + Semantic | Application | In-memory / Redis / SQLite | LangChain-native pipelines |
-| [LiteLLM Cache](https://docs.litellm.ai/docs/proxy/caching) | Exact + Semantic | Gateway | Redis / S3 / Disk | Multi-provider routing with cache |
-| [OpenAI Prompt Caching](https://platform.openai.com/docs/guides/prompt-caching) | Prompt prefix | Provider | OpenAI infra | GPT-4o / o-series, shared prefixes |
-| [RedisVL Semantic Cache](https://github.com/redis/redis-vl-python) | Semantic | Application | Redis Stack | Existing Redis infra, sub-ms lookup |
-| [vLLM Automatic Prefix Caching](https://docs.vllm.ai/en/latest/features/automatic_prefix_caching.html) | KV-cache | Inference engine | GPU memory | Self-hosted RAG, shared system prompts |
+| Tool | Cache Type | Layer | Backend | Best For | Evidence |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| [Anthropic Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) | Prompt prefix | Provider | Anthropic infra | Long system prompts, large contexts | [\[V\]](benchmarks.md#4-caching-prompt--semantic) |
+| [GPTCache](https://github.com/zilliztech/GPTCache) | Exact + Semantic | Application | Redis / Milvus / SQLite | Reducing duplicate LLM calls | — |
+| [LangChain Cache](https://python.langchain.com/docs/integrations/llm_caching/) | Exact + Semantic | Application | In-memory / Redis / SQLite | LangChain-native pipelines | — |
+| [LiteLLM Cache](https://docs.litellm.ai/docs/proxy/caching) | Exact + Semantic | Gateway | Redis / S3 / Disk | Multi-provider routing with cache | — |
+| [OpenAI Prompt Caching](https://platform.openai.com/docs/guides/prompt-caching) | Prompt prefix | Provider | OpenAI infra | GPT-4o / o-series, shared prefixes | [\[V\]](benchmarks.md#4-caching-prompt--semantic) |
+| [RedisVL Semantic Cache](https://github.com/redis/redis-vl-python) | Semantic | Application | Redis Stack | Existing Redis infra, sub-ms lookup | — |
+| [vLLM Automatic Prefix Caching](https://docs.vllm.ai/en/latest/features/automatic_prefix_caching.html) | KV-cache | Inference engine | GPU memory | Self-hosted RAG, shared system prompts | [\[3P\]](benchmarks.md#5-llm-serving) |
 
 ### Tools
 
 - [Anthropic Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
   - Provider-side prefix cache for Claude models that delivers up to 90% cost
-    reduction and 85% latency reduction on cached context. Add a `cache_control`
-    breakpoint in the API request — no infrastructure changes required.
+    reduction and 85% latency reduction on cached context
+    (\[V\] [Anthropic docs](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) · 2024).
+    Add a `cache_control` breakpoint in the API request — no infrastructure
+    changes required.
 - [GPTCache](https://github.com/zilliztech/GPTCache)
   - The canonical open-source semantic cache for LLM applications. It intercepts
     LLM calls, runs similarity search over a cache store, and returns hits without
@@ -557,8 +710,9 @@ different bottleneck — deploying them in combination yields compounding return
     proxy for a unified cost-management and caching layer.
 - [OpenAI Prompt Caching](https://platform.openai.com/docs/guides/prompt-caching)
   - Automatic prefix caching for GPT-4o and o-series models; requires zero code
-    changes and delivers a 50% input-token discount on cache hits. Effective when
-    system prompts or retrieved context blocks exceed 1 024 tokens.
+    changes and delivers a 50% input-token discount on cache hits
+    (\[V\] [OpenAI announcement](https://openai.com/index/api-prompt-caching/) · 2024-10).
+    Effective when system prompts or retrieved context blocks exceed 1,024 tokens.
 - [RedisVL Semantic Cache](https://github.com/redis/redis-vl-python)
   - A Redis Stack–backed semantic cache library with sub-millisecond lookup
     latency. Leverages Redis Vector Sets for similarity search and supports
@@ -572,24 +726,16 @@ different bottleneck — deploying them in combination yields compounding return
 
 **When to Cache What:**
 
-- ✅ **Exact-match** for FAQ bots and narrow-domain assistants with high query
-  repetition (support portals, internal knowledge bases)
-- ✅ **Semantic** for general Q&A where phrasing varies but intent repeats (e.g.,
-  "What is the refund policy?" ≈ "How do I get a refund?")
-- ✅ **Prompt-prefix** whenever system prompts or retrieved contexts exceed 1 024
-  tokens — activate Anthropic or OpenAI prompt caching for instant cost savings
-- ✅ **KV-cache** for self-hosted inference where the same system prompt is
-  prepended to every request; configure vLLM's APC for immediate throughput gains
+- **Exact-match** — for FAQ bots and narrow-domain assistants with high query repetition (support portals, internal knowledge bases).
+- **Semantic** — for general Q&A where phrasing varies but intent repeats (e.g., "What is the refund policy?" ≈ "How do I get a refund?").
+- **Prompt-prefix** — whenever system prompts or retrieved contexts exceed 1,024 tokens; activate Anthropic or OpenAI prompt caching for instant cost savings (\[V\] [benchmarks.md](benchmarks.md#4-caching-prompt--semantic)).
+- **KV-cache** — for self-hosted inference where the same system prompt is prepended to every request; configure vLLM's APC for immediate throughput gains.
 
 **Trade-offs:**
 
-- ❌ **Staleness**: Cached responses become outdated when the underlying knowledge
-  base changes; design TTL and invalidation strategies alongside cache deployment
-- ❌ **Semantic false positives**: Similarity-based hits may return answers to
-  slightly different questions; tune thresholds per domain and monitor hit quality
-- ❌ **Observability complexity**: Multi-layer caching obscures which layer served
-  a response; instrument cache hit/miss metrics per layer for meaningful cost and
-  latency attribution
+- **Staleness**: Cached responses become outdated when the underlying knowledge base changes; design TTL and invalidation strategies alongside cache deployment.
+- **Semantic false positives**: Similarity-based hits may return answers to slightly different questions; tune thresholds per domain and monitor hit quality.
+- **Observability complexity**: Multi-layer caching obscures which layer served a response; instrument cache hit/miss metrics per layer for meaningful cost and latency attribution.
 
 ## Security & Compliance
 
@@ -601,7 +747,7 @@ different bottleneck — deploying them in combination yields compounding return
   - A comprehensive toolkit for sanitizing inputs and outputs. It detects
     invisible text, prompt injections, and anonymizes sensitive data, ensuring
     full compliance with data privacy standards.
-- [NeMo Guardrails](https://github.com/NVIDIA-NeMo/Guardrails)
+- [NeMo Guardrails](https://github.com/NVIDIA/NeMo-Guardrails)
   - The standard for adding programmable guardrails to LLM-based conversational
     systems. It prevents "Jailbreaking" and ensures models stay on topic,
     critical for enterprise chatbots.
@@ -613,6 +759,58 @@ different bottleneck — deploying them in combination yields compounding return
   - A production-ready project that allows you to run RAG pipelines completely
     offline. It ensures 100% data privacy by keeping all ingestion and inference
     local, perfect for highly regulated industries.
+
+## LLM Gateways & Routing
+
+An LLM gateway sits between your application and one or more LLM providers. It centralizes authentication, enforces rate limits, aggregates cost metrics, enables provider failover, and often layers caching on top — without requiring per-provider changes to application code.
+
+| Tool | Hosting | Provider Support | Caching | Cost Tracking | Best For |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| [LiteLLM](https://github.com/BerriAI/litellm) | Self-host / Cloud | 100+ providers | Redis / S3 / Disk | Built-in | Multi-provider routing, OpenAI-compatible proxy |
+| [Portkey](https://github.com/Portkey-AI/gateway) | Self-host / Cloud | 200+ providers | Built-in | Dashboard | Enterprise gateway with observability |
+| [Helicone](https://github.com/Helicone/helicone) | Self-host / Cloud | OpenAI + Anthropic | Built-in | Fine-grained token analytics | Cost optimization and prompt versioning |
+| [OpenRouter](https://openrouter.ai/) | Managed | 100+ models | — | Per-request | Unified model marketplace, no infra |
+| [Cloudflare AI Gateway](https://developers.cloudflare.com/ai-gateway/) | Managed (edge) | Major providers | Built-in | Real-time analytics | Edge-deployed, global routing |
+
+- [LiteLLM](https://github.com/BerriAI/litellm)
+  - An OpenAI-compatible proxy and SDK wrapper supporting 100+ LLM providers
+    (Anthropic, Bedrock, Azure, Gemini, local models via Ollama) with a single
+    API surface. Includes gateway-level caching, per-route rate limits, fallback
+    routing, and a cost dashboard. The most widely adopted open-source gateway.
+- [Portkey AI Gateway](https://github.com/Portkey-AI/gateway)
+  - A high-performance open-source gateway with provider failover, load balancing,
+    semantic caching, and virtual API keys. Supports OpenAI-compatible endpoints
+    for 200+ providers and integrates with LangChain, LlamaIndex, and raw SDKs.
+- [Helicone](https://github.com/Helicone/helicone)
+  - A developer-first observability and gateway platform. One-line integration
+    (change base URL) adds token-level cost tracking, latency dashboards, prompt
+    versioning, and caching — without any SDK changes. Particularly strong on cost
+    attribution per user, team, or feature.
+- [OpenRouter](https://openrouter.ai/)
+  - A managed model marketplace routing requests to 100+ open and proprietary
+    models. Provides unified billing, automatic fallback, and model comparison
+    without running any infrastructure — best for prototyping or multi-model
+    evaluation.
+- [Cloudflare AI Gateway](https://developers.cloudflare.com/ai-gateway/)
+  - An edge-deployed LLM gateway integrated into the Cloudflare network. Adds
+    caching, rate limiting, and real-time analytics with sub-millisecond routing
+    overhead; suitable for globally distributed applications where gateway latency
+    is a constraint.
+
+**When to Use an LLM Gateway:**
+
+- Multi-provider deployments requiring failover (primary → fallback on 5xx or rate-limit).
+- Centralized cost attribution across teams, features, or customers — critical for unit economics.
+- Enforcing per-user or per-route rate limits without embedding this logic in every microservice.
+- Caching at the gateway layer to complement application-level caches (see [Caching & Performance](#caching--performance)).
+
+**Trade-offs:**
+
+- Self-hosted gateways (LiteLLM, Portkey) add an extra network hop and a component to operate; invest in HA deployment if you route all traffic through them.
+- Managed gateways (OpenRouter, Cloudflare) simplify ops but add another vendor dependency and may introduce latency for non-edge traffic.
+- Gateway-level semantic caching has the same false-positive risk as application-level caching — tune thresholds carefully.
+
+---
 
 ## Recommended Resources
 
@@ -644,6 +842,12 @@ To keep this list high-quality, we only include resources that are:
 **2. Actively Maintained:** Regular updates within the last 3-6 months.
 
 **3. Documented:** Strong API references and clear use cases.
+
+**4. Evidence-backed (for numeric claims):** Any performance or quality claim
+(latency, recall, cost reduction, etc.) must carry a source URL, date, and
+evidence tag (`[3P]`, `[V]`, or `[A]`). Unsourced numbers belong in
+[benchmarks.md § Gaps](benchmarks.md#9-gaps--not-publicly-measured), not in
+the list itself.
 
 ---
 
