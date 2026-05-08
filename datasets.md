@@ -127,7 +127,7 @@ types — spanning bio-medical IR, fact-checking, argument retrieval, and more.
 Don't have a dataset? Generate one from your own internal documents.
 
 - [Ragas Synthetic Data Generator](https://docs.ragas.io/en/stable/)
-  - create "Golden Datasets" (Question-Answer-Context triples) automatically.
+  - Create "Golden Datasets" (Question-Answer-Context triples) automatically.
 - [LlamaIndex Data Generator](https://developers.llamaindex.ai/python/framework/)
   - Built-in utils to generate questions from your indexed nodes.
 
