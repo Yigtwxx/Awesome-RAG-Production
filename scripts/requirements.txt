@@ -1,2 +1,2 @@
 # HTTP requests for web scraping
-requests>=2.31.0
+requests>=2.33.1
