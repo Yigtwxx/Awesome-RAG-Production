@@ -4,18 +4,20 @@
         "MD004": false,
         "MD012": true,
         "MD013": {
-            "line_length": 999999,
-            "heading_line_length": 999999,
+            // 200 chars is a practical limit for docs with long URLs / evidence tables.
+            "line_length": 200,
+            "heading_line_length": 200,
             "code_block_line_length": 999999,
             "tables": false,
             "headings": false,
             "code_blocks": false
         },
-        "MD022": false,
+        "MD022": true,
         "MD024": false,
         "MD030": false,
-        "MD031": false,
-        "MD032": false,
+        "MD031": true,
+        "MD032": true,
+        // MD033 is disabled intentionally: Mermaid fenced blocks contain HTML-style attributes.
         "MD033": false,
         "MD041": true,
         "MD051": false,
