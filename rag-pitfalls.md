@@ -21,7 +21,9 @@ with concrete solutions.
 - **Semantic Chunking**: Use tools like LlamaIndex's `SentenceSplitter` with
   semantic boundaries
 - **Document-Type Aware**: 256 tokens for chat logs, 1024 for technical docs
+  (common starting point — tune for your corpus)
 - **Sliding Windows**: 20% overlap between chunks to preserve context
+  (common starting point — tune for your corpus)
 
 ### ❌ Anti-pattern: Ignoring Document Metadata
 
@@ -73,7 +75,9 @@ embeddings.
 **✅ Solution:**
 
 - Retrieve top-20 to top-50, then **rerank** to top-5
-- Reranking (Cohere, BGE) is cheap and boosts precision by 15-20%
+- Reranking (Cohere, BGE) is cheap and substantially boosts precision;
+  cross-encoder rerankers outperform bi-encoders by 4+ nDCG@10 on BEIR
+  (\[3P\] [benchmarks.md](benchmarks.md#3-reranking))
 
 ### ❌ Anti-pattern: No Query Transformation
 
@@ -258,15 +262,15 @@ passwords"`
 
 ## Cost Optimization
 
-### ❌ Anti-pattern: Using GPT-4 for Every Query
+### ❌ Anti-pattern: Using Frontier Models for Every Query
 
-**Problem:** $0.03/1k tokens adds up fast at scale.
+**Problem:** Frontier-tier pricing adds up fast at scale — routing everything through the most capable model is rarely necessary.
 
 **✅ Solution:**
 
-- Use **GPT-3.5-Turbo** or **Llama 3 8B** for simple queries
-- Route complex queries to GPT-4 only when needed (use a classifier)
-- Self-host with `vLLM` or `Ollama` for cost-sensitive workloads
+- Use smaller models (Llama 3 8B, GPT-4o-mini, Haiku) for simple, high-frequency queries
+- Route complex queries to frontier models only when needed (use a query-complexity classifier)
+- Self-host with `vLLM` or `Ollama` for cost-sensitive, latency-sensitive workloads
 
 ### ❌ Anti-pattern: No Embedding Caching
 
