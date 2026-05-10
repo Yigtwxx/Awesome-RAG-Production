@@ -1,82 +1,188 @@
-import requests
-import datetime
-import os
+"""Weekly RAG discovery engine.
 
-def run_discovery():
+Fetches trending RAG repositories from the GitHub Search API and checks
+benchmarks.md for stale citations. Results are written to
+.github/PROPOSED_UPDATES.md (gitignored) for the CI workflow to post as a
+GitHub issue comment.
+"""
+
+import datetime
+import logging
+import os
+import re
+from pathlib import Path
+
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO"),
+    format="%(levelname)s  %(message)s",
+)
+log = logging.getLogger(__name__)
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+def _build_session() -> requests.Session:
+    """Return a requests Session with retry-and-backoff configured."""
+    session = requests.Session()
+    retry = Retry(
+        total=4,
+        backoff_factor=2,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["GET"],
+        respect_retry_after_header=True,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
+
+
+def check_benchmark_freshness(repo_root: Path) -> None:
+    """Parse benchmarks.md for rows with YYYY-MM-DD dates older than STALE_DAYS.
+
+    Appends a warning section to PROPOSED_UPDATES.md when stale rows are found.
+    Exits silently when benchmarks.md is absent or no stale rows exist.
     """
-    Fetches trending RAG projects from GitHub API with quality filters.
+    STALE_DAYS = 365
+    benchmarks_path = repo_root / "benchmarks.md"
+    if not benchmarks_path.exists():
+        return
+
+    today = datetime.date.today()
+    stale_threshold = today - datetime.timedelta(days=STALE_DAYS)
+    stale_rows: list[tuple[int, int, str]] = []
+
+    date_pattern = re.compile(r"\b(\d{4}-\d{2}-\d{2})\b")
+
+    try:
+        for line_no, line in enumerate(benchmarks_path.read_text(encoding="utf-8").splitlines(), 1):
+            if not line.startswith("|"):
+                continue
+            match = date_pattern.search(line)
+            if not match:
+                continue
+            try:
+                row_date = datetime.date.fromisoformat(match.group(1))
+            except ValueError:
+                continue
+            if row_date < stale_threshold:
+                days_old = (today - row_date).days
+                stale_rows.append((line_no, days_old, line.strip()[:120]))
+    except OSError as exc:
+        log.warning("Benchmark freshness check skipped: %s", exc)
+        return
+
+    if not stale_rows:
+        log.info("Freshness check: all benchmark rows are current.")
+        return
+
+    output_path = repo_root / ".github" / "PROPOSED_UPDATES.md"
+    try:
+        with output_path.open("a", encoding="utf-8") as fh:
+            fh.write(f"\n\n## Stale Benchmark Citations (>{STALE_DAYS} days old)\n\n")
+            fh.write(
+                f"> Detected {len(stale_rows)} row(s) in `benchmarks.md` with dates "
+                f"older than {STALE_DAYS} days. Verify the cited source is still current "
+                f"and update the Date field or move the row to "
+                f"[§ Gaps](../benchmarks.md#9-gaps--not-publicly-measured).\n\n"
+            )
+            fh.write("| Line | Days Old | Row Preview |\n")
+            fh.write("| :--- | :--- | :--- |\n")
+            for line_no, days_old, preview in stale_rows:
+                safe_preview = preview.replace("|", "\\|")
+                fh.write(f"| {line_no} | {days_old} | `{safe_preview}` |\n")
+        log.warning(
+            "Freshness check: %d stale benchmark row(s) flagged in PROPOSED_UPDATES.md",
+            len(stale_rows),
+        )
+    except OSError as exc:
+        log.error("Could not write freshness report: %s", exc)
+
+
+def run_discovery() -> None:
+    """Fetch trending RAG repositories from GitHub and write a discovery report.
+
     Filters:
-    - Topic: RAG
-    - Stars: > 100 (Quality threshold)
-    - Last Push: Within last 90 days (Freshness threshold)
+    - topic:rag
+    - Stars >= 100 (quality threshold)
+    - Pushed within the last 90 days (freshness threshold)
     """
-    # Configuration
     MIN_STARS = 100
     DAYS_LIMIT = 90
-    GITHUB_TOKEN = os.getenv("GITHUB_TOKEN") # Optional, increases rate limits
-    
-    # Calculate date threshold
-    cutoff_date = (datetime.datetime.now() - datetime.timedelta(days=DAYS_LIMIT)).strftime("%Y-%m-%d")
-    
-    # Construct API Query: topic:rag + stars:>=100 + pushed:>=2024-XX-XX
+    PER_PAGE = 15
+
+    github_token: str | None = os.getenv("GITHUB_TOKEN")
+
+    cutoff_date = (
+        datetime.datetime.now() - datetime.timedelta(days=DAYS_LIMIT)
+    ).strftime("%Y-%m-%d")
+
     query = f"topic:rag stars:>={MIN_STARS} pushed:>={cutoff_date}"
-    URL = "https://api.github.com/search/repositories"
-    params = {
+    url = "https://api.github.com/search/repositories"
+    params: dict[str, str | int] = {
         "q": query,
         "sort": "stars",
         "order": "desc",
-        "per_page": 15  # Get top 15 results
+        "per_page": PER_PAGE,
     }
-    
+
     headers = {"Accept": "application/vnd.github.v3+json"}
-    if GITHUB_TOKEN:
-        headers["Authorization"] = f"token {GITHUB_TOKEN}"
+    if github_token:
+        headers["Authorization"] = f"token {github_token}"
+    else:
+        log.warning("GITHUB_TOKEN not set — unauthenticated requests have low rate limits.")
 
-    print(f"[*] Initiating Smart Discovery...")
-    print(f"    - Filter: Stars >= {MIN_STARS}")
-    print(f"    - Filter: Updated after {cutoff_date}")
+    log.info("Starting discovery (stars >= %d, updated after %s)", MIN_STARS, cutoff_date)
 
-    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    output_file = os.path.join(repo_root, ".github", "PROPOSED_UPDATES.md")
-    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    output_path = REPO_ROOT / ".github" / "PROPOSED_UPDATES.md"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    session = _build_session()
     try:
-        response = requests.get(URL, headers=headers, params=params, timeout=10)
+        response = session.get(url, headers=headers, params=params, timeout=15)
         response.raise_for_status()
-        data = response.json()
-        projects = data.get("items", [])
-    except Exception as e:
-        print(f"[-] Critical Error impacting discovery: {e}")
-        with open(output_file, "w", encoding="utf-8") as f:
-            f.write(f"# Smart RAG Discovery - {datetime.date.today()}\n\n")
-            f.write(f"> Discovery failed this run: {e}\n")
+        data: dict = response.json()
+    except requests.RequestException as exc:
+        log.error("Discovery request failed: %s", exc)
+        output_path.write_text(
+            f"# RAG Discovery — {datetime.date.today()}\n\n> Discovery failed this run: {exc}\n",
+            encoding="utf-8",
+        )
         return
 
-    # Write results
-    with open(output_file, "w", encoding="utf-8") as f:
-        f.write(f"# 🚀 Smart RAG Discovery - {datetime.date.today()}\n")
-        f.write(f"> **Filters Applied:** Stars >= {MIN_STARS}, Updated in last {DAYS_LIMIT} days.\n\n")
-        f.write("| Project | Stars | Description | Last Update |\n")
-        f.write("| :--- | :--- | :--- | :--- |\n")
-        
-        count = 0
-        for p in projects:
-            name = p['name']
-            url = p['html_url']
-            desc = p['description'] or "No description provided."
-            stars = p['stargazers_count']
-            updated_at = p['updated_at'].split("T")[0]
-            
-            # Clean description for markdown table (remove pipes)
-            desc = desc.replace("|", "-").replace("\n", " ")
-            if len(desc) > 100: desc = desc[:97] + "..."
+    remaining = response.headers.get("X-RateLimit-Remaining", "?")
+    log.info("GitHub API rate limit remaining: %s", remaining)
 
-            f.write(f"| **[{name}]({url})** | ⭐ {stars} | {desc} | {updated_at} |\n")
-            print(f"[+] Found: {name} ({stars} stars) - Updated: {updated_at}")
-            count += 1
+    projects = data.get("items", [])
 
-    print(f"\n[!] Success! found {count} high-quality RAG projects.")
-    print(f"    Results written to '{output_file}'")
+    with output_path.open("w", encoding="utf-8") as fh:
+        fh.write(f"# RAG Discovery — {datetime.date.today()}\n\n")
+        fh.write(
+            f"> **Filters:** Stars >= {MIN_STARS}, updated in the last {DAYS_LIMIT} days.\n\n"
+        )
+        fh.write("| Project | Stars | Description | Last Update |\n")
+        fh.write("| :--- | :--- | :--- | :--- |\n")
+
+        for project in projects:
+            name: str = project.get("name", "unknown")
+            html_url: str = project.get("html_url", "")
+            description: str = (project.get("description") or "No description provided.").replace("|", "-").replace("\n", " ")
+            stars: int = project.get("stargazers_count", 0)
+            updated_at: str = (project.get("updated_at") or "")[:10]
+
+            if len(description) > 100:
+                description = description[:97] + "..."
+
+            fh.write(f"| [{name}]({html_url}) | {stars} | {description} | {updated_at} |\n")
+            log.info("Found: %s (%d stars, updated %s)", name, stars, updated_at)
+
+    log.info("Discovery complete — %d projects written to %s", len(projects), output_path)
+    check_benchmark_freshness(REPO_ROOT)
+
 
 if __name__ == "__main__":
     run_discovery()
