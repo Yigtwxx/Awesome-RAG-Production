@@ -17,5 +17,13 @@
 - [ ] The link description follows the format: `[Name](URL) - Description.`
 
 ## Engineering Context
-<!-- Optional: Share any benchmarks, case studies, or personal experience using
-this in production. -->
+
+<!-- Optional for resource-only additions. **Required** if your PR introduces
+or modifies any numeric claim (latency, recall, cost, throughput, hallucination
+rate, etc.). See CONTRIBUTING.md § Evidence Tier for full requirements. -->
+
+- **Source URL:**
+- **Date (YYYY-MM-DD):**
+- **Tag:** `[3P]` third-party measured / `[V]` vendor-stated / `[A]` anecdotal
+- **Methodology / harness link:**
+- **Notes:** <!-- hardware used, dataset, caveats -->
