@@ -6,7 +6,11 @@
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
 
-**Retrieval-Augmented Generation (RAG)** is revolutionizing how LLMs access and utilize external knowledge. This repository bridges the gap between prototype RAG tutorials and **production-grade systems** at scale. Whether you're building semantic search, question-answering systems, or AI-powered assistants, you'll find battle-tested frameworks, vector databases, evaluation tools, and observability solutions for **production RAG deployments**. Focus on the **Engineering** side of AI—from data ingestion and retrieval optimization to monitoring, security, and deployment strategies for real-world LLM applications.
+**Retrieval-Augmented Generation (RAG)** is revolutionizing how LLMs access and utilize external knowledge.
+This repository bridges the gap between prototype RAG tutorials and **production-grade systems** at scale.
+Whether you're building semantic search, question-answering systems, or AI-powered assistants, you'll find battle-tested frameworks,
+vector databases, evaluation tools, and observability solutions for **production RAG deployments**.
+Focus on the **Engineering** side of AI—from data ingestion and retrieval optimization to monitoring, security, and deployment strategies for real-world LLM applications.
 
 [Contribution Guide](CONTRIBUTING.md) · [Explore Categories](#contents) · [Report Bug](https://github.com/Yigtwxx/Awesome-RAG-Production/issues)
 
@@ -252,7 +256,9 @@ Choose the right framework for your use case with this production-focused compar
 
 ## Embedding Models
 
-Choosing the right embedding model is one of the highest-leverage decisions in a RAG pipeline — the wrong choice silently degrades retrieval before the LLM ever sees the context. The [MTEB Leaderboard](https://huggingface.co/spaces/mteb/leaderboard) \[3P\] is the canonical benchmark for retrieval quality (nDCG@10 on BEIR datasets); see [benchmarks.md §2](benchmarks.md#2-embeddings--retrieval) for a snapshot with source citations.
+Choosing the right embedding model is one of the highest-leverage decisions in a RAG pipeline — the wrong choice silently degrades retrieval before the LLM ever sees the context.
+The [MTEB Leaderboard](https://huggingface.co/spaces/mteb/leaderboard) \[3P\] is the canonical benchmark for retrieval quality (nDCG@10 on BEIR datasets);
+see [benchmarks.md §2](benchmarks.md#2-embeddings--retrieval) for a snapshot with source citations.
 
 | Model | Strengths | Context Window | Hosting | Best For | Evidence |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -292,7 +298,9 @@ Choosing the right embedding model is one of the highest-leverage decisions in a
 
 ## Chunking & Document Processing
 
-How you split documents into chunks is one of the most underrated decisions in a RAG pipeline. The wrong chunking strategy silently degrades retrieval quality regardless of how good your embedding model is. See [rag-pitfalls.md — Fixed Chunk Size Everywhere](rag-pitfalls.md#data-ingestion--chunking) for the failure modes.
+How you split documents into chunks is one of the most underrated decisions in a RAG pipeline.
+The wrong chunking strategy silently degrades retrieval quality regardless of how good your embedding model is.
+See [rag-pitfalls.md — Fixed Chunk Size Everywhere](rag-pitfalls.md#data-ingestion--chunking) for the failure modes.
 
 **Chunking strategies at a glance:**
 
@@ -315,7 +323,7 @@ How you split documents into chunks is one of the most underrated decisions in a
     fixed-size splitting for narrative and technical content.
 - [LangChain RecursiveCharacterTextSplitter](https://python.langchain.com/docs/how_to/recursive_text_splitter/)
   - The de facto default for general-purpose chunking. Recursively tries separators
-    (`\n\n`, `\n`, ` `) to split at natural boundaries within a target token
+    (`\n\n`, `\n`, or a space) to split at natural boundaries within a target token
     window — robust, fast, no extra dependencies.
 - [semchunk](https://github.com/umarbutler/semchunk)
   - A pure-Python semantic chunking library that requires no embedding model at
@@ -329,7 +337,8 @@ How you split documents into chunks is one of the most underrated decisions in a
 
 - Fixed-size chunking is fast and dependency-free but degrades retrieval on tables, code, and structured content.
 - Semantic chunking improves recall on heterogeneous corpora but adds embedding cost at index time and is slower.
-- Chunk size affects both retrieval recall (too large = coarse matching) and LLM context quality (too small = missing context); 256–512 tokens is a common starting point — tune on your own corpus with Ragas or DeepEval.
+- Chunk size affects both retrieval recall (too large = coarse matching) and LLM context quality (too small = missing context);
+  256–512 tokens is a common starting point — tune on your own corpus with Ragas or DeepEval.
 
 ---
 
@@ -386,7 +395,10 @@ are the main themes?") that standard vector search struggles to address.
 
 ## Query Transformation & Routing
 
-Raw user queries are rarely optimal for retrieval — they may be ambiguous, contain typos, be too vague, or require multi-hop reasoning. Query transformation is the pre-retrieval step that rewrites or expands the query to maximize recall. Query routing dispatches queries to different retrievers or indexes based on intent classification. See [rag-pitfalls.md — No Query Transformation](rag-pitfalls.md#retrieval-strategy) for the failure mode.
+Raw user queries are rarely optimal for retrieval — they may be ambiguous, contain typos, be too vague, or require multi-hop reasoning.
+Query transformation is the pre-retrieval step that rewrites or expands the query to maximize recall.
+Query routing dispatches queries to different retrievers or indexes based on intent classification.
+See [rag-pitfalls.md — No Query Transformation](rag-pitfalls.md#retrieval-strategy) for the failure mode.
 
 **Core transformation techniques:**
 
@@ -575,7 +587,8 @@ Groundedness, and Answer Relevance.
 
 ### LLM-as-Judge Evaluation
 
-Using one LLM to evaluate the outputs of another has become a standard practice in production RAG systems. This approach scales better than human evaluation and provides consistent, automated quality assessment.
+Using one LLM to evaluate the outputs of another has become a standard practice in production RAG systems.
+This approach scales better than human evaluation and provides consistent, automated quality assessment.
 
 **Core Frameworks:**
 
@@ -762,7 +775,9 @@ different bottleneck — deploying them in combination yields compounding return
 
 ## LLM Gateways & Routing
 
-An LLM gateway sits between your application and one or more LLM providers. It centralizes authentication, enforces rate limits, aggregates cost metrics, enables provider failover, and often layers caching on top — without requiring per-provider changes to application code.
+An LLM gateway sits between your application and one or more LLM providers.
+It centralizes authentication, enforces rate limits, aggregates cost metrics, enables provider failover,
+and often layers caching on top — without requiring per-provider changes to application code.
 
 | Tool | Hosting | Provider Support | Caching | Cost Tracking | Best For |
 | :--- | :--- | :--- | :--- | :--- | :--- |
