@@ -45,10 +45,12 @@ To keep the list clean, please follow the existing format:
 
 - **Alphabetical Order:** Add your resource to the appropriate category in alphabetical order.
 - **Link Format** (two-line style — used throughout this repo):
+
   ```markdown
   - [Resource Name](URL)
     - One or two sentence description. Focus on production relevance. End with a period.
   ```
+
   Single-sentence descriptions are preferred. Use a second sentence only when the production context
   requires it (e.g., citing a benchmark or explaining an important trade-off).
 - **No emoji in list items.** Emoji are reserved for Mermaid diagrams only.
@@ -58,6 +60,7 @@ To keep the list clean, please follow the existing format:
 > **Style Notes (intentional deviations from strict `awesome-lint`):**
 > This list runs `awesome-lint` as advisory CI, not blocking. The following
 > production-grade differentiators intentionally deviate from strict mode:
+>
 > - Two-line bullet format (vs. single-line) — improves readability for rich descriptions.
 > - Sections with decision guides, reference architectures, and trade-offs — contextual content that makes this list useful in practice.
 > - Evidence tables with `[3P]`/`[V]`/`[A]` tags — required by this repo's Evidence Tier policy.
