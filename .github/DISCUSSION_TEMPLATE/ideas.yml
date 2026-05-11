@@ -1,3 +1,5 @@
+name: Share an Idea
+description: Suggest a new section, tool, paper, or architectural pattern for this list.
 title: "[Idea]: "
 labels: ["idea"]
 body:
