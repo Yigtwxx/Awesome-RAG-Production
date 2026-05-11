@@ -1,3 +1,5 @@
+name: Show and Tell
+description: Share a RAG project, demo, blog post, or production deployment you've built.
 title: "[Showcase]: "
 labels: ["show-and-tell"]
 body:
