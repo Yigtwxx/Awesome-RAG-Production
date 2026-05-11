@@ -1,3 +1,5 @@
+name: Ask a Question
+description: Ask the community about RAG in production — vector DB selection, latency, evaluation, or anything else.
 title: "[Q&A]: "
 labels: ["question"]
 body:
