@@ -474,6 +474,8 @@ their retrieval strategy based on intermediate results.
     infrastructure overhead.
 - [RAGFlow](https://github.com/infiniflow/ragflow) — see [Frameworks & Orchestration](#frameworks--orchestration) for the full entry.
   - Extends the core RAGFlow engine with agentic capabilities: dynamic document re-ranking, query decomposition, and adaptive retrieval strategies based on query complexity.
+- [Dakera](https://github.com/dakera-ai/dakera-mcp)
+  - Production-ready self-hosted agent memory server for RAG pipelines. HNSW vector indexing, RocksDB persistence, decay-weighted recall, and MCP-native interface.
 
 **When to Use Agentic RAG:**
 
