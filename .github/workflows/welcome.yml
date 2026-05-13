@@ -6,22 +6,23 @@ on:
   issues:
     types: [opened]
 
+permissions:
+  issues: write
+  pull-requests: write
+
 jobs:
   welcome:
     runs-on: ubuntu-latest
-    permissions:
-       issues: write
-       pull-requests: write
 
     steps:
-    - uses: actions/first-interaction@v1
-      with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        issue-message: |
-          **Thanks for starting the conversation.** 
-          
-          We appreciate you taking the time to share your thoughts. As we aim for high-quality, production-grade resources, a maintainer will review your issue shortly to ensure it aligns with our engineering standards. In the meantime, feel free to elaborate on your use case or technical constraints.
-        pr-message: |
-          **Thank you for your contribution.**
-          
-          We value the effort you've put into improving this collection. Since we maintain strict quality criteria for "Production-Grade" resources, we'll review your changes carefully to ensure they meet our standards for reliability and maintainability. Expect some feedback soon!
+      - uses: actions/first-interaction@1ef9e0c31e0d58a4c3de1ad4e63bcd8e8dcc4b2c # v1.3.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: |
+            **Thanks for starting the conversation.**
+
+            We appreciate you taking the time to share your thoughts. As we aim for high-quality, production-grade resources, a maintainer will review your issue shortly to ensure it aligns with our engineering standards. In the meantime, feel free to elaborate on your use case or technical constraints.
+          pr-message: |
+            **Thank you for your contribution.**
+
+            We value the effort you've put into improving this collection. Since we maintain strict quality criteria for "Production-Grade" resources, we'll review your changes carefully to ensure they meet our standards for reliability and maintainability. Expect some feedback soon!
