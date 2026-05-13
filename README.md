@@ -215,6 +215,10 @@ Choose the right framework for your use case with this production-focused compar
   - A modular RAG framework by TrueFoundry designed for scalability. It decouples
     the RAG components (Indexer, Retriever, Parser), allowing for independent
     scaling and easier AB testing of different RAG strategies.
+- [FastAPI Agent Blueprint](https://github.com/Mr-DooSun/fastapi-agent-blueprint)
+  - A FastAPI backend blueprint for AI agent applications with reusable RAG
+    pipeline patterns, vector store adapters, Taskiq workers, admin UI, and
+    optional LLM and embedding infrastructure for document QA services.
 - [Haystack](https://github.com/deepset-ai/haystack)
   - A modular framework focused on production readiness. It emphasizes auditable
     pipelines, strict type-checking, and reproducibility, making it ideal for
