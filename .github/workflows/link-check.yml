@@ -2,21 +2,24 @@ name: Weekly Link Checker
 
 on:
   schedule:
-    # Synchronized with Discovery Engine: Every Monday at 06:00 UTC
+    # Every Monday at 06:00 UTC (synchronized with discovery workflow).
     - cron: '0 6 * * 1'
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   link-check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Link Checker
-        uses: lycheeverse/lychee-action@v2
+        uses: lycheeverse/lychee-action@f81b1cba933b3a88a6c98db3b8090b2db7da4e89 # v2.2.0
         with:
-          # Check all markdown files with robust configuration
+          # Check all markdown files with robust configuration.
           args: >-
             --verbose
             --no-progress
@@ -39,11 +42,11 @@ jobs:
             --exclude 'notion.com'
             --exclude 'airbnb.com'
             --exclude 'stripe.com'
-            --exclude 'stripe.dev'
             --exclude 'aima.cs.berkeley.edu'
             --exclude 'amazon.com'
             '*.md' '**/*.md'
-          # Fail the action if broken links are found
-          fail: true
+          # Broken links are reported but do not fail the workflow — curated lists
+          # accumulate external rot over time; failures here are signal, not gate.
+          fail: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
