@@ -43,6 +43,13 @@ jobs:
 
           BODY=$(cat "$REPORT_FILE")
 
+          # Ensure the tracking label exists (idempotent — no-op if already present).
+          gh label create "discovery-feed" \
+            --repo "$GH_REPO" \
+            --description "Long-lived issue receiving weekly RAG discovery results" \
+            --color "0E8A16" \
+            --force
+
           # Find or create the long-lived tracking issue (label: discovery-feed).
           ISSUE_NUM=$(gh issue list \
             --repo "$GH_REPO" \
