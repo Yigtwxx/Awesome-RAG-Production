@@ -584,6 +584,10 @@ Groundedness, and Answer Relevance.
   - A framework that uses an "LLM-as-a-Judge" to evaluate your pipeline. It
     calculates metrics like Faithfulness (did the answer come from the context?)
     and Answer Relevance without needing human-labeled ground truth.
+- [ai-evaluation](https://github.com/future-agi/ai-evaluation)
+  - An open-source LLM evaluation framework with 50+ metrics, LLM-as-Judge
+    augmentation, guardrail scanners (jailbreak, PII, injection), streaming
+    assessment, and AutoEval pipelines with CI/CD support.
 
 ### LLM-as-Judge Evaluation
 
@@ -647,6 +651,11 @@ This approach scales better than human evaluation and provides consistent, autom
   - An OpenTelemetry-native monitoring solution. If you already use
     Prometheus/Grafana or Datadog, OpenLIT drops into your existing stack to
     provide standardized LLM metrics (GPU usage, token throughput).
+- [traceAI](https://github.com/future-agi/traceAI)
+  - An open-source OpenTelemetry-native tracing framework that auto-instruments
+    20+ AI frameworks and LLM providers (OpenAI, Anthropic, LangChain,
+    LlamaIndex, CrewAI, Bedrock) capturing prompts, tokens, latency, and errors
+    out of the box for RAG and agent applications.
 
 ## Deployment & Serving
 
