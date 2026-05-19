@@ -584,6 +584,15 @@ Groundedness, and Answer Relevance.
   - A framework that uses an "LLM-as-a-Judge" to evaluate your pipeline. It
     calculates metrics like Faithfulness (did the answer come from the context?)
     and Answer Relevance without needing human-labeled ground truth.
+- [agent-opt](https://github.com/future-agi/agent-opt)
+  - Open-source library for automated optimization of AI agent and RAG
+    workflows. Evaluation-driven prompt and config tuning with six algorithms
+    (Random, Bayesian, ProTeGi, Meta-Prompt, PromptWizard, GEPA), heuristic
+    metrics, and LLM-as-judge support.
+- [simulate-sdk](https://github.com/future-agi/simulate-sdk)
+  - Voice AI simulation SDK for testing AI agents and RAG pipelines. Generates
+    synthetic conversation datasets to evaluate behavior across edge-case
+    scenarios before launch.
 
 ### LLM-as-Judge Evaluation
 
@@ -811,6 +820,9 @@ and often layers caching on top — without requiring per-provider changes to ap
     caching, rate limiting, and real-time analytics with sub-millisecond routing
     overhead; suitable for globally distributed applications where gateway latency
     is a constraint.
+- [agent-command-center-sdk](https://github.com/future-agi/agent-command-center-sdk)
+  - SDK client for Agent Command Center — programmatic gateway for managing and
+    routing AI agent requests with OpenAI-compatible API surface.
 
 **When to Use an LLM Gateway:**
 
