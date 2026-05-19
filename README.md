@@ -647,6 +647,12 @@ This approach scales better than human evaluation and provides consistent, autom
   - An OpenTelemetry-native monitoring solution. If you already use
     Prometheus/Grafana or Datadog, OpenLIT drops into your existing stack to
     provide standardized LLM metrics (GPU usage, token throughput).
+- [Future AGI](https://github.com/future-agi/future-agi)
+  - An open-source self-hostable platform unifying tracing, evals, simulations,
+    datasets, gateway, and guardrails for RAG and agent applications.
+    OpenTelemetry-native instrumentation (via traceAI) with 50+ built-in
+    metrics, LLM-as-Judge evaluation, and real-time guardrails for unsafe
+    outputs.
 
 ## Deployment & Serving
 
