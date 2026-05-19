@@ -752,6 +752,7 @@ different bottleneck — deploying them in combination yields compounding return
 
 ## Security & Compliance
 
+- **[Zentric Protocol](https://zentricprotocol.com)** — Deterministic injection detection + PII redaction before every LLM call. One POST, 23ms, CLEARED/BLOCKED verdict. GDPR Art.30 signed audit record. Works with any RAG stack. Free tier: 10k req/month.
 - [Lakera Guard](https://www.lakera.ai/)
   - A low-latency security API that protects applications against prompt
     injections, data leakage, and toxic content in real-time. It acts as an
