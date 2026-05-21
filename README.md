@@ -775,6 +775,8 @@ different bottleneck — deploying them in combination yields compounding return
 
 ## LLM Gateways & Routing
 
+- [QuotaFlow](https://quotaflow.ai) - Token/resource utilization layer for AI teams that tracks subscribed AI capacity, supports controlled internal pools, and reduces wasted token quota across shared LLM workflows.
+
 An LLM gateway sits between your application and one or more LLM providers.
 It centralizes authentication, enforces rate limits, aggregates cost metrics, enables provider failover,
 and often layers caching on top — without requiring per-provider changes to application code.
