@@ -339,6 +339,12 @@ Groundedness, and Answer Relevance.
   - The "Pytest for LLMs". It offers a unit-testing framework for RAG,
     integrating seamlessly into CI/CD pipelines to catch regression in retrieval
     quality or hallucination rates before deployment.
+- [KB Arena](https://github.com/xmpuspus/kb-arena)
+  - Benchmarks 9 retrieval architectures (naive vector, contextual vector, QnA
+    pairs, knowledge graph, hybrid RRF, RAPTOR, PageIndex, BM25, rerank) on
+    your own corpus with statistical IR metrics (Recall/NDCG/MAP/bpref) plus
+    paired-bootstrap CIs and Wilcoxon p-values to call architectural winners
+    with confidence before you commit infrastructure.
 - [Ragas](https://github.com/vibrantlabsai/ragas)
   - A framework that uses an "LLM-as-a-Judge" to evaluate your pipeline. It
     calculates metrics like Faithfulness (did the answer come from the context?)
