@@ -44,11 +44,19 @@ body:
       options:
         - Frameworks & Orchestration
         - Data Ingestion & Parsing
+        - Embedding Models
         - Vector Databases
+        - Chunking & Document Processing
         - Retrieval & Reranking
+        - Query Transformation & Routing
+        - Agentic RAG
+        - Multimodal RAG
         - Evaluation & Benchmarking
         - Observability & Tracing
         - Deployment & Serving
+        - Caching & Performance
+        - LLM Gateways & Routing
+        - Security & Compliance
         - Books & Blogs
         - Other
     validations:

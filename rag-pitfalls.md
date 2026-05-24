@@ -1,4 +1,4 @@
-# ⚠️ Common RAG Pitfalls & Anti-patterns
+# Common RAG Pitfalls & Anti-patterns
 
 Moving RAG from prototype to production exposes hidden complexity. This guide
 catalogs the most frequent mistakes teams make when scaling RAG systems, along
@@ -6,7 +6,7 @@ with concrete solutions.
 
 ---
 
-## 🔴 Data Ingestion & Chunking
+## Data Ingestion & Chunking
 
 ### ❌ Anti-pattern: Fixed Chunk Size Everywhere
 
@@ -21,7 +21,9 @@ with concrete solutions.
 - **Semantic Chunking**: Use tools like LlamaIndex's `SentenceSplitter` with
   semantic boundaries
 - **Document-Type Aware**: 256 tokens for chat logs, 1024 for technical docs
+  (common starting point — tune for your corpus)
 - **Sliding Windows**: 20% overlap between chunks to preserve context
+  (common starting point — tune for your corpus)
 
 ### ❌ Anti-pattern: Ignoring Document Metadata
 
@@ -49,7 +51,7 @@ embeddings.
 
 ---
 
-## 🔴 Retrieval Strategy
+## Retrieval Strategy
 
 ### ❌ Anti-pattern: Pure Vector Search Only
 
@@ -73,7 +75,9 @@ embeddings.
 **✅ Solution:**
 
 - Retrieve top-20 to top-50, then **rerank** to top-5
-- Reranking (Cohere, BGE) is cheap and boosts precision by 15-20%
+- Reranking (Cohere, BGE) is cheap and substantially boosts precision;
+  cross-encoder rerankers outperform bi-encoders by 4+ nDCG@10 on BEIR
+  (\[3P\] [benchmarks.md](benchmarks.md#3-reranking))
 
 ### ❌ Anti-pattern: No Query Transformation
 
@@ -93,7 +97,7 @@ embeddings.
 
 ---
 
-## 🔴 Embedding Model Selection
+## Embedding Model Selection
 
 ### ❌ Anti-pattern: Using Default OpenAI Embeddings Without Testing
 
@@ -118,7 +122,7 @@ your domain.
 
 ---
 
-## 🔴 Prompt Engineering
+## Prompt Engineering
 
 ### ❌ Anti-pattern: No Explicit Instruction to Use Context
 
@@ -158,7 +162,7 @@ Answer:
 
 ---
 
-## 🔴 Evaluation & Monitoring
+## Evaluation & Monitoring
 
 ### ❌ Anti-pattern: No Evaluation Dataset
 
@@ -196,7 +200,7 @@ failed.
 
 ---
 
-## 🔴 Production Deployment
+## Production Deployment
 
 ### ❌ Anti-pattern: Synchronous Retrieval in API
 
@@ -231,7 +235,7 @@ API quotas.
 
 ---
 
-## 🔴 Security & Compliance
+## Security & Compliance
 
 ### ❌ Anti-pattern: No PII Filtering
 
@@ -256,17 +260,17 @@ passwords"`
 
 ---
 
-## 🔴 Cost Optimization
+## Cost Optimization
 
-### ❌ Anti-pattern: Using GPT-4 for Every Query
+### ❌ Anti-pattern: Using Frontier Models for Every Query
 
-**Problem:** $0.03/1k tokens adds up fast at scale.
+**Problem:** Frontier-tier pricing adds up fast at scale — routing everything through the most capable model is rarely necessary.
 
 **✅ Solution:**
 
-- Use **GPT-3.5-Turbo** or **Llama 3 8B** for simple queries
-- Route complex queries to GPT-4 only when needed (use a classifier)
-- Self-host with `vLLM` or `Ollama` for cost-sensitive workloads
+- Use smaller models (Llama 3 8B, GPT-4o-mini, Haiku) for simple, high-frequency queries
+- Route complex queries to frontier models only when needed (use a query-complexity classifier)
+- Self-host with `vLLM` or `Ollama` for cost-sensitive, latency-sensitive workloads
 
 ### ❌ Anti-pattern: No Embedding Caching
 
@@ -279,7 +283,7 @@ passwords"`
 
 ---
 
-## 📚 Quick Reference: Production Checklist
+## Quick Reference: Production Checklist
 
 Before deploying RAG to production, ensure:
 
@@ -296,7 +300,7 @@ Before deploying RAG to production, ensure:
 
 ---
 
-## 🎯 Summary
+## Summary
 
 The difference between a demo and a production RAG system is **resilience to edge
 cases**. The patterns above aren't theoretical—they're battle scars from real
@@ -307,6 +311,6 @@ Your future self (and your on-call rotation) will thank you.
 
 - [Anthropic: Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)
 - [Pinecone: Learning Hub](https://www.pinecone.io/learn/)
-- [LlamaIndex: Production Patterns](https://docs.llamaindex.ai/en/stable/optimizing/production_rag/)
+- [LlamaIndex: Production Patterns](https://developers.llamaindex.ai/python/framework/optimizing/production_rag/)
 
 ([back to main resource](README.md))

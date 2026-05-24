@@ -1,21 +1,17 @@
 # Security Policy
 
-## Supported Versions
+## About This Repository
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+**Awesome RAG Production** is a curated list of links, tools, and resources. It does not contain executable application code, so traditional software version-support policies do not apply.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+## Reporting a Security Concern
 
-## Reporting a Vulnerability
+If you discover a security issue related to this repository — such as a listed resource that has been compromised, is distributing malware, or links to a typosquatted package —
+please use **GitHub Private Vulnerability Reporting** to notify the maintainers without disclosing the issue publicly:
 
-Use this section to tell people how to report a vulnerability.
+**[Report a Vulnerability (Private)](https://github.com/Yigtwxx/Awesome-RAG-Production/security/advisories/new)**
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+> If Private Vulnerability Reporting is not enabled on this repository, please open a regular issue instead and tag it `security` —
+> the maintainers check issues regularly and will convert it to a private advisory.
+
+Provide as much detail as possible (affected URL, observed behavior, evidence) so the maintainers can investigate and remove or replace the affected resource promptly.

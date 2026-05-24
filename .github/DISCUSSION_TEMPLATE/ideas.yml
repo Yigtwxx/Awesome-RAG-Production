@@ -1,3 +1,5 @@
+name: Share an Idea
+description: Suggest a new section, tool, paper, or architectural pattern for this list.
 title: "[Idea]: "
 labels: ["idea"]
 body:
@@ -11,6 +13,6 @@ body:
     attributes:
       label: Idea Description
       description: What's on your mind?
-      placeholder: "We should add a section for 'RAG with Vision Models'..."
+      placeholder: "We should add a section for 'Real-time / Streaming RAG'..."
     validations:
       required: true

@@ -2,39 +2,72 @@ name: Weekly RAG Discovery
 
 on:
   schedule:
-    # 06:00 UTC, Türkiye saatiyle (UTC+3) sabah 09:00'a denk gelir.
+    # Every Monday at 06:00 UTC (09:00 Istanbul time, UTC+3).
     - cron: '0 6 * * 1'
-  workflow_dispatch: # İstersen butona basıp manuel de çalıştırabilirsin
+  workflow_dispatch: # Also triggerable manually via the Actions UI.
 
 jobs:
-  build:
+  discover:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Repoya dosya yazabilmesi için gerekli izin
+      contents: read      # checkout only
+      issues: write       # post discovery comment on tracking issue
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: '3.10'
+          python-version: '3.12'
 
       - name: Install Dependencies
-        run: |
-          pip install -r scripts/requirements.txt
+        run: pip install -r scripts/requirements.txt
 
       - name: Run Discovery Engine
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python scripts/discovery_engine.py
+        run: python scripts/discovery_engine.py
 
-      - name: Commit and Push Changes
+      - name: Post Results to Tracking Issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add PROPOSED_UPDATES.md
-          git commit -m "Auto-update: Weekly RAG discovery results" || echo "No changes to commit"
-          git push
+          REPORT_FILE=".github/PROPOSED_UPDATES.md"
+          if [ ! -f "$REPORT_FILE" ]; then
+            echo "No report file found — discovery may have failed. Check logs."
+            exit 0
+          fi
+
+          BODY=$(cat "$REPORT_FILE")
+
+          # Ensure the tracking label exists (idempotent — no-op if already present).
+          gh label create "discovery-feed" \
+            --repo "$GH_REPO" \
+            --description "Long-lived issue receiving weekly RAG discovery results" \
+            --color "0E8A16" \
+            --force
+
+          # Find or create the long-lived tracking issue (label: discovery-feed).
+          ISSUE_NUM=$(gh issue list \
+            --repo "$GH_REPO" \
+            --label "discovery-feed" \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')
+
+          if [ -z "$ISSUE_NUM" ]; then
+            ISSUE_NUM=$(gh issue create \
+              --repo "$GH_REPO" \
+              --title "Weekly RAG Discovery Feed" \
+              --label "discovery-feed" \
+              --body "This issue receives automated weekly RAG discovery results. Each Monday a new comment is added with trending repositories and any stale benchmark citations detected in \`benchmarks.md\`.")
+            # gh issue create returns the URL; extract the number.
+            ISSUE_NUM=$(echo "$ISSUE_NUM" | grep -oE '[0-9]+$')
+          fi
+
+          gh issue comment "$ISSUE_NUM" \
+            --repo "$GH_REPO" \
+            --body "$BODY"
