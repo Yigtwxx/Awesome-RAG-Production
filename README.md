@@ -364,6 +364,10 @@ zero-shot retrieval performance.
   - A lightweight, serverless-friendly reranking library. It runs quantized
     cross-encoder models directly on the CPU (no Torch/GPU required), making it
     ideal for edge deployments or cost-sensitive architectures.
+- [psql_bm25s](https://github.com/Intelligent-Internet/psql_bm25s)
+  - A PostgreSQL extension for BM25-family lexical retrieval with native indexing
+    and SQL top-k query APIs. It can provide the keyword retrieval leg for
+    Postgres-based hybrid RAG stacks.
 - [RAGatouille](https://github.com/AnswerDotAI/RAGatouille)
   - A library that makes ColBERT (Contextualized Late Interaction over BERT)
     easy to use. ColBERT offers fine-grained token-level matching, providing
