@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 180" width="900" height="180" role="img" aria-label="Awesome RAG Production">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#1a2332"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2d6cdf"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="pill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2d6cdf" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.18"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="180" fill="url(#bg)" rx="12"/>
+
+  <!-- Subtle grid lines -->
+  <g stroke="#ffffff" stroke-opacity="0.03" stroke-width="1">
+    <line x1="0" y1="45" x2="900" y2="45"/>
+    <line x1="0" y1="90" x2="900" y2="90"/>
+    <line x1="0" y1="135" x2="900" y2="135"/>
+    <line x1="225" y1="0" x2="225" y2="180"/>
+    <line x1="450" y1="0" x2="450" y2="180"/>
+    <line x1="675" y1="0" x2="675" y2="180"/>
+  </g>
+
+  <!-- Accent bar (left edge) -->
+  <rect x="0" y="0" width="4" height="180" fill="url(#accent)" rx="2"/>
+
+  <!-- Accent glow circle (right decorative) -->
+  <circle cx="820" cy="90" r="110" fill="#2d6cdf" fill-opacity="0.06"/>
+  <circle cx="820" cy="90" r="60" fill="#7c3aed" fill-opacity="0.07"/>
+
+  <!-- Small document icon (stylised) -->
+  <g transform="translate(44, 56)">
+    <rect x="0" y="0" width="32" height="40" rx="4" fill="none" stroke="url(#accent)" stroke-width="1.8"/>
+    <line x1="6" y1="13" x2="26" y2="13" stroke="#2d6cdf" stroke-opacity="0.7" stroke-width="1.4"/>
+    <line x1="6" y1="20" x2="26" y2="20" stroke="#2d6cdf" stroke-opacity="0.5" stroke-width="1.4"/>
+    <line x1="6" y1="27" x2="18" y2="27" stroke="#2d6cdf" stroke-opacity="0.35" stroke-width="1.4"/>
+    <!-- Folded corner -->
+    <path d="M22 0 L32 10 L22 10 Z" fill="url(#accent)" fill-opacity="0.55"/>
+  </g>
+
+  <!-- Main title -->
+  <text x="96" y="88"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="38"
+        font-weight="700"
+        fill="#f0f6fc"
+        letter-spacing="-0.5">Awesome RAG</text>
+
+  <!-- Production badge pill -->
+  <rect x="96" y="100" width="152" height="26" rx="13" fill="url(#pill)" stroke="url(#accent)" stroke-width="1.2" stroke-opacity="0.55"/>
+  <text x="172" y="118"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="13"
+        font-weight="600"
+        fill="#7c9ef5"
+        text-anchor="middle"
+        letter-spacing="1.2">PRODUCTION</text>
+
+  <!-- Sub-title -->
+  <text x="96" y="153"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="15"
+        font-weight="400"
+        fill="#8b949e"
+        letter-spacing="0">Battle-tested tools &amp; cited evidence for production RAG systems</text>
+
+  <!-- Right side — three tag chips -->
+  <g transform="translate(590, 54)">
+    <!-- chip 1 -->
+    <rect x="0" y="0" width="90" height="24" rx="12" fill="#2d6cdf" fill-opacity="0.12" stroke="#2d6cdf" stroke-opacity="0.3" stroke-width="1"/>
+    <text x="45" y="16.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+          font-size="11" font-weight="500" fill="#7c9ef5" text-anchor="middle">Evidence-backed</text>
+    <!-- chip 2 -->
+    <rect x="0" y="32" width="78" height="24" rx="12" fill="#7c3aed" fill-opacity="0.12" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1"/>
+    <text x="39" y="48.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+          font-size="11" font-weight="500" fill="#a78bfa" text-anchor="middle">Production-first</text>
+    <!-- chip 3 -->
+    <rect x="0" y="64" width="68" height="24" rx="12" fill="#2d6cdf" fill-opacity="0.10" stroke="#2d6cdf" stroke-opacity="0.25" stroke-width="1"/>
+    <text x="34" y="80.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+          font-size="11" font-weight="500" fill="#7c9ef5" text-anchor="middle">Curated list</text>
+  </g>
+</svg>
