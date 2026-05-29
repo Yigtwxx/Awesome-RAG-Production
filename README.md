@@ -1,10 +1,18 @@
 # Awesome RAG Production
 
+<p align="center">
+  <img src="assets/banner.svg" alt="Awesome RAG Production — Battle-tested tools and cited evidence for production RAG systems" width="900">
+</p>
+
 > A curated collection of battle-tested tools, frameworks, and best practices for building, scaling, and monitoring production-grade Retrieval-Augmented Generation (RAG) systems.
 
 [![Awesome](https://awesome.re/badge.svg)](https://github.com/sindresorhus/awesome)
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
+[![GitHub Stars](https://img.shields.io/github/stars/Yigtwxx/Awesome-RAG-Production?style=flat-square&logo=github&label=Stars)](https://github.com/Yigtwxx/Awesome-RAG-Production/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/Yigtwxx/Awesome-RAG-Production?style=flat-square&logo=github&label=Forks)](https://github.com/Yigtwxx/Awesome-RAG-Production/network/members)
+[![Contributors](https://img.shields.io/github/contributors/Yigtwxx/Awesome-RAG-Production?style=flat-square&logo=github&label=Contributors)](https://github.com/Yigtwxx/Awesome-RAG-Production/graphs/contributors)
+[![Last Commit](https://img.shields.io/github/last-commit/Yigtwxx/Awesome-RAG-Production?style=flat-square&logo=github&label=Last+Commit)](https://github.com/Yigtwxx/Awesome-RAG-Production/commits/main)
 
 **Retrieval-Augmented Generation (RAG)** is revolutionizing how LLMs access and utilize external knowledge.
 This repository bridges the gap between prototype RAG tutorials and **production-grade systems** at scale.
@@ -29,7 +37,9 @@ Focus on the **Engineering** side of AI—from data ingestion and retrieval opti
 - [Retrieval & Reranking](#retrieval--reranking)
 - [Query Transformation & Routing](#query-transformation--routing)
 - [Agentic RAG](#agentic-rag)
+- [Agent Memory & Stateful Context](#agent-memory--stateful-context)
 - [Multimodal RAG](#multimodal-rag)
+- [Structured & SQL RAG](#structured--sql-rag)
 - [Evaluation & Benchmarking](#evaluation--benchmarking)
 - [Observability & Tracing](#observability--tracing)
 - [Deployment & Serving](#deployment--serving)
@@ -41,6 +51,7 @@ Focus on the **Engineering** side of AI—from data ingestion and retrieval opti
 - [Benchmarks & Evidence](benchmarks.md)
 - [Datasets](datasets.md)
 - [RAG Pitfalls & Anti-patterns](rag-pitfalls.md)
+- [Tutorials & Hands-on Code](#tutorials--hands-on-code)
 - [Recommended Resources (Books & Blogs)](#recommended-resources)
 - [Contributing](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
@@ -231,6 +242,10 @@ Choose the right framework for your use case with this production-focused compar
   - A high-performance data processing framework for live data. It enables
     "Always-Live" RAG by syncing vector indices in real-time as the underlying
     data source changes, without full re-indexing.
+- [R2R](https://github.com/SciPhi-AI/R2R)
+  - A production-ready agentic retrieval system with a RESTful API, multimodal
+    ingestion, hybrid search, and an automatic knowledge-graph pipeline — designed
+    to ship RAG-powered applications without building infrastructure from scratch.
 - [RAGFlow](https://github.com/infiniflow/ragflow)
   - An end-to-end RAG engine designed for deep document understanding. It handles
     complex layouts (PDFs, tables, images) natively and includes a built-in
@@ -290,6 +305,7 @@ see [benchmarks.md §2](benchmarks.md#2-embeddings--retrieval) for a snapshot wi
 | Tool | Best For | Key Strength | Evidence |
 | :--- | :--- | :--- | :--- |
 | [Chroma](https://github.com/chroma-core/chroma) | Local/Dev & Mid-scale | Developer-friendly, open-source embedding database. | — |
+| [LanceDB](https://github.com/lancedb/lancedb) | Serverless & multimodal | Embedded, serverless vector DB with native multimodal support; no separate server required. | — |
 | [Milvus](https://github.com/milvus-io/milvus) | Billions of vectors | Most popular OSS for massive scale. | [\[V\]](benchmarks.md#1-vector-databases) |
 | [pgvector](https://github.com/pgvector/pgvector) | PostgreSQL Ecosystem | Vector search capability directly within PostgreSQL. | — |
 | [Pinecone](https://www.pinecone.io/) | 10M-100M+ vectors | Zero-ops, serverless architecture. | — |
@@ -487,6 +503,61 @@ their retrieval strategy based on intermediate results.
 - Increased cost (agent reasoning + retrieval).
 - Debugging complexity (non-deterministic behavior).
 
+---
+
+## Agent Memory & Stateful Context
+
+Agentic RAG systems are only as useful as their memory.
+Without a persistent memory layer, agents lose context between sessions and
+cannot learn from past interactions — forcing users to repeat themselves and
+preventing the system from adapting to individual preferences or organizational
+knowledge. An agent memory store sits alongside the vector retrieval pipeline,
+handling *what the agent knows about the user and the world across turns*,
+distinct from the RAG knowledge base itself.
+
+**Core Capabilities:**
+
+- **Short-term / in-session context**: Conversation buffer and working memory across a single session.
+- **Long-term / cross-session memory**: Persisting facts, preferences, and history across conversations.
+- **Temporal consistency**: Handling conflicting or outdated facts as knowledge changes over time.
+- **Multi-agent memory sharing**: Allowing specialized agents within a crew to read from and write to a shared memory store.
+
+### Frameworks & Tools
+
+- [LangMem](https://github.com/langchain-ai/langmem)
+  - LangChain's native memory SDK for building agents with persistent, long-term
+    memory. Integrates directly with LangGraph state and LangSmith tracing,
+    enabling structured and semantic memory stores with minimal boilerplate.
+- [Letta](https://github.com/letta-ai/letta)
+  - The production evolution of MemGPT. Provides agents with persistent,
+    editable memory stored as structured context windows — the agent can
+    consciously read, write, and summarize its own memory as part of its
+    reasoning loop.
+- [Mem0](https://github.com/mem0ai/mem0)
+  - A universal memory layer for AI agents that extracts and stores salient
+    facts from every conversation turn. Provides a unified API across
+    graph-based, vector, and key-value backends; selected as the memory
+    provider in the AWS Agent SDK.
+- [Zep / Graphiti](https://github.com/getzep/graphiti)
+  - Zep builds a temporal knowledge graph (Graphiti) where every stored fact
+    carries a validity window. Conflicting facts are not stacked — the older
+    assertion is automatically invalidated when new information supersedes it,
+    returning only the current truth on retrieval.
+
+**When to Add a Memory Layer:**
+
+- Conversational assistants where users expect context to carry over across sessions.
+- Workflows where an agent must track evolving state (project status, user preferences, organizational decisions).
+- Multi-agent pipelines where specialized agents must share a consistent world-model.
+
+**Trade-offs:**
+
+- Memory extraction adds latency proportional to the extraction model size; budget an extra LLM call per turn.
+- Persistent memory stores require a privacy and data-retention policy — storing personal facts across sessions is subject to GDPR / CCPA depending on jurisdiction.
+- Temporal consistency (Zep/Graphiti approach) requires graph infrastructure; simpler vector-based stores (Mem0) are faster to deploy but may surface stale facts under rapid knowledge change.
+
+---
+
 ## Multimodal RAG
 
 Production RAG increasingly operates on documents that combine text, images,
@@ -566,6 +637,49 @@ pipeline and preserving layout information that text extraction destroys.
   GPU for production throughput; CPU-only deployments face significant latency.
 - Evaluation complexity: no universal benchmark for domain-specific multimodal
   retrieval quality — custom human annotation sets are required.
+
+---
+
+## Structured & SQL RAG
+
+Classical RAG retrieves unstructured text chunks. Structured RAG extends this
+to tables, databases, and business data stores — where the "retrieval" step is a
+generated SQL or analytics query, not a vector similarity search.
+This approach is critical for enterprise applications where the source of truth
+lives in relational databases, data warehouses, or spreadsheets rather than
+document collections.
+
+**Core Capabilities:**
+
+- **Text-to-SQL generation**: Translate natural language questions into executable SQL.
+- **Schema-aware retrieval**: Incorporate table schemas, relationships, and business semantics into the prompt context to reduce hallucinated column names.
+- **Hybrid structured + unstructured**: Combine SQL retrieval over structured data with vector search over accompanying text documents (e.g., financial reports with embedded narratives).
+
+### Frameworks & Tools
+
+- [Vanna](https://github.com/vanna-ai/vanna)
+  - A Python framework for accurate Text-to-SQL generation using LLMs with
+    agentic retrieval. It trains a retrieval model on your schema, DDL, and
+    prior question-SQL pairs so queries stay faithful to the actual database
+    structure rather than hallucinating columns or table names.
+- [WrenAI](https://github.com/Canner/WrenAI)
+  - An open-source context layer that enriches SQL generation with business
+    semantics, examples, and governance rules — enabling AI agents to query
+    across 20+ data sources accurately without schema-only prompting.
+
+**When to Use Structured RAG:**
+
+- Your knowledge base lives primarily in relational databases, data warehouses, or spreadsheets.
+- Business users need natural-language queries over metrics, KPIs, or transaction data.
+- Accuracy on column names and aggregations is critical (hallucinated SQL is dangerous in production).
+
+**Trade-offs:**
+
+- Schema changes require re-training or re-prompting the retrieval model — tighter coupling to the data layer than unstructured RAG.
+- Security surface is larger: a well-crafted prompt can generate destructive SQL (always run generated queries in a read-only role).
+- Multi-table joins and complex aggregations remain challenging; validate on your own schema complexity before committing.
+
+---
 
 ## Evaluation & Benchmarking
 
@@ -824,6 +938,28 @@ and often layers caching on top — without requiring per-provider changes to ap
 - Self-hosted gateways (LiteLLM, Portkey) add an extra network hop and a component to operate; invest in HA deployment if you route all traffic through them.
 - Managed gateways (OpenRouter, Cloudflare) simplify ops but add another vendor dependency and may introduce latency for non-edge traffic.
 - Gateway-level semantic caching has the same false-positive risk as application-level caching — tune thresholds carefully.
+
+---
+
+## Tutorials & Hands-on Code
+
+The resources below complement this list with **runnable code** — Jupyter notebooks
+and annotated examples that walk through the techniques described above end to end.
+They are the fastest path from reading about a pattern to having it running in your
+own environment.
+
+- [lancedb/vectordb-recipes](https://github.com/lancedb/vectordb-recipes)
+  - A large collection of examples and tutorials covering multimodal RAG, agent
+    patterns, and vector search use cases — each backed by a runnable notebook
+    or script and organized by task rather than by tool.
+- [NirDiamant/Agent_Memory_Techniques](https://github.com/NirDiamant/Agent_Memory_Techniques)
+  - Thirty runnable Jupyter notebooks covering the full agent memory spectrum:
+    conversation buffers, vector stores, knowledge graphs, episodic and semantic
+    memory, Mem0, Letta, Zep, Graphiti, and production memory patterns.
+- [NirDiamant/RAG_Techniques](https://github.com/NirDiamant/RAG_Techniques)
+  - A comprehensive notebook series covering advanced RAG techniques end to end —
+    from adaptive retrieval and hybrid search to corrective RAG, self-RAG, and
+    agentic pipelines — with annotated, runnable code for each pattern.
 
 ---
 
