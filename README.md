@@ -1,9 +1,5 @@
 # Awesome RAG Production
 
-<p align="center">
-  <img src="assets/banner.svg" alt="Awesome RAG Production — Battle-tested tools and cited evidence for production RAG systems" width="900">
-</p>
-
 > A curated collection of battle-tested tools, frameworks, and best practices for building, scaling, and monitoring production-grade Retrieval-Augmented Generation (RAG) systems.
 
 [![Awesome](https://awesome.re/badge.svg)](https://github.com/sindresorhus/awesome)
@@ -226,6 +222,12 @@ Choose the right framework for your use case with this production-focused compar
   - A modular RAG framework by TrueFoundry designed for scalability. It decouples
     the RAG components (Indexer, Retriever, Parser), allowing for independent
     scaling and easier AB testing of different RAG strategies.
+- [DSPy](https://github.com/stanfordnlp/dspy)
+  - Stanford's framework for programming — rather than prompting — language
+    models. Compose RAG pipelines from typed modules and let DSPy's optimizers
+    automatically tune prompts and few-shot examples to meet a declared metric,
+    replacing brittle hand-crafted prompt chains with reproducible, optimizable
+    programs.
 - [Haystack](https://github.com/deepset-ai/haystack)
   - A modular framework focused on production readiness. It emphasizes auditable
     pipelines, strict type-checking, and reproducibility, making it ideal for
@@ -257,6 +259,17 @@ Choose the right framework for your use case with this production-focused compar
 
 ## Data Ingestion & Parsing
 
+- [Crawl4AI](https://github.com/unclecode/crawl4ai)
+  - An open-source web crawler purpose-built for LLM pipelines. Converts web
+    pages into clean, structured markdown or JSON ready for ingestion — with
+    async multi-page crawling, JavaScript rendering, and a simple API that
+    integrates directly into RAG indexing workflows.
+- [Docling](https://github.com/docling-project/docling)
+  - IBM's open-source document parser for production AI pipelines. Handles
+    advanced PDF understanding (tables, figures, complex layouts) alongside
+    DOCX, PPTX, HTML, and image formats, exporting clean structured output
+    with native integrations into LlamaIndex, LangChain, and other gen-AI
+    frameworks.
 - [Firecrawl](https://github.com/firecrawl/firecrawl)
   - Effortlessly turn websites into clean, LLM-ready markdown.
 - [LlamaParse](https://github.com/run-llama/llama_cloud_services)
@@ -310,6 +323,7 @@ see [benchmarks.md §2](benchmarks.md#2-embeddings--retrieval) for a snapshot wi
 | [pgvector](https://github.com/pgvector/pgvector) | PostgreSQL Ecosystem | Vector search capability directly within PostgreSQL. | — |
 | [Pinecone](https://www.pinecone.io/) | 10M-100M+ vectors | Zero-ops, serverless architecture. | — |
 | [Qdrant](https://github.com/qdrant/qdrant) | <50M vectors | Best filtering support and free tier. | [\[V\]](benchmarks.md#1-vector-databases) [\[3P\]](benchmarks.md#1-vector-databases) |
+| [Vespa](https://github.com/vespa-engine/vespa) | Web-scale hybrid serving | Battle-tested engine combining vector, tensor, text, and structured data at serving time and any scale. | — |
 | [Weaviate](https://github.com/weaviate/weaviate) | Hybrid Search | Native integration of vector and keyword search. | — |
 
 ## Chunking & Document Processing
@@ -698,6 +712,12 @@ Groundedness, and Answer Relevance.
   - A framework that uses an "LLM-as-a-Judge" to evaluate your pipeline. It
     calculates metrics like Faithfulness (did the answer come from the context?)
     and Answer Relevance without needing human-labeled ground truth.
+- [TruLens](https://github.com/truera/trulens)
+  - The library that introduced the RAG Triad (context relevance, groundedness,
+    answer relevance) as a systematic evaluation framework. It wraps LangChain,
+    LlamaIndex, and DSPy pipelines with feedback functions that score each
+    retrieval-and-generation step, emitting OpenTelemetry traces for both
+    development debugging and production monitoring.
 
 ### LLM-as-Judge Evaluation
 
@@ -761,6 +781,11 @@ This approach scales better than human evaluation and provides consistent, autom
   - An OpenTelemetry-native monitoring solution. If you already use
     Prometheus/Grafana or Datadog, OpenLIT drops into your existing stack to
     provide standardized LLM metrics (GPU usage, token throughput).
+- [Opik](https://github.com/comet-ml/opik)
+  - Comet's open-source platform for end-to-end LLM, RAG, and agent
+    observability. Captures full execution traces, runs automated evaluations
+    against built-in and custom metrics, and surfaces production dashboards
+    for cost, latency, and quality — all in a single self-hostable service.
 
 ## Deployment & Serving
 
