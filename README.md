@@ -9,6 +9,11 @@
 [![GitHub Forks](https://img.shields.io/github/forks/Yigtwxx/Awesome-RAG-Production?style=flat-square&logo=github&label=Forks)](https://github.com/Yigtwxx/Awesome-RAG-Production/network/members)
 [![Contributors](https://img.shields.io/github/contributors/Yigtwxx/Awesome-RAG-Production?style=flat-square&logo=github&label=Contributors)](https://github.com/Yigtwxx/Awesome-RAG-Production/graphs/contributors)
 [![Last Commit](https://img.shields.io/github/last-commit/Yigtwxx/Awesome-RAG-Production?style=flat-square&logo=github&label=Last+Commit)](https://github.com/Yigtwxx/Awesome-RAG-Production/commits/main)
+[![Markdown Lint](https://github.com/Yigtwxx/Awesome-RAG-Production/actions/workflows/lint.yml/badge.svg)](https://github.com/Yigtwxx/Awesome-RAG-Production/actions/workflows/lint.yml)
+[![Link Check](https://github.com/Yigtwxx/Awesome-RAG-Production/actions/workflows/link-check.yml/badge.svg)](https://github.com/Yigtwxx/Awesome-RAG-Production/actions/workflows/link-check.yml)
+[![Weekly Discovery](https://github.com/Yigtwxx/Awesome-RAG-Production/actions/workflows/discovery.yml/badge.svg)](https://github.com/Yigtwxx/Awesome-RAG-Production/actions/workflows/discovery.yml)
+
+*Last reviewed: 2026-05-30 · Freshness audited weekly via [discovery\_engine](scripts/discovery_engine.py)*
 
 **Retrieval-Augmented Generation (RAG)** is revolutionizing how LLMs access and utilize external knowledge.
 This repository bridges the gap between prototype RAG tutorials and **production-grade systems** at scale.
@@ -28,7 +33,9 @@ Focus on the **Engineering** side of AI—from data ingestion and retrieval opti
 - [Frameworks & Orchestration](#frameworks--orchestration)
 - [Data Ingestion & Parsing](#data-ingestion--parsing)
 - [Embedding Models](#embedding-models)
+- [Embedding Fine-tuning](#embedding-fine-tuning)
 - [Vector Databases](#vector-databases)
+- [Data & Index Versioning](#data--index-versioning)
 - [Chunking & Document Processing](#chunking--document-processing)
 - [Retrieval & Reranking](#retrieval--reranking)
 - [Query Transformation & Routing](#query-transformation--routing)
@@ -40,8 +47,9 @@ Focus on the **Engineering** side of AI—from data ingestion and retrieval opti
 - [Observability & Tracing](#observability--tracing)
 - [Deployment & Serving](#deployment--serving)
 - [Caching & Performance](#caching--performance)
-- [LLM Gateways & Routing](#llm-gateways--routing)
 - [Security & Compliance](#security--compliance)
+- [LLM Gateways & Routing](#llm-gateways--routing)
+- [FinOps & Cost Management](#finops--cost-management)
 - [Selection Criteria](#selection-criteria)
 - [Case Studies & Production Talks](showcase.md)
 - [Benchmarks & Evidence](benchmarks.md)
@@ -63,26 +71,49 @@ tools for your scale and use case.
 ```mermaid
 graph TD
     Start([Start Project]) --> UseCase{What is your primary goal?}
-    
+
     %% Framework Selection
-    UseCase -->|Complex Agents & Control| LangGraph[🦜🕸️ LangGraph]
-    UseCase -->|Data Processing & Indexing| LlamaIndex[🦙 LlamaIndex]
-    UseCase -->|Auditable Pipelines| Haystack[🌾 Haystack]
-    
+    UseCase -->|Complex Agents & Control| LangGraph[LangGraph]
+    UseCase -->|Data Processing & Indexing| LlamaIndex[LlamaIndex]
+    UseCase -->|Auditable Pipelines| Haystack[Haystack]
+    UseCase -->|Rapid Prototyping| LangChain[LangChain]
+
     %% Vector DB Selection
     UseCase --> DB{Which Vector DB?}
-    DB -->|Serverless / Zero Ops| Pinecone[🌲 Pinecone]
+    DB -->|Serverless / Zero Ops| Pinecone[Pinecone]
     DB -->|Massive Scale >100M| Milvus[Milvus]
-    DB -->|Running Locally| Chroma[🧪 Chroma]
-    DB -->|Postgres Ecosystem| PGVector[🐘 pgvector]
-    
+    DB -->|Running Locally| Chroma[Chroma]
+    DB -->|Postgres Ecosystem| PGVector[pgvector]
+
+    %% Embedding Model Selection
+    UseCase --> Emb{Embedding model?}
+    Emb -->|API / General English| OpenAIEmb[text-embedding-3-large]
+    Emb -->|Open-weight / Multilingual| BGEМ3[BGE-M3]
+    Emb -->|Domain-specific corpus| FineTune[Fine-tune with sentence-transformers]
+
+    %% Reranking
+    UseCase --> Rerank{Need precision boost?}
+    Rerank -->|Cross-encoder reranking| Cohere[Cohere Rerank]
+    Rerank -->|Self-hosted reranking| BGEReranker[BGE Reranker]
+
+    %% Evaluation
+    UseCase --> Eval{How to evaluate?}
+    Eval -->|LLM-as-judge pipeline| RAGAS[RAGAS]
+    Eval -->|Observability + traces| LangSmith[LangSmith / Arize]
+
     %% Styling
     classDef framework fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
     classDef db fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
-    classDef start fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px;
-    
-    class LangGraph,LlamaIndex,Haystack framework;
+    classDef embedding fill:#fff8e1,stroke:#f57f17,stroke-width:2px;
+    classDef rerank fill:#fce4ec,stroke:#880e4f,stroke-width:2px;
+    classDef eval fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px;
+    classDef start fill:#f5f5f5,stroke:#424242,stroke-width:2px;
+
+    class LangGraph,LlamaIndex,Haystack,LangChain framework;
     class Pinecone,Milvus,Chroma,PGVector db;
+    class OpenAIEmb,BGEМ3,FineTune embedding;
+    class Cohere,BGEReranker rerank;
+    class RAGAS,LangSmith eval;
     class Start start;
 ```
 
@@ -172,11 +203,13 @@ Learn from production RAG implementations at scale. These companies have battle-
 
 ### Success Stories
 
-- [LinkedIn Engineering — Conversational Job Search](https://engineering.linkedin.com/blog)
-  - In-house vector DB + BERT embeddings + LLM fine-tuning for professional recommendations. Key insight: member-specific personalization at scale through context injection.
+- [LinkedIn — Approximate Nearest Neighbor Search at Scale (Galene)](https://engineering.linkedin.com/blog/2020/scaling-approximate-nearest-neighbor-search-with-galene)
+  - Custom ANN implementation (Galene) built on top of Lucene for professional recommendations at LinkedIn scale.
+    Key insight: a custom ANN layer on a battle-tested search engine outperforms a standalone vector DB when ranking signals are deeply domain-specific.
 
-- [Shopify Engineering — E-commerce Merchant Support](https://shopify.engineering/)
-  - LangChain + Chroma + GPT-3.5-Turbo chatbot for merchant support. Domain-specific fine-tuning significantly reduced hallucination rate (specific figures unverified — see [benchmarks.md](benchmarks.md#9-gaps--not-publicly-measured)).
+- [DoorDash — Personalized Store Feed with Vector Retrieval](https://doordash.engineering/2023/08/01/improving-store-feed-ranking-with-vector-retrieval/)
+  - Vector retrieval layer added to the store-feed ranking pipeline, reducing cold-start latency and improving personalization.
+    Demonstrates how retrieval augmentation integrates alongside traditional ranking signals in an existing production recommendation system.
 
 - [Discord — Message Search at Trillion Scale](https://discord.com/blog/how-discord-stores-trillions-of-messages)
   - Custom ANN search + Rust microservices + ScyllaDB for indexing and retrieving trillions of messages. Key insight: Rust-based infrastructure enables ANN search at this scale.
@@ -187,6 +220,8 @@ Learn from production RAG implementations at scale. These companies have battle-
 - Custom embedding models outperform off-the-shelf for domain-specific tasks.
 - Reranking is critical for precision (top-100 → top-5).
 - Extensive A/B testing on retrieval quality before LLM integration.
+
+> Full case studies, enterprise examples, and must-watch talks: [showcase.md](showcase.md).
 
 ---
 
@@ -232,6 +267,11 @@ Choose the right framework for your use case with this production-focused compar
   - A modular framework focused on production readiness. It emphasizes auditable
     pipelines, strict type-checking, and reproducibility, making it ideal for
     enterprise-grade RAG where reliability is paramount.
+- [LangChain](https://github.com/langchain-ai/langchain)
+  - The most widely adopted LLM orchestration library. Offers a broad ecosystem
+    of integrations (100+ LLMs, vector stores, tools) and a composable chain
+    abstraction that enables rapid prototyping; pair with LangSmith for
+    production observability and evaluation.
 - [LangGraph](https://github.com/langchain-ai/langgraph)
   - A library for building stateful, multi-actor applications with LLMs. Unlike
     simple chains, it enables cyclic graphs for complex, agentic workflows with
@@ -313,6 +353,54 @@ see [benchmarks.md §2](benchmarks.md#2-embeddings--retrieval) for a snapshot wi
 
 ---
 
+## Embedding Fine-tuning
+
+Generic MTEB rankings break down on domain-specific corpora (legal, medical, code,
+financial). Fine-tuning a base embedding model on your own labeled pairs consistently
+outperforms off-the-shelf models for in-domain retrieval — without the cost of
+training from scratch. See also: [rag-pitfalls.md — Embedding Model Selection](rag-pitfalls.md#embedding-model-selection).
+
+**When to fine-tune:**
+
+- Off-the-shelf MTEB leaders underperform on your internal evaluation set.
+- Your corpus uses specialized terminology not well represented in common pretraining data.
+- You have labeled retrieval pairs (query → relevant passage) or can generate them via LLM.
+
+| Tool | Approach | Best For |
+| :--- | :--- | :--- |
+| [sentence-transformers](https://github.com/UKPLab/sentence-transformers) | Contrastive / triplet / GISTEmbedLoss fine-tuning | General-purpose; widest community and integration support |
+| [FlagEmbedding](https://github.com/FlagOpen/FlagEmbedding) | BGE-family fine-tuning + LLAMA-based embeddings | BAAI BGE model variants; includes hard-negative mining utilities |
+| [SetFit](https://github.com/huggingface/setfit) | Few-shot contrastive fine-tuning | Low-data regime; strong results with as few as 8 labeled examples per class |
+| [Tevatron](https://github.com/texttron/tevatron) | Dense retrieval training framework (bi-encoder + reranker) | Research-grade pipelines; flexible loss functions and BEIR evaluation |
+| [RAGatouille](https://github.com/AnswerDotAI/RAGatouille) | Late-interaction ColBERT fine-tuning | When token-level late interaction improves recall vs. single-vector embeddings |
+
+- [sentence-transformers](https://github.com/UKPLab/sentence-transformers)
+  - The de-facto Python library for embedding model fine-tuning. Supports
+    contrastive, triplet, and GISTEmbed loss functions with native integration
+    into Hugging Face Hub. The `SentenceTransformerTrainer` API covers
+    most domain-adaptation use cases with minimal boilerplate.
+- [FlagEmbedding](https://github.com/FlagOpen/FlagEmbedding)
+  - BAAI's training toolkit for the BGE model family, including BGE-M3 and
+    LLM-based embedding variants. Ships with hard-negative mining scripts,
+    C-MTEB evaluation, and recipe configs for reproducing published BGE results.
+- [SetFit](https://github.com/huggingface/setfit)
+  - A few-shot fine-tuning framework built on sentence-transformers. Achieves
+    competitive retrieval quality with as few as 8–64 labeled examples per
+    class by combining contrastive fine-tuning with a lightweight classification
+    head. Ideal when labeled data is scarce.
+- [Tevatron](https://github.com/texttron/tevatron)
+  - A modular dense-retrieval training framework supporting bi-encoder and
+    cross-encoder architectures. Provides flexible loss functions (InfoNCE,
+    distillation), BEIR evaluation integration, and multi-GPU training — suited
+    for rigorous research-grade fine-tuning pipelines.
+- [RAGatouille](https://github.com/AnswerDotAI/RAGatouille)
+  - A Pythonic wrapper for ColBERT late-interaction models. Enables indexing,
+    retrieval, and fine-tuning of ColBERT-based models with a minimal API,
+    making token-level late-interaction retrieval accessible without deep
+    ColBERT infrastructure knowledge.
+
+---
+
 ## Vector Databases
 
 | Tool | Best For | Key Strength | Evidence |
@@ -325,6 +413,53 @@ see [benchmarks.md §2](benchmarks.md#2-embeddings--retrieval) for a snapshot wi
 | [Qdrant](https://github.com/qdrant/qdrant) | <50M vectors | Best filtering support and free tier. | [\[V\]](benchmarks.md#1-vector-databases) [\[3P\]](benchmarks.md#1-vector-databases) |
 | [Vespa](https://github.com/vespa-engine/vespa) | Web-scale hybrid serving | Battle-tested engine combining vector, tensor, text, and structured data at serving time and any scale. | — |
 | [Weaviate](https://github.com/weaviate/weaviate) | Hybrid Search | Native integration of vector and keyword search. | — |
+
+---
+
+## Data & Index Versioning
+
+Production RAG indices drift over time: embedding models are upgraded, schema
+changes reshape chunk boundaries, and knowledge bases grow. Without versioning,
+re-indexing becomes a high-risk, manual operation. These tools bring reproducible,
+auditable version control to datasets and vector indices — enabling safe rollbacks
+when a model change degrades retrieval quality.
+
+**When you need index versioning:**
+
+- Upgrading embedding models (dimension or tokenizer change requires full re-index).
+- Schema migrations that alter chunk boundaries or metadata fields.
+- Multi-environment pipelines (dev → staging → prod) requiring consistent index snapshots.
+- Audit requirements demanding traceability between document versions and retrieved answers.
+
+| Tool | Focus | Best For |
+| :--- | :--- | :--- |
+| [DVC](https://github.com/iterative/dvc) | Dataset & model versioning (Git-like) | Tracking raw data, embeddings, and model artifacts in a Git-compatible workflow |
+| [lakeFS](https://github.com/treeverse/lakeFS) | Git-for-data on object storage | Branching and merging large datasets on S3/GCS/Azure — zero-copy snapshots |
+| [Pachyderm](https://github.com/pachyderm/pachyderm) | Data-versioned pipeline orchestration | End-to-end provenance tracking across ingestion → embedding → index pipelines |
+| [Oxen](https://github.com/Oxen-AI/Oxen) | Fast dataset version control | ML dataset iteration with commit history, branching, and large-file support |
+
+- [DVC](https://github.com/iterative/dvc)
+  - A Git-compatible version control system for datasets, models, and
+    experiments. Track your raw documents, generated embeddings, and vector
+    index snapshots alongside code; reproduce any prior index state with
+    `dvc checkout`. Integrates with S3, GCS, Azure, and SSH remotes.
+- [lakeFS](https://github.com/treeverse/lakeFS)
+  - Git-for-data built on top of object storage (S3/GCS/Azure Blob). Supports
+    atomic commits, zero-copy branching, and merge conflict detection on large
+    datasets — enabling pre-production staging of a new index snapshot before
+    promoting to production. Also see LanceDB's built-in versioning for
+    vector-native branching (listed in [Vector Databases](#vector-databases)).
+- [Pachyderm](https://github.com/pachyderm/pachyderm)
+  - A data-versioned pipeline orchestration platform. Every pipeline run is
+    tied to an immutable data commit, giving full lineage from source document
+    to vector index to LLM response — critical for compliance-heavy domains.
+- [Oxen](https://github.com/Oxen-AI/Oxen)
+  - A fast dataset version control tool optimized for ML workflows. Supports
+    branching, commit history, and large-file handling with a CLI that mirrors
+    Git — useful for iterating rapidly on chunked document datasets without
+    object-storage overhead.
+
+---
 
 ## Chunking & Document Processing
 
@@ -963,6 +1098,54 @@ and often layers caching on top — without requiring per-provider changes to ap
 - Self-hosted gateways (LiteLLM, Portkey) add an extra network hop and a component to operate; invest in HA deployment if you route all traffic through them.
 - Managed gateways (OpenRouter, Cloudflare) simplify ops but add another vendor dependency and may introduce latency for non-edge traffic.
 - Gateway-level semantic caching has the same false-positive risk as application-level caching — tune thresholds carefully.
+
+---
+
+## FinOps & Cost Management
+
+Inference cost is often the largest operational expense in a production RAG system,
+yet it is frequently treated as an afterthought. FinOps for RAG means quantifying
+token spend per request, attributing costs to features or user segments, and
+choosing the right optimization levers (caching, model routing, chunking strategy)
+before — not after — cost becomes a budget crisis.
+
+**Key cost levers:**
+
+- **Token counting & estimation** — size prompts and retrieved context before sending
+  to an LLM to catch runaway costs early.
+- **Prompt + semantic caching** — the highest-ROI optimization; see
+  [Caching & Performance](#caching--performance).
+- **Model routing** — route simple queries to cheaper models (e.g., Haiku, Gemini Flash)
+  via an LLM gateway; see [LLM Gateways & Routing](#llm-gateways--routing).
+- **Usage metering** — per-user / per-feature cost attribution enables chargeback,
+  quota enforcement, and cost anomaly detection.
+
+| Tool | Focus | Best For |
+| :--- | :--- | :--- |
+| [tokencost](https://github.com/AgentOps-AI/tokencost) | Token counting & cost lookup | Pre-flight cost estimates across 400+ LLM models without a live API call |
+| [OpenMeter](https://github.com/openmeterio/openmeter) | Usage metering & billing | Per-user / per-feature metering with Stripe integration for usage-based billing |
+| [LiteLLM](https://github.com/BerriAI/litellm) | Gateway-level cost tracking | Multi-provider cost dashboard + per-route spend limits (see [LLM Gateways](#llm-gateways--routing)) |
+| [Helicone](https://github.com/Helicone/helicone) | Observability + cost attribution | Fine-grained token analytics per user, team, or feature (see [LLM Gateways](#llm-gateways--routing)) |
+
+- [tokencost](https://github.com/AgentOps-AI/tokencost)
+  - A lightweight Python library that counts tokens and looks up the current
+    price-per-token for 400+ LLM models without making a live API call. Useful
+    for pre-flight cost estimation in CI pipelines, budget guardrails, and
+    prompt optimization loops — ensure a context window fits a cost budget
+    before it reaches production.
+- [OpenMeter](https://github.com/openmeterio/openmeter)
+  - An open-source usage metering and billing platform. Ingests usage events
+    (token counts, API calls, compute seconds) and exposes per-customer,
+    per-feature aggregates — with Stripe integration for usage-based billing.
+    Critical for SaaS RAG products that need chargeback or quota enforcement
+    at the customer level.
+
+**Unit economics checklist:**
+
+- Establish a cost-per-query baseline before optimizing (use tokencost or gateway dashboards).
+- Set per-route spend limits in your LLM gateway to catch prompt-injection-driven cost spikes.
+- Monitor p95 context window size — retrieval bloat is the most common cause of unexpected spend.
+- Cache aggressively: even a 20% semantic cache hit rate can halve LLM call volume at steady state.
 
 ---
 
