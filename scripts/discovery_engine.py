@@ -103,6 +103,122 @@ def check_benchmark_freshness(repo_root: Path) -> None:
         log.error("Could not write freshness report: %s", exc)
 
 
+def check_listed_tool_freshness(repo_root: Path) -> None:
+    """Audit GitHub repos already listed in README.md for staleness.
+
+    Extracts all github.com/{owner}/{repo} URLs from README.md, queries the
+    GitHub API for each repo's last push date, and appends a warning table to
+    PROPOSED_UPDATES.md for any repo that hasn't been pushed to in the last
+    STALE_TOOL_DAYS days (aligned with CONTRIBUTING's 6-month activity rule).
+
+    Skips the repo's own organisation link and the canonical awesome-list badge.
+    Exits silently when README.md is absent or no stale tools are found.
+    """
+    STALE_TOOL_DAYS = 180  # 6 months — matches CONTRIBUTING Quality Standards
+
+    readme_path = repo_root / "README.md"
+    if not readme_path.exists():
+        return
+
+    github_token: str | None = os.getenv("GITHUB_TOKEN")
+    headers = {"Accept": "application/vnd.github.v3+json"}
+    if github_token:
+        headers["Authorization"] = f"token {github_token}"
+
+    # Extract unique github.com/{owner}/{repo} pairs from README
+    url_pattern = re.compile(
+        r"github\.com/([\w.\-]+)/([\w.\-]+?)(?:[/?#\s\)\]\"']|$)"
+    )
+
+    # Owners / repos to skip (self-refs and well-known non-tool links)
+    SKIP_OWNERS = {"Yigtwxx", "sindresorhus", "github", "actions"}
+    SKIP_REPOS = {"awesome", "awesome-list", ".github"}
+
+    seen: set[tuple[str, str]] = set()
+    try:
+        readme_text = readme_path.read_text(encoding="utf-8")
+    except OSError as exc:
+        log.warning("Tool freshness check skipped (cannot read README): %s", exc)
+        return
+
+    for owner, repo in url_pattern.findall(readme_text):
+        # Strip trailing punctuation that regex may have captured
+        repo = repo.rstrip(".,;:")
+        if not owner or not repo:
+            continue
+        if owner in SKIP_OWNERS or repo in SKIP_REPOS:
+            continue
+        seen.add((owner, repo))
+
+    if not seen:
+        log.info("Tool freshness check: no external GitHub repos found in README.")
+        return
+
+    log.info("Tool freshness check: auditing %d listed repos …", len(seen))
+
+    today = datetime.date.today()
+    stale_threshold = today - datetime.timedelta(days=STALE_TOOL_DAYS)
+    stale_tools: list[tuple[str, str, int]] = []  # (owner/repo, url, days_since_push)
+
+    session = _build_session()
+    for owner, repo in sorted(seen):
+        api_url = f"https://api.github.com/repos/{owner}/{repo}"
+        try:
+            response = session.get(api_url, headers=headers, timeout=15)
+            if response.status_code == 404:
+                # Repo deleted or renamed — flag it
+                stale_tools.append((f"{owner}/{repo}", f"https://github.com/{owner}/{repo}", -1))
+                log.warning("Listed repo not found (404): %s/%s", owner, repo)
+                continue
+            response.raise_for_status()
+            data: dict = response.json()
+        except requests.RequestException as exc:
+            log.warning("Tool freshness: skipping %s/%s (%s)", owner, repo, exc)
+            continue
+
+        pushed_raw: str = (data.get("pushed_at") or "")[:10]
+        if not pushed_raw:
+            continue
+        try:
+            pushed_date = datetime.date.fromisoformat(pushed_raw)
+        except ValueError:
+            continue
+
+        if pushed_date < stale_threshold:
+            days_old = (today - pushed_date).days
+            stale_tools.append((f"{owner}/{repo}", f"https://github.com/{owner}/{repo}", days_old))
+            log.info("Stale listed tool: %s/%s (%d days since last push)", owner, repo, days_old)
+
+    remaining = response.headers.get("X-RateLimit-Remaining", "?") if seen else "?"  # type: ignore[possibly-undefined]
+    log.info("GitHub API rate limit remaining after tool audit: %s", remaining)
+
+    if not stale_tools:
+        log.info("Tool freshness check: all listed repos are current.")
+        return
+
+    output_path = repo_root / ".github" / "PROPOSED_UPDATES.md"
+    try:
+        with output_path.open("a", encoding="utf-8") as fh:
+            fh.write(f"\n\n## Stale Listed Tools (>{STALE_TOOL_DAYS} days since last push)\n\n")
+            fh.write(
+                f"> Detected {len(stale_tools)} repo(s) in `README.md` that have not been "
+                f"pushed to in over {STALE_TOOL_DAYS} days. Verify each is still maintained "
+                f"per [CONTRIBUTING Quality Standards](../CONTRIBUTING.md#quality-standards). "
+                f"Consider adding a `(deprecated — use X)` note or opening a removal PR.\n\n"
+            )
+            fh.write("| Repo | Days Since Last Push | URL |\n")
+            fh.write("| :--- | :--- | :--- |\n")
+            for slug, url, days in stale_tools:
+                days_str = str(days) if days >= 0 else "**404 — not found**"
+                fh.write(f"| {slug} | {days_str} | {url} |\n")
+        log.warning(
+            "Tool freshness: %d stale/missing repo(s) flagged in PROPOSED_UPDATES.md",
+            len(stale_tools),
+        )
+    except OSError as exc:
+        log.error("Could not write tool freshness report: %s", exc)
+
+
 def run_discovery() -> None:
     """Fetch trending RAG repositories from GitHub and write a discovery report.
 
@@ -164,6 +280,14 @@ def run_discovery() -> None:
         fh.write(
             f"> **Filters:** Stars >= {MIN_STARS}, updated in the last {DAYS_LIMIT} days.\n\n"
         )
+        fh.write(
+            "> **Triage note:** These are raw candidate repos surfaced by automated discovery.\n"
+            "> Many (e.g. dify, Flowise, anything-llm, open-webui) are end-user applications,\n"
+            "> not production infrastructure libraries. Do **not** add to the list without a\n"
+            "> separate triage review against\n"
+            "> [CONTRIBUTING Quality Standards](../CONTRIBUTING.md#quality-standards)\n"
+            "> and the Evidence Tier policy.\n\n"
+        )
         fh.write("| Project | Stars | Description | Last Update |\n")
         fh.write("| :--- | :--- | :--- | :--- |\n")
 
@@ -182,6 +306,7 @@ def run_discovery() -> None:
 
     log.info("Discovery complete — %d projects written to %s", len(projects), output_path)
     check_benchmark_freshness(REPO_ROOT)
+    check_listed_tool_freshness(REPO_ROOT)
 
 
 if __name__ == "__main__":
