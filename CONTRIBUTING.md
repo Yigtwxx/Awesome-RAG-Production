@@ -21,6 +21,34 @@ accepted, a resource must meet the following criteria:
 
 ---
 
+## Removal & Deprecation Policy
+
+A resource may be flagged for removal or deprecation when any of the following apply:
+
+1. **Inactivity:** The repository has not received a commit in 6+ months (mirrors the
+   Activity criterion in Quality Standards above).
+2. **Archived or deleted:** The upstream repository is archived on GitHub or the URL
+   returns 404 / has moved without a redirect.
+3. **Superseded:** A clearly superior, actively maintained alternative exists and the
+   original resource adds no unique production value.
+4. **Evidence retracted:** A numeric claim underpinning the listing has been publicly
+   disputed or its source withdrawn, and no replacement evidence is available.
+
+**Process:**
+
+- The weekly [discovery_engine](scripts/discovery_engine.py) automatically flags
+  listed repos that exceed 180 days without a push into
+  `.github/PROPOSED_UPDATES.md` under the "Stale Listed Tools" section.
+- A maintainer reviews flagged entries and either (a) confirms the tool is still
+  maintained (e.g., stable release cadence) and updates the flag threshold, or
+  (b) opens a PR to remove or annotate the entry.
+- **Soft deprecation** (preferred for widely referenced tools): add a note inline —
+  `(deprecated — use [Replacement](url))` — and keep the entry for historical
+  reference. Hard removal is reserved for dead links and archived repos.
+- Any community member may open a `removal` issue using the issue template.
+
+---
+
 ## How to Contribute
 
 Please follow these steps to propose a change:
