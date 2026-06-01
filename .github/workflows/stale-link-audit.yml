@@ -1,0 +1,99 @@
+name: Stale Link Audit
+
+on:
+  schedule:
+    # Every Monday at 07:00 UTC (10:00 Istanbul time, UTC+3).
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Run lychee
+        id: lychee
+        uses: lycheeverse/lychee-action@f796c8b7d468feb9b8c0a46da3fac0af6874d374 # v2.2.0
+        with:
+          args: >-
+            --verbose
+            --no-progress
+            --user-agent "Mozilla/5.0 (compatible; GitHub Actions Link Checker)"
+            --max-retries 3
+            --retry-wait-time 5
+            --timeout 30
+            --accept 200,204,301,302,307,308,403,429
+            --exclude 'sebastianraschka.com'
+            --exclude 'hastie.su.domains'
+            --exclude 'openai.com'
+            --exclude 'towardsdatascience.com'
+            --exclude 'medium.com'
+            --exclude 'doordash.engineering'
+            --exclude 'engineering.linkedin.com'
+            --exclude 'shopify.engineering'
+            --exclude 'anthropic.com'
+            --exclude 'discord.com'
+            --exclude 'perplexity.ai'
+            --exclude 'notion.com'
+            --exclude 'airbnb.com'
+            --exclude 'stripe.com'
+            --exclude 'aima.cs.berkeley.edu'
+            --exclude 'amazon.com'
+            '*.md' '**/*.md'
+          # Broken links never gate the workflow — they are surfaced via the tracking issue.
+          fail: false
+          output: ./lychee/out.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Open or update tracking issue on failure
+        if: steps.lychee.outputs.exit_code != 0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          MONTH=$(date +%Y-%m)
+
+          # Ensure the tracking label exists (idempotent — no-op if already present).
+          # FIX: create label before use so 'could not add label: stale-links not found' never occurs.
+          gh label create "stale-links" \
+            --repo "$GH_REPO" \
+            --description "Tracking issue for stale/broken links found by the weekly audit" \
+            --color "D93F0B" \
+            --force
+
+          TITLE="Stale Link Audit — $MONTH"
+
+          # Find an existing open tracking issue for this month, or create one.
+          ISSUE_NUM=$(gh issue list \
+            --repo "$GH_REPO" \
+            --label "stale-links" \
+            --state open \
+            --search "$TITLE" \
+            --json number \
+            --jq '.[0].number // empty')
+
+          REPORT_BODY="$(cat ./lychee/out.md 2>/dev/null || echo '_(lychee report not found)_')"
+
+          if [ -z "$ISSUE_NUM" ]; then
+            gh issue create \
+              --repo "$GH_REPO" \
+              --title "$TITLE" \
+              --label "stale-links" \
+              --body "Weekly stale-link audit detected broken URLs. Full lychee report below.
+
+$REPORT_BODY"
+          else
+            gh issue comment "$ISSUE_NUM" \
+              --repo "$GH_REPO" \
+              --body "**Re-run** $(date +%Y-%m-%d): broken URLs still detected.
+
+$REPORT_BODY"
+          fi
