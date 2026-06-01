@@ -80,20 +80,27 @@ jobs:
             --json number \
             --jq '.[0].number // empty')
 
-          REPORT_BODY="$(cat ./lychee/out.md 2>/dev/null || echo '_(lychee report not found)_')"
+          # Build body files to avoid multi-line string quoting issues in YAML.
+          {
+            echo "Weekly stale-link audit detected broken URLs. Full lychee report below."
+            echo
+            cat ./lychee/out.md 2>/dev/null || echo "_(lychee report not found)_"
+          } > /tmp/issue-body.md
+
+          {
+            echo "**Re-run** $(date +%Y-%m-%d): broken URLs still detected."
+            echo
+            cat ./lychee/out.md 2>/dev/null || echo "_(lychee report not found)_"
+          } > /tmp/comment-body.md
 
           if [ -z "$ISSUE_NUM" ]; then
             gh issue create \
               --repo "$GH_REPO" \
               --title "$TITLE" \
               --label "stale-links" \
-              --body "Weekly stale-link audit detected broken URLs. Full lychee report below.
-
-$REPORT_BODY"
+              --body-file /tmp/issue-body.md
           else
             gh issue comment "$ISSUE_NUM" \
               --repo "$GH_REPO" \
-              --body "**Re-run** $(date +%Y-%m-%d): broken URLs still detected.
-
-$REPORT_BODY"
+              --body-file /tmp/comment-body.md
           fi
