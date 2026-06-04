@@ -1060,6 +1060,7 @@ and often layers caching on top — without requiring per-provider changes to ap
 | [Helicone](https://github.com/Helicone/helicone) | Self-host / Cloud | OpenAI + Anthropic | Built-in | Fine-grained token analytics | Cost optimization and prompt versioning |
 | [OpenRouter](https://openrouter.ai/) | Managed | 100+ models | — | Per-request | Unified model marketplace, no infra |
 | [Cloudflare AI Gateway](https://developers.cloudflare.com/ai-gateway/) | Managed (edge) | Major providers | Built-in | Real-time analytics | Edge-deployed, global routing |
+| [FerryAPI](https://www.ferryapi.io/) | Managed | OpenAI-compatible models | — | Usage billing | Low-cost OpenAI-compatible gateway for production apps |
 
 - [LiteLLM](https://github.com/BerriAI/litellm)
   - An OpenAI-compatible proxy and SDK wrapper supporting 100+ LLM providers
@@ -1085,6 +1086,10 @@ and often layers caching on top — without requiring per-provider changes to ap
     caching, rate limiting, and real-time analytics with sub-millisecond routing
     overhead; suitable for globally distributed applications where gateway latency
     is a constraint.
+- [FerryAPI](https://www.ferryapi.io/)
+  - A managed OpenAI-compatible AI API gateway for production apps that need
+    lower-cost model access, prepaid balance management, usage billing, and
+    customer API key management without changing existing OpenAI SDK clients.
 
 **When to Use an LLM Gateway:**
 
@@ -1126,6 +1131,7 @@ before — not after — cost becomes a budget crisis.
 | [OpenMeter](https://github.com/openmeterio/openmeter) | Usage metering & billing | Per-user / per-feature metering with Stripe integration for usage-based billing |
 | [LiteLLM](https://github.com/BerriAI/litellm) | Gateway-level cost tracking | Multi-provider cost dashboard + per-route spend limits (see [LLM Gateways](#llm-gateways--routing)) |
 | [Helicone](https://github.com/Helicone/helicone) | Observability + cost attribution | Fine-grained token analytics per user, team, or feature (see [LLM Gateways](#llm-gateways--routing)) |
+| [FerryAPI](https://www.ferryapi.io/) | Managed gateway billing | OpenAI-compatible API access with prepaid balance, usage billing, and customer API key management |
 
 - [tokencost](https://github.com/AgentOps-AI/tokencost)
   - A lightweight Python library that counts tokens and looks up the current
