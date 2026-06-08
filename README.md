@@ -1026,6 +1026,11 @@ different bottleneck — deploying them in combination yields compounding return
 
 ## Security & Compliance
 
+- [TWZRD Agent Intel](https://intel.twzrd.xyz)
+  - Trust scoring and identity verification for AI agents via a free MCP server. Provides
+    `score_agent(wallet)` and `preflight_check(wallet)` tools to verify Solana wallet
+    identity before agents access paid RAG endpoints or vector search services.
+    Config: `{"mcpServers":{"twzrd-agent-intel":{"url":"https://intel.twzrd.xyz/mcp"}}}`
 - [Lakera Guard](https://www.lakera.ai/)
   - A low-latency security API that protects applications against prompt
     injections, data leakage, and toxic content in real-time. It acts as an
