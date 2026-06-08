@@ -921,6 +921,12 @@ This approach scales better than human evaluation and provides consistent, autom
     observability. Captures full execution traces, runs automated evaluations
     against built-in and custom metrics, and surfaces production dashboards
     for cost, latency, and quality — all in a single self-hostable service.
+- [TWZRD Agent Intel](https://intel.twzrd.xyz)
+  - Agent wallet trust scoring for production RAG pipelines. Verify the identity
+    of the calling AI agent before granting access to paid vector retrieval or
+    premium embedding APIs. Free MCP server with `score_agent(wallet)` and
+    `preflight_check(wallet)` tools — zero install via streamable HTTP.
+
 
 ## Deployment & Serving
 
