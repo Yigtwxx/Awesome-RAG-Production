@@ -21,7 +21,7 @@ Whether you're building semantic search, question-answering systems, or AI-power
 vector databases, evaluation tools, and observability solutions for **production RAG deployments**.
 Focus on the **Engineering** side of AI—from data ingestion and retrieval optimization to monitoring, security, and deployment strategies for real-world LLM applications.
 
-[Contribution Guide](CONTRIBUTING.md) · [Explore Categories](#contents) · [Report Bug](https://github.com/Yigtwxx/Awesome-RAG-Production/issues)
+[Contribution Guide](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Explore Categories](#contents) · [Report Bug](https://github.com/Yigtwxx/Awesome-RAG-Production/issues)
 
 ---
 
@@ -58,6 +58,9 @@ Focus on the **Engineering** side of AI—from data ingestion and retrieval opti
 - [Tutorials & Hands-on Code](#tutorials--hands-on-code)
 - [Recommended Resources (Books & Blogs)](#recommended-resources)
 - [Contributing](CONTRIBUTING.md)
+- [FAQ](FAQ.md)
+- [Changelog](CHANGELOG.md)
+- [Roadmap](ROADMAP.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [License](#license)
 
@@ -1214,6 +1217,10 @@ the list itself.
 
 Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md)
 file for guidelines on how to submit a new resource.
+
+Wondering why a popular tool is not listed? See the [FAQ](FAQ.md). Recent
+changes are tracked in the [Changelog](CHANGELOG.md), and planned work lives
+in the [Roadmap](ROADMAP.md).
 
 ---
 
