@@ -56,7 +56,8 @@ Please follow these steps to propose a change:
 ### 1. Search First
 
 Before adding a new resource, please check if it is already in the list or if a
-similar PR is already open.
+similar PR is already open. Also check the [FAQ](FAQ.md) — it explains why some
+popular tools (for example, end-user chat platforms) are intentionally not listed.
 
 ### 2. Fork and Branch
 
