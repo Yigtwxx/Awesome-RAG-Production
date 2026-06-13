@@ -1171,6 +1171,10 @@ own environment.
   - A comprehensive notebook series covering advanced RAG techniques end to end —
     from adaptive retrieval and hybrid search to corrective RAG, self-RAG, and
     agentic pipelines — with annotated, runnable code for each pattern.
+- [greynewell/rag-architect](https://github.com/greynewell/rag-architect)
+  - Hermes Agent profile and template pack for production RAG architecture:
+    ADRs, Pinecone namespace reviews, evaluation plans, observability specs, and
+    implementation-ready GitHub issue templates.
 
 ---
 
