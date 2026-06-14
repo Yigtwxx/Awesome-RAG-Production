@@ -907,6 +907,11 @@ This approach scales better than human evaluation and provides consistent, autom
   - A tool specifically designed for troubleshooting retrieval issues. It
     visualizes your embedding clusters and retrieved document rankings, helping
     you understand *why* the model retrieved irrelevant context.
+- [Future AGI](https://github.com/future-agi/future-agi)
+  - Open-source platform for evaluating, tracing, and guardrailing RAG and agent
+    apps. Captures OpenTelemetry-native traces, runs 70+ eval metrics and
+    LLM-as-judge for retrieval and answer quality, and adds runtime guardrails
+    for hallucination, PII, and prompt injection. Self-hostable. Apache-2.0.
 - [Langfuse](https://github.com/langfuse/langfuse)
   - An open-source engineering platform for LLM observability. It captures full
     execution traces (latency, token usage, cost) and allows for "Prompt
