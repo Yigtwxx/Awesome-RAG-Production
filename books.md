@@ -4,6 +4,12 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
 
 ## Retrieval Augmented Generation (RAG)
 
+- [Advanced RAG Patterns (Free eBook)](https://futureagi.com/ebooks/advanced-rag-patterns/)
+  - Architecture patterns for reliable enterprise-scale RAG: hybrid retrieval, vector
+    search optimization, hallucination detection, and common failure modes.
+- [The Agentic RAG Playbook (Free eBook)](https://futureagi.com/ebooks/mastering-agentic-rag/)
+  - Production-ready agentic RAG patterns with measurable business outcomes.
+
 - [Building LLMs for Production](https://towardsai.net/book)
   - Louis-François Bouchard, Louie Peters (2024). End-to-end LLM engineering
     with substantial coverage of retrieval pipelines, chunking strategies, and
