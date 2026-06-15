@@ -16,7 +16,14 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
   - Keith Bourne (2024). Building retrieval-augmented systems with attention
     to vector stores, evaluation, governance, and security — written from a
     production-readiness lens.
-
+- [Advanced RAG Patterns](https://futureagi.com/ebooks/advanced-rag-patterns/)
+  - A free eBook on architecture patterns for reliable enterprise-scale RAG:
+    hybrid retrieval, vector search optimization, hallucination detection, and
+    common RAG failure modes.
+- [The Agentic RAG Playbook](https://futureagi.com/ebooks/mastering-agentic-rag/)
+  - A free eBook with production-ready agentic RAG patterns and measurable
+    business outcomes.
+    
 ## Deep Learning (DL) & NLP
 
 - [Deep Learning](https://www.deeplearningbook.org/)
@@ -40,6 +47,9 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
 - [The LLM Engineering Handbook](https://www.packtpub.com/product/the-llm-engineering-handbook/9781836200079)
   - Paul Iusztin, Maxime Labonne (2024). A practical guide for building,
     deploying, and scaling large language model-based applications.
+- [Mastering AI Agent Evaluation](https://futureagi.com/mastering-ai-agent-evaluation)
+  - A free eBook of evaluation playbooks for agent failure modes (planning,
+    memory, tool use) and high-stakes production deployment.
 
 ## Machine Learning (ML) & Data Science
 
