@@ -322,6 +322,12 @@ Choose the right framework for your use case with this production-focused compar
 - [OmniParse](https://github.com/adithya-s-k/omniparse)
   - Universal parser for ingesting any data type (documents, multimedia, web)
     into RAG-ready formats.
+- [Superhighway](https://superhighway.walls.sh)
+  - Web search API for AI pipelines, exposing search, news, images, scrape, and
+    research endpoints. Pulls fresh, LLM-ready content from the live web to
+    augment a static corpus or ground retrieval in real-time results
+    ([RAG guide](https://superhighway.walls.sh/guides/web-search-rag)). Auth with
+    a free API key or x402 USDC pay-per-call.
 - [Unstructured](https://github.com/Unstructured-IO/unstructured)
   - Open-source pipelines for preprocessing complex, unstructured data.
 
