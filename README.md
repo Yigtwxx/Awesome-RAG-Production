@@ -537,6 +537,13 @@ zero-shot retrieval performance.
     easy to use. ColBERT offers fine-grained token-level matching, providing
     superior retrieval quality compared to standard single-vector dense
     retrieval.
+- [Superhighway Web Search API](https://superhighway.walls.sh)
+  - Web search API for AI agents: search, news, images, scrape, and research
+    endpoints. The guide
+    [Hybrid RAG Router — routing between web search and vector store](https://superhighway.walls.sh/guides/web-search-hybrid-rag-router)
+    covers a keyword classifier, an LLM-based router, and a LangChain LCEL
+    pipeline that queries both a vector store and live web search and merges
+    the context. Pay-per-call with USDC via x402 or free API key.
 
 **GraphRAG:**
 
