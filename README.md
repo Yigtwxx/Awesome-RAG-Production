@@ -13,7 +13,7 @@
 [![Link Check](https://github.com/Yigtwxx/Awesome-RAG-Production/actions/workflows/link-check.yml/badge.svg)](https://github.com/Yigtwxx/Awesome-RAG-Production/actions/workflows/link-check.yml)
 [![Weekly Discovery](https://github.com/Yigtwxx/Awesome-RAG-Production/actions/workflows/discovery.yml/badge.svg)](https://github.com/Yigtwxx/Awesome-RAG-Production/actions/workflows/discovery.yml)
 
-*Last reviewed: 2026-05-30 · Freshness audited weekly via [discovery\_engine](scripts/discovery_engine.py)*
+*Last reviewed: 2026-06-17 · Freshness audited weekly via [discovery\_engine](scripts/discovery_engine.py)*
 
 **Retrieval-Augmented Generation (RAG)** is revolutionizing how LLMs access and utilize external knowledge.
 This repository bridges the gap between prototype RAG tutorials and **production-grade systems** at scale.
