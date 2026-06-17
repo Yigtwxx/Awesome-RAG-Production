@@ -411,6 +411,7 @@ training from scratch. See also: [rag-pitfalls.md — Embedding Model Selection]
 | [Chroma](https://github.com/chroma-core/chroma) | Local/Dev & Mid-scale | Developer-friendly, open-source embedding database. | — |
 | [LanceDB](https://github.com/lancedb/lancedb) | Serverless & multimodal | Embedded, serverless vector DB with native multimodal support; no separate server required. | — |
 | [Milvus](https://github.com/milvus-io/milvus) | Billions of vectors | Most popular OSS for massive scale. | [\[V\]](benchmarks.md#1-vector-databases) |
+| [Omnigraph](https://github.com/ModernRelay/omnigraph) | Graph + vector + BM25 hybrid | Typed graph database where agents branch and merge like Git; S3-native, Rust, with traversal + vector + BM25 in one runtime. | — |
 | [pgvector](https://github.com/pgvector/pgvector) | PostgreSQL Ecosystem | Vector search capability directly within PostgreSQL. | — |
 | [Pinecone](https://www.pinecone.io/) | 10M-100M+ vectors | Zero-ops, serverless architecture. | — |
 | [Qdrant](https://github.com/qdrant/qdrant) | <50M vectors | Best filtering support and free tier. | [\[V\]](benchmarks.md#1-vector-databases) [\[3P\]](benchmarks.md#1-vector-databases) |
