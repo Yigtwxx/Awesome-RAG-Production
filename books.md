@@ -16,6 +16,10 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
   - Keith Bourne (2024). Building retrieval-augmented systems with attention
     to vector stores, evaluation, governance, and security — written from a
     production-readiness lens.
+- [RAG Made Simple: The Complete Visual Guide to Retrieval-Augmented Generation](https://diamant-ai.com/rag-made-simple)
+  - Nir Diamant (2025). A visual, code-free walkthrough of 22 RAG techniques
+    using diagrams and analogies, covering retrieval, chunking, reranking, and
+    evaluation for engineers and product teams new to RAG.
 
 ## Deep Learning (DL) & NLP
 
