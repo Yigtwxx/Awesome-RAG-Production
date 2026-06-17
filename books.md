@@ -8,6 +8,10 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
   - Louis-François Bouchard, Louie Peters (2024). End-to-end LLM engineering
     with substantial coverage of retrieval pipelines, chunking strategies, and
     RAG evaluation in production settings.
+- [RAG Made Simple: The Complete Visual Guide to Retrieval-Augmented Generation](https://diamant-ai.com/rag-made-simple)
+  - Nir Diamant (2025). A visual, code-free walkthrough of 22 RAG techniques
+    using diagrams and analogies, covering retrieval, chunking, reranking, and
+    evaluation for engineers and product teams new to RAG.
 - [RAG-Driven Generative AI](https://www.packtpub.com/en-us/product/rag-driven-generative-ai-9781836200918)
   - Denis Rothman (2024). Hands-on construction of RAG systems with vector
     stores, knowledge graphs, and LlamaIndex, focused on practical
@@ -16,10 +20,6 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
   - Keith Bourne (2024). Building retrieval-augmented systems with attention
     to vector stores, evaluation, governance, and security — written from a
     production-readiness lens.
-- [RAG Made Simple: The Complete Visual Guide to Retrieval-Augmented Generation](https://diamant-ai.com/rag-made-simple)
-  - Nir Diamant (2025). A visual, code-free walkthrough of 22 RAG techniques
-    using diagrams and analogies, covering retrieval, chunking, reranking, and
-    evaluation for engineers and product teams new to RAG.
 
 ## Deep Learning (DL) & NLP
 
