@@ -29,6 +29,6 @@ Thumbs.db
 .idea/
 shared-docs/
 
-# mkdocs-material: generated docs staging dir + build output
-docs/
-site/
+# mkdocs-material: generated docs staging dir + build output (under docs-site/)
+docs-site/docs/
+docs-site/site/

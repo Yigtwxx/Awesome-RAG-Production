@@ -31,6 +31,7 @@
         "awesome-*/**",
         "Awesome-*/**",
         ".github/**",
-        "scripts/**"
+        "scripts/**",
+        "docs-site/**"
     ]
 }

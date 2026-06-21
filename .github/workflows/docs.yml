@@ -5,14 +5,12 @@ on:
     branches: [main]
     paths:
       - '**/*.md'
-      - 'mkdocs.yml'
-      - 'requirements-docs.txt'
+      - 'docs-site/**'
       - '.github/workflows/docs.yml'
   pull_request:
     paths:
       - '**/*.md'
-      - 'mkdocs.yml'
-      - 'requirements-docs.txt'
+      - 'docs-site/**'
       - '.github/workflows/docs.yml'
   workflow_dispatch:
 
@@ -39,13 +37,13 @@ jobs:
           python-version: '3.12'
 
       - name: Install Dependencies
-        run: pip install -r requirements-docs.txt
+        run: pip install -r docs-site/requirements.txt
 
       - name: Stage Docs
-        run: bash scripts/stage_docs.sh
+        run: bash docs-site/stage_docs.sh
 
       - name: Build Site
-        run: mkdocs build --verbose
+        run: mkdocs build -f docs-site/mkdocs.yml --verbose
 
       - name: Configure Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
@@ -55,7 +53,7 @@ jobs:
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
-          path: site
+          path: docs-site/site
 
   deploy:
     needs: build

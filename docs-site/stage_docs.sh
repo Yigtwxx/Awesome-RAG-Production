@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
-# Stage the repository's root markdown into ./docs for the mkdocs build.
+# Stage the repository's root markdown into docs-site/docs for the mkdocs build.
 # The canonical source files stay at the repo root (README.md remains the repo's
-# primary file); ./docs is generated and gitignored. mkdocs treats README.md as
-# the section index, so the home page and all relative links resolve unchanged.
+# primary file); docs-site/docs is generated and gitignored. mkdocs treats
+# README.md as the section index, so the home page and all relative links resolve
+# unchanged.
 set -euo pipefail
 
-cd "$(dirname "$0")/.."
+# Repo root is one level up from this script (docs-site/).
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+STAGE="$ROOT/docs-site/docs"
 
-rm -rf docs
-mkdir -p docs
+rm -rf "$STAGE"
+mkdir -p "$STAGE"
 
 # Files published on the site (REPO-ANALIZ.md is intentionally excluded — it is
 # an internal audit). LICENSE is copied so the README's license link resolves.
@@ -30,11 +33,11 @@ PAGES=(
 )
 
 for f in "${PAGES[@]}"; do
-  if [ -f "$f" ]; then
-    cp "$f" "docs/$f"
+  if [ -f "$ROOT/$f" ]; then
+    cp "$ROOT/$f" "$STAGE/$f"
   else
     echo "stage_docs: warning — '$f' not found, skipping" >&2
   fi
 done
 
-echo "stage_docs: staged ${#PAGES[@]} files into ./docs"
+echo "stage_docs: staged ${#PAGES[@]} files into docs-site/docs"
