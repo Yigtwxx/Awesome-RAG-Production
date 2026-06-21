@@ -69,7 +69,8 @@ Focus on the **Engineering** side of AI—from data ingestion and retrieval opti
 ## Decision Guide: How to Choose
 
 Not sure where to start? Use this high-level decision tree to pick the right
-tools for your scale and use case.
+tools across the pipeline — framework, vector database, embedding model,
+reranker, chunking strategy, and evaluation — for your scale and use case.
 
 ```mermaid
 graph TD
@@ -90,14 +91,26 @@ graph TD
 
     %% Embedding Model Selection
     UseCase --> Emb{Embedding model?}
-    Emb -->|API / General English| OpenAIEmb[text-embedding-3-large]
-    Emb -->|Open-weight / Multilingual| BGEМ3[BGE-M3]
-    Emb -->|Domain-specific corpus| FineTune[Fine-tune with sentence-transformers]
+    Emb -->|Domain-specific corpus| FineTune["Fine-tune w/ sentence-transformers"]
+    Emb -->|Multilingual| MultiEmb["BGE-M3 / Cohere embed-v4 / Jina v3"]
+    Emb -->|Long docs, 8k+ tokens| Voyage["Voyage voyage-3 32k ctx"]
+    Emb -->|General English, managed API| OpenAIEmb["OpenAI text-embedding-3-large"]
+    Emb -->|Open-weight / self-host| SelfEmb["BGE-M3 / Nomic"]
 
     %% Reranking
-    UseCase --> Rerank{Need precision boost?}
-    Rerank -->|Cross-encoder reranking| Cohere[Cohere Rerank]
-    Rerank -->|Self-hosted reranking| BGEReranker[BGE Reranker]
+    UseCase --> Rerank{Add a reranker?}
+    Rerank -->|Managed API| Cohere["Cohere Rerank"]
+    Rerank -->|Self-host, top quality| BGEReranker["BGE-Reranker v2-m3"]
+    Rerank -->|CPU / serverless| FlashRank["FlashRank"]
+    Rerank -->|Late interaction| ColBERT["RAGatouille / ColBERT"]
+
+    %% Chunking Strategy
+    UseCase --> Chunk{Chunking strategy?}
+    Chunk -->|Baseline / uniform text| FixedChunk["Fixed-size token"]
+    Chunk -->|General mixed text| RecurChunk["Recursive split"]
+    Chunk -->|Heterogeneous density| SemChunk["Semantic chunking"]
+    Chunk -->|PDF / tables / code / HTML| DocChunk["Doc-type aware + Unstructured"]
+    Chunk -->|Multi-hop retrieval| HierChunk["Hierarchical small-to-big"]
 
     %% Evaluation
     UseCase --> Eval{How to evaluate?}
@@ -109,13 +122,15 @@ graph TD
     classDef db fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
     classDef embedding fill:#fff8e1,stroke:#f57f17,stroke-width:2px;
     classDef rerank fill:#fce4ec,stroke:#880e4f,stroke-width:2px;
+    classDef chunk fill:#e0f2f1,stroke:#004d40,stroke-width:2px;
     classDef eval fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px;
     classDef start fill:#f5f5f5,stroke:#424242,stroke-width:2px;
 
     class LangGraph,LlamaIndex,Haystack,LangChain framework;
     class Pinecone,Milvus,Chroma,PGVector db;
-    class OpenAIEmb,BGEМ3,FineTune embedding;
-    class Cohere,BGEReranker rerank;
+    class OpenAIEmb,MultiEmb,Voyage,FineTune,SelfEmb embedding;
+    class Cohere,BGEReranker,FlashRank,ColBERT rerank;
+    class FixedChunk,RecurChunk,SemChunk,DocChunk,HierChunk chunk;
     class RAGAS,LangSmith eval;
     class Start start;
 ```
