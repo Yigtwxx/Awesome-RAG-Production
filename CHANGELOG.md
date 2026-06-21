@@ -9,6 +9,8 @@ tracked in [ROADMAP.md](ROADMAP.md).
 
 ### Added
 
+- New tools: Omnigraph (Vector Databases), psql_bm25s (Retrieval & Reranking), KB Arena (Evaluation & Benchmarking), and Future AGI (Observability & Tracing).
+- RAG Made Simple added to the RAG section of the recommended books list ([books.md](books.md)).
 - FAQ ([FAQ.md](FAQ.md)) answering the most common scope, evidence, and contribution questions.
 - This changelog ([CHANGELOG.md](CHANGELOG.md)) and a public roadmap ([ROADMAP.md](ROADMAP.md)).
 - Internal repository audit (REPO-ANALIZ.md) with a re-scored 2026-06-12 review.
