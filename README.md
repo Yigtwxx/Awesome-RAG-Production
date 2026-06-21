@@ -851,6 +851,12 @@ Groundedness, and Answer Relevance.
   - The "Pytest for LLMs". It offers a unit-testing framework for RAG,
     integrating seamlessly into CI/CD pipelines to catch regressions in retrieval
     quality or hallucination rates before deployment.
+- [hitgate](https://github.com/LucasSantana-Dev/evidence-first-rag)
+  - A **label-free retrieval-ranking regression gate**: scores Hit@K / MRR for *any*
+    retriever over your own corpus, freezes a baseline, and fails CI on a >5pp drop — no
+    labeled data, no LLM judge. Complements LLM-as-judge tools (Ragas/DeepEval) by catching
+    *retrieval* drift directly in CI. Reproducible across [70 real repos](https://github.com/LucasSantana-Dev/evidence-first-rag/blob/main/docs/portfolio-benchmark.md)
+    (median Hit@1 0.81, zero tuning).
 - [KB Arena](https://github.com/xmpuspus/kb-arena)
   - Benchmarks 9 retrieval architectures (naive vector, contextual vector, QnA
     pairs, knowledge graph, hybrid RRF, RAPTOR, PageIndex, BM25, rerank) on
