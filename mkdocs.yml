@@ -1,0 +1,106 @@
+site_name: Awesome RAG Production
+site_url: https://yigtwxx.github.io/awesome-rag-production/
+site_description: >-
+  A curated, evidence-cited list of battle-tested tools, frameworks, and best
+  practices for building scalable, production-grade Retrieval-Augmented
+  Generation (RAG) systems — covering ingestion, embeddings, vector databases,
+  retrieval, reranking, evaluation, observability, serving, and FinOps.
+site_author: Yigit Erdogan
+copyright: CC0 1.0 Universal — public domain dedication
+
+repo_url: https://github.com/Yigtwxx/awesome-rag-production
+repo_name: Yigtwxx/awesome-rag-production
+# Source markdown lives at the repo root; "Edit" links point back to the real
+# root files (scripts/stage_docs.sh copies them into ./docs at build time).
+edit_uri: edit/main/
+
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - navigation.instant
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.tabs.link
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+# Cross-file links to non-doc repo files (scripts/, the gitignored
+# .github/PROPOSED_UPDATES.md) are intentional and resolve on GitHub; keep them
+# non-fatal here instead of editing the source docs.
+validation:
+  links:
+    not_found: warn
+    anchors: ignore
+    absolute_links: ignore
+    unrecognized_links: ignore
+  nav:
+    omitted_files: ignore
+    not_found: warn
+
+nav:
+  - Home: README.md
+  - Guides:
+      - RAG Pitfalls: rag-pitfalls.md
+      - Benchmarks & Evidence: benchmarks.md
+      - Datasets: datasets.md
+  - Library:
+      - Books: books.md
+      - Blogs: blogs.md
+      - Showcase & Talks: showcase.md
+  - Project:
+      - FAQ: FAQ.md
+      - Roadmap: ROADMAP.md
+      - Changelog: CHANGELOG.md
+      - Contributing: CONTRIBUTING.md
+      - Security: SECURITY.md
+      - Code of Conduct: CODE_OF_CONDUCT.md

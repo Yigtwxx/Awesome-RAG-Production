@@ -27,3 +27,8 @@ Thumbs.db
 # Editors
 .vscode/
 .idea/
+shared-docs/
+
+# mkdocs-material: generated docs staging dir + build output
+docs/
+site/

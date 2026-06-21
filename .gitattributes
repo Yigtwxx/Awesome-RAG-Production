@@ -1,0 +1,3 @@
+# Keep shell scripts LF-only so they run correctly on Linux CI runners,
+# regardless of the contributor's platform or core.autocrlf setting.
+*.sh text eol=lf

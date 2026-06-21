@@ -1,0 +1,3 @@
+# Documentation site dependencies (mkdocs-material GitHub Pages build).
+# mkdocs-material bundles mkdocs + pymdown-extensions; Mermaid needs no extra package.
+mkdocs-material==9.7.6
