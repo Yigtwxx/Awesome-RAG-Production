@@ -36,15 +36,25 @@ _REPO_URL_RE = re.compile(r"github\.com/([\w.\-]+)/([\w.\-]+?)(?:[/?#\s\)\]\"']|
 _SKIP_OWNERS = {"Yigtwxx", "sindresorhus", "github", "actions"}
 _SKIP_REPOS = {"awesome", "awesome-list", ".github"}
 
-# Known end-user apps / low-code platforms repeatedly surfaced by topic:rag but
-# out of scope for this infrastructure list (see FAQ § Scope). Matched on
-# lowercased owner/repo. Extend as new noise appears.
+# Repos repeatedly surfaced by topic:rag but out of scope for this infrastructure
+# list. Seeded from documented "out-of-scope" triage verdicts (see the triage
+# record in .github/PROPOSED_UPDATES.md / FAQ § Scope). Matched on lowercased
+# owner/repo. Extend as new noise appears. Note: already-listed repos do NOT
+# belong here — README dedup handles those automatically.
 OUT_OF_SCOPE_REPOS = {
+    # End-user apps / low-code platforms.
     "langgenius/dify",
     "open-webui/open-webui",
     "flowiseai/flowise",
     "mintplex-labs/anything-llm",
+    "jeecgboot/jeecgboot",
+    # Meta-lists, tutorials, educational guides (no production-infra focus).
     "shubhamsaboo/awesome-llm-apps",
+    "dair-ai/prompt-engineering-guide",
+    "datawhalechina/hello-agents",
+    # Coding-assistant / session-memory plugins (not RAG infra).
+    "safishamsi/graphify",
+    "thedotmack/claude-mem",
 }
 
 
