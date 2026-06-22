@@ -5,6 +5,10 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+    # Bundle all action updates into a single weekly PR instead of one per action
+    groups:
+      github-actions:
+        patterns: ["*"]
     labels:
       - "dependencies"
     commit-message:
