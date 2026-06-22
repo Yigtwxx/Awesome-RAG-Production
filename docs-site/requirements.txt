@@ -1,3 +1,6 @@
 # Documentation site dependencies (mkdocs-material GitHub Pages build).
 # mkdocs-material bundles mkdocs + pymdown-extensions; Mermaid needs no extra package.
-mkdocs-material==9.7.6
+# The [imaging] extra pulls in cairosvg + pillow, required by the `social` plugin
+# to generate Open Graph / Twitter link-preview card images (needs Cairo system
+# libs in CI — see .github/workflows/docs.yml).
+mkdocs-material[imaging]==9.7.6
