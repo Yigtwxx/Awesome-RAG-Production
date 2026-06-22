@@ -32,3 +32,5 @@ shared-docs/
 # mkdocs-material: generated docs staging dir + build output (under docs-site/)
 docs-site/docs/
 docs-site/site/
+# social plugin's generated card-image cache
+docs-site/.cache/
