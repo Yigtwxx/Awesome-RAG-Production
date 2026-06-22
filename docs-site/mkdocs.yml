@@ -19,6 +19,9 @@ site_dir: site
 
 theme:
   name: material
+  # Holds overrides/main.html, which injects keywords, JSON-LD structured data,
+  # and the Google Search Console verification tag into every page <head>.
+  custom_dir: overrides
   icon:
     repo: fontawesome/brands/github
   features:
@@ -51,6 +54,14 @@ theme:
 
 plugins:
   - search
+  # Generates per-page Open Graph / Twitter link-preview cards (image + meta tags)
+  # so shared links render a rich preview. cards are gated to CI because image
+  # generation needs Cairo libs that local machines may lack — local `mkdocs serve`
+  # still works, it just skips card rendering.
+  - social:
+      cards: !ENV [CI, false]
+      cards_layout_options:
+        background_color: "#3f51b5"  # indigo, matches the theme palette
 
 markdown_extensions:
   - admonition
@@ -86,6 +97,12 @@ validation:
   nav:
     omitted_files: ignore
     not_found: warn
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Yigtwxx/awesome-rag-production
+      name: GitHub
 
 nav:
   - Home: README.md
