@@ -36,6 +36,11 @@ jobs:
         with:
           python-version: '3.12'
 
+      # Cairo/Pillow native libs required by the mkdocs-material `social` plugin
+      # to render Open Graph / Twitter card images.
+      - name: Install Cairo/Pillow system libs (social cards)
+        run: sudo apt-get update && sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
+
       - name: Install Dependencies
         run: pip install -r docs-site/requirements.txt
 
