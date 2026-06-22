@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <!--
   Source for the GitHub repo "Social preview" card (Settings → Social preview).
-  Render to a crisp 1280×640 PNG with: assets/social/render.ps1
+  Render to a crisp 1200×630 PNG (1.91:1) with: assets/social/render.ps1
   Design: dark / minimal — strong typography + indigo accent (concept A).
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,12 +12,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=block" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 1280px; height: 640px; background: #0d1117; }
+  html, body { width: 1200px; height: 630px; background: #0d1117; }
 
   .card {
     position: relative;
-    width: 1280px;
-    height: 640px;
+    width: 1200px;
+    height: 630px;
     overflow: hidden;
     background:
       radial-gradient(940px 520px at 10% -5%, rgba(99,102,241,0.20), transparent 60%),
@@ -63,8 +63,8 @@
   .hero { margin-top: -6px; }
   .title {
     font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700; font-size: 94px; line-height: 1.0;
-    letter-spacing: -2.5px; color: #f7f9fc;
+    font-weight: 700; font-size: 84px; line-height: 1.0;
+    letter-spacing: -2px; color: #f7f9fc; white-space: nowrap;
   }
   .title .accent { color: #9aa6ff; }
   .accent-bar {

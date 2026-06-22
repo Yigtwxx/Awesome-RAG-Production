@@ -1,5 +1,5 @@
-# Renders social-preview.html to a crisp 1280x640 PNG for the GitHub repo
-# "Social preview" (Settings -> General -> Social preview).
+# Renders social-preview.html to a crisp 1200x630 PNG (universal 1.91:1 OG ratio)
+# for the GitHub repo "Social preview" (Settings -> General -> Social preview).
 # Strategy: headless Edge/Chrome screenshot at 2x device scale, then downscale
 # to 1280x640 with Pillow (LANCZOS) for supersampled, crisp text.
 $ErrorActionPreference = 'Stop'
@@ -21,11 +21,11 @@ $uri = ([System.Uri]$html).AbsoluteUri
 
 & $browser --headless=new --disable-gpu --hide-scrollbars `
   --force-device-scale-factor=2 --virtual-time-budget=8000 `
-  --window-size=1280,640 "--screenshot=$png2x" $uri | Out-Null
+  --window-size=1200,630 "--screenshot=$png2x" $uri | Out-Null
 
 if (-not (Test-Path $png2x)) { throw "Screenshot failed - no output produced." }
 
-python -c "from PIL import Image; im=Image.open(r'$png2x').convert('RGB'); im=im.resize((1280,640), Image.LANCZOS); im.save(r'$out', optimize=True); print('saved', im.size)"
+python -c "from PIL import Image; im=Image.open(r'$png2x').convert('RGB'); im=im.resize((1200,630), Image.LANCZOS); im.save(r'$out', optimize=True); print('saved', im.size)"
 Remove-Item $png2x -Force -ErrorAction SilentlyContinue
 
 $kb = [math]::Round((Get-Item $out).Length / 1KB, 1)
