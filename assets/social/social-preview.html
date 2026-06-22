@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!--
+  Source for the GitHub repo "Social preview" card (Settings → Social preview).
+  Render to a crisp 1280×640 PNG with: assets/social/render.ps1
+  Design: dark / minimal — strong typography + indigo accent (concept A).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=block" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1280px; height: 640px; background: #0d1117; }
+
+  .card {
+    position: relative;
+    width: 1280px;
+    height: 640px;
+    overflow: hidden;
+    background:
+      radial-gradient(940px 520px at 10% -5%, rgba(99,102,241,0.20), transparent 60%),
+      radial-gradient(720px 460px at 105% 110%, rgba(139,92,246,0.12), transparent 60%),
+      #0d1117;
+    font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+    color: #f4f6fb;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 70px 80px;
+  }
+
+  /* subtle dot grid */
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.045) 1px, transparent 1px);
+    background-size: 34px 34px;
+    -webkit-mask-image: linear-gradient(135deg, rgba(0,0,0,0.9), transparent 75%);
+            mask-image: linear-gradient(135deg, rgba(0,0,0,0.9), transparent 75%);
+    pointer-events: none;
+  }
+  .card > * { position: relative; z-index: 1; }
+
+  /* top bar */
+  .top { display: flex; align-items: center; justify-content: space-between; }
+  .eyebrow {
+    display: flex; align-items: center; gap: 12px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500; font-size: 16px; letter-spacing: 3.5px;
+    text-transform: uppercase; color: #97a1b4;
+  }
+  .eyebrow .star { width: 17px; height: 17px; }
+  .repo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 16px; font-weight: 500; color: #8b95a7;
+  }
+  .repo svg { width: 22px; height: 22px; fill: #8b95a7; }
+
+  /* hero */
+  .hero { margin-top: -6px; }
+  .title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 94px; line-height: 1.0;
+    letter-spacing: -2.5px; color: #f7f9fc;
+  }
+  .title .accent { color: #9aa6ff; }
+  .accent-bar {
+    width: 104px; height: 6px; border-radius: 3px; margin: 30px 0 26px;
+    background: linear-gradient(90deg, #6366f1, #a855f7);
+  }
+  .tagline {
+    font-size: 29px; font-weight: 400; line-height: 1.42;
+    color: #aeb6c6; max-width: 800px;
+  }
+
+  /* bottom */
+  .bottom { display: flex; flex-direction: column; gap: 22px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 11px; }
+  .chip {
+    font-size: 17px; font-weight: 500; color: #c7cedd;
+    padding: 9px 17px; border: 1px solid #2a3550; border-radius: 999px;
+    background: rgba(255,255,255,0.025);
+  }
+  .stat {
+    font-size: 16.5px; font-weight: 500; letter-spacing: 0.3px; color: #717a8c;
+  }
+  .stat b { color: #9aa6ff; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="card">
+
+    <div class="top">
+      <div class="eyebrow">
+        <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 0 L14.4 9.6 L24 12 L14.4 14.4 L12 24 L9.6 14.4 L0 12 L9.6 9.6 Z" fill="#7c8cff"/>
+        </svg>
+        Awesome&nbsp;&nbsp;·&nbsp;&nbsp;CC0
+      </div>
+      <div class="repo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        Yigtwxx/Awesome-RAG-Production
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="title">Awesome <span class="accent">RAG</span> Production</div>
+      <div class="accent-bar"></div>
+      <div class="tagline">Battle-tested tools &amp; best practices for building production-grade Retrieval-Augmented Generation systems.</div>
+    </div>
+
+    <div class="bottom">
+      <div class="chips">
+        <span class="chip">Retrieval</span>
+        <span class="chip">Reranking</span>
+        <span class="chip">Vector DBs</span>
+        <span class="chip">Evaluation</span>
+        <span class="chip">Observability</span>
+        <span class="chip">Serving</span>
+        <span class="chip">FinOps</span>
+      </div>
+      <div class="stat"><b>23 categories</b>&nbsp;&nbsp;·&nbsp;&nbsp;evidence-cited&nbsp;&nbsp;·&nbsp;&nbsp;maintained weekly</div>
+    </div>
+
+  </div>
+</body>
+</html>
