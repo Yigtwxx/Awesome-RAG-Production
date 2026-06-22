@@ -29,6 +29,9 @@ Thumbs.db
 .idea/
 shared-docs/
 
+# Internal outreach / marketing drafts (never publish to the public repo)
+outreach/
+
 # mkdocs-material: generated docs staging dir + build output (under docs-site/)
 docs-site/docs/
 docs-site/site/
