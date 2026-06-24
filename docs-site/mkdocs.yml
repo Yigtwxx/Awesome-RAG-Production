@@ -63,6 +63,11 @@ plugins:
       cards_layout_options:
         background_color: "#3f51b5"  # indigo, matches the theme palette
 
+# Build-time hook that assigns each page a unique meta description (source
+# markdown is shared with GitHub, so it cannot carry YAML front-matter).
+hooks:
+  - hooks/meta_descriptions.py
+
 markdown_extensions:
   - admonition
   - attr_list
@@ -108,6 +113,9 @@ nav:
   - Home: README.md
   - Guides:
       - RAG Pitfalls: rag-pitfalls.md
+      - Vector Database Comparison: vector-database-comparison.md
+      - Chunking Strategies: chunking-strategies.md
+      - Embedding Model Selection: embedding-model-selection.md
       - Benchmarks & Evidence: benchmarks.md
       - Datasets: datasets.md
   - Library:
