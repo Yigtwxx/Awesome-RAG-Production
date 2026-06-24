@@ -15,6 +15,14 @@
 
 *Last reviewed: 2026-06-17 · Freshness audited weekly via [discovery\_engine](scripts/discovery_engine.py)*
 
+**Not a link dump.** Every entry is selected for production use, and every
+benchmark number is source-tagged (`[3P]` third-party / `[V]` vendor /
+`[A]` author) or removed. You also get decision guides, three reference
+architectures (local → enterprise), and real case studies — LinkedIn,
+DoorDash, and Discord.
+
+> ⭐ **Star the repo** to follow updates — the list is freshness-audited weekly.
+
 **Retrieval-Augmented Generation (RAG)** is revolutionizing how LLMs access and utilize external knowledge.
 This repository bridges the gap between prototype RAG tutorials and **production-grade systems** at scale.
 Whether you're building semantic search, question-answering systems, or AI-powered assistants, you'll find battle-tested frameworks,
@@ -134,6 +142,14 @@ graph TD
     class RAGAS,LangSmith eval;
     class Start start;
 ```
+
+**Quick answers** (starting points, not absolute rankings — the right choice depends on your constraints):
+
+- **Which framework?** LangGraph for complex stateful agents, LlamaIndex for data-heavy indexing, Haystack for auditable enterprise pipelines, LangChain for rapid prototyping.
+- **Which vector database?** pgvector if you already run PostgreSQL, Qdrant for strong filtering under ~50M vectors, Milvus to scale toward billions, Pinecone for zero-ops serverless.
+- **Which embedding model?** Fine-tune for a domain corpus; otherwise BGE-M3 (open) or OpenAI text-embedding-3-large (managed) — always index and query with the same model.
+- **Do I need a reranker?** Yes when precision matters: Cohere Rerank (managed API), BGE-Reranker v2-m3 (best self-hosted), or FlashRank (CPU / serverless).
+- **How should I chunk?** Start with recursive splitting at 256–512 tokens, then move to semantic or document-type-aware chunking if retrieval quality lags.
 
 ---
 
@@ -432,6 +448,12 @@ training from scratch. See also: [rag-pitfalls.md — Embedding Model Selection]
 | [Qdrant](https://github.com/qdrant/qdrant) | <50M vectors | Best filtering support and free tier. | [\[V\]](benchmarks.md#1-vector-databases) [\[3P\]](benchmarks.md#1-vector-databases) |
 | [Vespa](https://github.com/vespa-engine/vespa) | Web-scale hybrid serving | Battle-tested engine combining vector, tensor, text, and structured data at serving time and any scale. | — |
 | [Weaviate](https://github.com/weaviate/weaviate) | Hybrid Search | Native integration of vector and keyword search. | — |
+
+**Bottom line:** There is no single "best" vector DB — match it to your
+constraints. Use **pgvector** if you already run PostgreSQL, **Qdrant** for
+strong metadata filtering and a generous free tier under ~50M vectors,
+**Milvus** to scale toward billions, **Pinecone** for zero-ops serverless, and
+**Chroma** for local prototyping.
 
 ---
 
