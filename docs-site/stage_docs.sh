@@ -26,6 +26,9 @@ PAGES=(
   benchmarks.md
   rag-pitfalls.md
   datasets.md
+  vector-database-comparison.md
+  chunking-strategies.md
+  embedding-model-selection.md
   showcase.md
   books.md
   blogs.md
