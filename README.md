@@ -13,6 +13,11 @@
 [![Link Check](https://github.com/Yigtwxx/Awesome-RAG-Production/actions/workflows/link-check.yml/badge.svg)](https://github.com/Yigtwxx/Awesome-RAG-Production/actions/workflows/link-check.yml)
 [![Weekly Discovery](https://github.com/Yigtwxx/Awesome-RAG-Production/actions/workflows/discovery.yml/badge.svg)](https://github.com/Yigtwxx/Awesome-RAG-Production/actions/workflows/discovery.yml)
 
+<!-- Featured in: verified-live awesome-list inclusions only -->
+[![Featured in Awesome Generative AI](https://img.shields.io/badge/Featured_in-Awesome_Generative_AI-0a7d8b?style=flat-square&logo=awesomelists&logoColor=white)](https://github.com/steven2358/awesome-generative-ai#more-lists)
+[![Featured in Awesome Machine Learning](https://img.shields.io/badge/Featured_in-Awesome_Machine_Learning-0a7d8b?style=flat-square&logo=awesomelists&logoColor=white)](https://github.com/josephmisiti/awesome-machine-learning)
+[![Featured in Awesome Production ML](https://img.shields.io/badge/Featured_in-Awesome_Production_ML-0a7d8b?style=flat-square&logo=awesomelists&logoColor=white)](https://github.com/EthicalML/awesome-production-machine-learning)
+
 *Last reviewed: 2026-06-17 · Freshness audited weekly via [discovery\_engine](scripts/discovery_engine.py)*
 
 **Not a link dump.** Every entry is selected for production use, and every
@@ -362,6 +367,9 @@ Choosing the right embedding model is one of the highest-leverage decisions in a
 The [MTEB Leaderboard](https://huggingface.co/spaces/mteb/leaderboard) \[3P\] is the canonical benchmark for retrieval quality (nDCG@10 on BEIR datasets);
 see [benchmarks.md §2](benchmarks.md#2-embeddings--retrieval) for a snapshot with source citations.
 
+**Deep dive:** [How to Choose an Embedding Model](embedding-model-selection.md) —
+selection criteria, MTEB caveats, dimensionality vs. cost, and when to fine-tune.
+
 | Model | Strengths | Context Window | Hosting | Best For | Evidence |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | [OpenAI text-embedding-3-large](https://platform.openai.com/docs/guides/embeddings) | High retrieval nDCG@10 | 8,191 tokens | API | General English retrieval | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
@@ -455,6 +463,9 @@ strong metadata filtering and a generous free tier under ~50M vectors,
 **Milvus** to scale toward billions, **Pinecone** for zero-ops serverless, and
 **Chroma** for local prototyping.
 
+**Deep dive:** [Vector Database Comparison](vector-database-comparison.md) — a
+decision framework by scale, deployment, filtering, hybrid search, and cost.
+
 ---
 
 ## Data & Index Versioning
@@ -507,6 +518,9 @@ when a model change degrades retrieval quality.
 How you split documents into chunks is one of the most underrated decisions in a RAG pipeline.
 The wrong chunking strategy silently degrades retrieval quality regardless of how good your embedding model is.
 See [rag-pitfalls.md — Fixed Chunk Size Everywhere](rag-pitfalls.md#data-ingestion--chunking) for the failure modes.
+
+**Deep dive:** [Chunking Strategies](chunking-strategies.md) — strategy catalog,
+chunk size and overlap, tooling, and how to evaluate chunking on your corpus.
 
 **Chunking strategies at a glance:**
 
