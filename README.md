@@ -20,6 +20,10 @@
 
 *Last reviewed: 2026-06-17 · Freshness audited weekly via [discovery\_engine](scripts/discovery_engine.py)*
 
+<!-- Entry convention: an optional "verified: YYYY-MM-DD" HTML comment directly under a
+     link records the last human review of that entry. It is invisible when rendered and
+     is audited weekly alongside the automated push-activity signal. See CONTRIBUTING.md section 5. -->
+
 **Not a link dump.** Every entry is selected for production use, and every
 benchmark number is source-tagged (`[3P]` third-party / `[V]` vendor /
 `[A]` author) or removed. You also get decision guides, three reference
@@ -358,6 +362,12 @@ Choose the right framework for your use case with this production-focused compar
 - [OmniParse](https://github.com/adithya-s-k/omniparse)
   - Universal parser for ingesting any data type (documents, multimedia, web)
     into RAG-ready formats.
+- [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)
+  <!-- verified: 2026-06-25 -->
+  - Apache-2.0 OCR toolkit that turns PDFs and images into structured, LLM-ready
+    data across 100+ languages. Its PP-StructureV3 pipeline recovers tables,
+    formulas, and reading order, providing a self-hostable parsing layer for
+    document-heavy RAG ingestion.
 - [Unstructured](https://github.com/Unstructured-IO/unstructured)
   - Open-source pipelines for preprocessing complex, unstructured data.
 
@@ -585,6 +595,7 @@ zero-shot retrieval performance.
     cross-encoder models directly on the CPU (no Torch/GPU required), making it
     ideal for edge deployments or cost-sensitive architectures.
 - [psql_bm25s](https://github.com/Intelligent-Internet/psql_bm25s)
+  <!-- verified: 2026-06-25 -->
   - A PostgreSQL extension for BM25-family lexical retrieval with native indexing
     and SQL top-k query APIs. It can provide the keyword retrieval leg for
     Postgres-based hybrid RAG stacks.
@@ -903,6 +914,7 @@ Groundedness, and Answer Relevance.
     integrating seamlessly into CI/CD pipelines to catch regressions in retrieval
     quality or hallucination rates before deployment.
 - [KB Arena](https://github.com/xmpuspus/kb-arena)
+  <!-- verified: 2026-06-25 -->
   - Benchmarks 9 retrieval architectures (naive vector, contextual vector, QnA
     pairs, knowledge graph, hybrid RRF, RAPTOR, PageIndex, BM25, rerank) on
     your own corpus with statistical IR metrics (Recall/NDCG/MAP/bpref) plus
@@ -970,6 +982,7 @@ This approach scales better than human evaluation and provides consistent, autom
     visualizes your embedding clusters and retrieved document rankings, helping
     you understand *why* the model retrieved irrelevant context.
 - [Future AGI](https://github.com/future-agi/future-agi)
+  <!-- verified: 2026-06-25 -->
   - Open-source platform for evaluating, tracing, and guardrailing RAG and agent
     apps. Captures OpenTelemetry-native traces, runs 70+ eval metrics and
     LLM-as-judge for retrieval and answer quality, and adds runtime guardrails
