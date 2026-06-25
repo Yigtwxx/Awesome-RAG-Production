@@ -85,6 +85,7 @@ To keep the list clean, please follow the existing format:
 - **No emoji in list items.** Emoji are reserved for Mermaid diagrams only.
 - **No bold inline labels** (`**Use Case:**`, `**Key Insight:**`) inside list bullets — fold the information into prose.
 - **Citations:** See the Evidence Tier section below — required for any numeric claim.
+- **Last Verified date:** New or substantially edited entries should carry a per-entry review marker — see § 5.
 
 > **Style Notes (intentional deviations from strict `awesome-lint`):**
 > This list runs `awesome-lint` as advisory CI, not blocking. The following
@@ -121,7 +122,36 @@ For non-numeric resource additions (a new tool or framework with no benchmark
 claim), the Evidence Tier does not apply — but an Engineering Context note in the
 PR is still appreciated.
 
-### 5. Commit and Push
+### 5. Last Verified Date (per-entry review)
+
+Automated freshness checks tell us a repository is still *active* (its
+`pushed_at` date is recent). They cannot tell us a maintainer has actually
+re-read an entry and confirmed the link still resolves, the description is still
+accurate, and the tool is still production-relevant. The **Last Verified** marker
+records that human review.
+
+Place an optional HTML comment between the link line and its description:
+
+```markdown
+- [Resource Name](URL)
+  <!-- verified: 2026-06-25 -->
+  - One or two sentence description. ...
+```
+
+Rules:
+
+- The date is **ISO 8601** (`YYYY-MM-DD`) — the day you confirmed the entry by hand.
+- The comment sits on its own line, indented two spaces, **directly under the link**
+  and before the description. It is invisible in the rendered page.
+- It is optional but **expected for new or substantially edited entries**. There is no
+  bulk backfill requirement; coverage grows as entries are touched.
+- A marker is considered stale after **180 days** (matching the 6-month activity rule).
+  [`discovery_engine.py`](scripts/discovery_engine.py) reports stale markers and overall
+  coverage in the weekly freshness audit, alongside the automated `pushed_at` signal.
+- "Verified" means *a human checked the link, description, and production relevance* — it
+  complements, and does not replace, the automated activity check.
+
+### 6. Commit and Push
 
 Use a descriptive commit message:
 
@@ -129,7 +159,7 @@ Use a descriptive commit message:
 git commit -m "Add [Resource Name] to [Category Name]"
 ```
 
-### 6. Open a Pull Request
+### 7. Open a Pull Request
 
 - Fill out the PR template (if available).
 - Explain **why** this resource is "Awesome" and how it helps in a production environment.
