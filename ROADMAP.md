@@ -14,8 +14,7 @@ in the [Changelog](CHANGELOG.md).
 
 ## Mid-term
 
-- Unit tests for `scripts/discovery_engine.py` (URL and date parsing, markdown generation).
-- A per-entry "last verified" convention so human review dates are visible alongside automated freshness flags.
+- Unit tests for `scripts/discovery_engine.py` covering the remaining URL parsing and discovery markdown generation (the verified-date audit is now tested).
 - Extend the decision tree beyond frameworks and vector databases to embedding selection, reranking, and chunking strategy.
 
 ## Longer-term
