@@ -32,6 +32,14 @@ REPO_BLOB = "https://github.com/Yigtwxx/awesome-rag-production/blob/main"
 # Matches github.com/{owner}/{repo} links; trailing delimiters end the repo group.
 _REPO_URL_RE = re.compile(r"github\.com/([\w.\-]+)/([\w.\-]+?)(?:[/?#\s\)\]\"']|$)")
 
+# Per-entry conventions (see CONTRIBUTING.md § Last Verified Date). A catalog
+# entry is a top-level link bullet `- [Name](URL)` followed by an indented
+# description sub-bullet; an optional `<!-- verified: YYYY-MM-DD -->` line in
+# between records the last human review.
+_ENTRY_ANCHOR_RE = re.compile(r"^- \[(?P<name>[^\]]+)\]\([^)]+\)\s*$")
+_ENTRY_DESC_RE = re.compile(r"^\s+- \S")
+_VERIFIED_RE = re.compile(r"<!--\s*verified:\s*(\d{4}-\d{2}-\d{2})\s*-->")
+
 # Self-refs and well-known non-tool links to ignore when scanning README.
 _SKIP_OWNERS = {"Yigtwxx", "sindresorhus", "github", "actions"}
 _SKIP_REPOS = {"awesome", "awesome-list", ".github"}
@@ -251,6 +259,121 @@ def check_listed_tool_freshness(repo_root: Path) -> None:
         log.error("Could not write tool freshness report: %s", exc)
 
 
+def check_entry_verification_age(
+    repo_root: Path, today: datetime.date | None = None
+) -> None:
+    """Audit per-entry `<!-- verified: YYYY-MM-DD -->` markers in README.md.
+
+    This is the human-review counterpart to ``check_listed_tool_freshness``:
+    ``pushed_at`` proves a repo is *active*, while a verified date proves a
+    maintainer last confirmed the entry is still accurate and in scope. Each
+    catalog entry (a top-level ``- [Name](URL)`` bullet with an indented
+    description) may carry one verified marker on the line in between.
+
+    Appends two things to PROPOSED_UPDATES.md when relevant:
+    - a detailed table of entries whose marker is older than VERIFIED_STALE_DAYS;
+    - a one-line coverage summary counting entries that lack a marker (kept as a
+      count, not a list, because the convention is rolled out incrementally).
+
+    Offline by design — reads only README.md. Malformed dates are skipped
+    silently. ``today`` is injectable for deterministic tests.
+    """
+    VERIFIED_STALE_DAYS = 180  # 6 months — matches check_listed_tool_freshness
+
+    readme_path = repo_root / "README.md"
+    if not readme_path.exists():
+        return
+    try:
+        lines = readme_path.read_text(encoding="utf-8").splitlines()
+    except OSError as exc:
+        log.warning("Entry verification check skipped: %s", exc)
+        return
+
+    today = today or datetime.date.today()
+    stale_threshold = today - datetime.timedelta(days=VERIFIED_STALE_DAYS)
+    stale_entries: list[tuple[int, str, int]] = []  # (line_no, name, days_old)
+    total_entries = 0
+    missing = 0
+
+    for index, line in enumerate(lines):
+        anchor = _ENTRY_ANCHOR_RE.match(line)
+        if not anchor:
+            continue
+
+        # Walk forward to the entry's description sub-bullet, capturing any
+        # verified marker that appears in between. A bare link bullet with no
+        # description is not a catalog entry and is not counted.
+        found_date: str | None = None
+        is_entry = False
+        cursor = index + 1
+        while cursor < len(lines):
+            nxt = lines[cursor]
+            if found_date is None:
+                marker = _VERIFIED_RE.search(nxt)
+                if marker:
+                    found_date = marker.group(1)
+                    cursor += 1
+                    continue
+            if _ENTRY_DESC_RE.match(nxt):
+                is_entry = True
+                break
+            if _ENTRY_ANCHOR_RE.match(nxt) or nxt.strip() == "":
+                break
+            cursor += 1
+
+        if not is_entry:
+            continue
+
+        total_entries += 1
+        if found_date is None:
+            missing += 1
+            continue
+        try:
+            verified_date = datetime.date.fromisoformat(found_date)
+        except ValueError:
+            # Malformed date — skip silently rather than flag a false positive.
+            continue
+        if verified_date < stale_threshold:
+            days_old = (today - verified_date).days
+            stale_entries.append((index + 1, anchor.group("name"), days_old))
+
+    if not stale_entries and not missing:
+        log.info("Entry verification check: %d entries, all current.", total_entries)
+        return
+
+    output_path = repo_root / ".github" / "PROPOSED_UPDATES.md"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with output_path.open("a", encoding="utf-8") as fh:
+            fh.write("\n\n## Entry Verification Audit\n\n")
+            verified_count = total_entries - missing
+            fh.write(
+                f"> Per-entry `<!-- verified: YYYY-MM-DD -->` coverage: "
+                f"{verified_count}/{total_entries} entries carry a review date "
+                f"({missing} missing). See "
+                f"[CONTRIBUTING § Last Verified Date]({REPO_BLOB}/CONTRIBUTING.md#5-last-verified-date-per-entry-review).\n\n"
+            )
+            if stale_entries:
+                fh.write(
+                    f"> {len(stale_entries)} entr(y/ies) reviewed more than "
+                    f"{VERIFIED_STALE_DAYS} days ago — re-verify the link, description, "
+                    f"and production relevance, then bump the date.\n\n"
+                )
+                fh.write("| Line | Entry | Days Since Review |\n")
+                fh.write("| :--- | :--- | :--- |\n")
+                for line_no, name, days_old in stale_entries:
+                    safe_name = name.replace("|", "\\|")
+                    fh.write(f"| {line_no} | {safe_name} | {days_old} |\n")
+        log.warning(
+            "Entry verification: %d stale, %d missing (of %d entries) flagged.",
+            len(stale_entries),
+            missing,
+            total_entries,
+        )
+    except OSError as exc:
+        log.error("Could not write entry verification report: %s", exc)
+
+
 def run_discovery() -> None:
     """Fetch trending RAG repositories from GitHub and write a discovery report.
 
@@ -361,6 +484,7 @@ def run_discovery() -> None:
     log.info("Discovery complete — %d candidate(s) written to %s", len(candidates), output_path)
     check_benchmark_freshness(REPO_ROOT)
     check_listed_tool_freshness(REPO_ROOT)
+    check_entry_verification_age(REPO_ROOT)
 
 
 if __name__ == "__main__":
