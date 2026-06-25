@@ -15,6 +15,7 @@
 - [ ] This resource is actively maintained (updated in the last 6 months).
 - [ ] It solves a real-world production problem.
 - [ ] The link description follows the format: `[Name](URL) - Description.`
+- [ ] For new or substantially edited entries, I added/updated the `verified: YYYY-MM-DD` marker (CONTRIBUTING.md § Last Verified Date).
 
 ## Engineering Context
 
