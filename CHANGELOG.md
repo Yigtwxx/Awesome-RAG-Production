@@ -16,6 +16,10 @@ tracked in [ROADMAP.md](ROADMAP.md).
 - This changelog ([CHANGELOG.md](CHANGELOG.md)) and a public roadmap ([ROADMAP.md](ROADMAP.md)).
 - Internal repository audit (REPO-ANALIZ.md) with a re-scored 2026-06-12 review.
 - Per-entry "last verified" convention (CONTRIBUTING § 5): an optional `verified: YYYY-MM-DD` marker for the last human review, audited weekly by `discovery_engine.py`, with the engine's first unit tests.
+- Live documentation site (MkDocs Material) at <https://yigtwxx.github.io/awesome-rag-production/>, auto-deployed from `main` via the `docs` workflow, with build-time markdown staging (`docs-site/stage_docs.sh`), a per-page SEO meta-description hook, and a GitHub social preview card.
+- Discovery engine (`scripts/discovery_engine.py`): a weekly freshness audit that flags listed tools with no push in 180+ days, benchmark citations older than 365 days, and stale per-entry verified dates, wired into the `discovery` workflow.
+- New decision guide: `vector-database-comparison.md`, covering scale, filtering, hybrid search, and cost trade-offs.
+- README: production inclusion criteria and quick-start decision guides.
 
 ### Removed
 
