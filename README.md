@@ -757,6 +757,12 @@ distinct from the RAG knowledge base itself.
     facts from every conversation turn. Provides a unified API across
     graph-based, vector, and key-value backends; selected as the memory
     provider in the AWS Agent SDK.
+- [Vestige](https://github.com/samvallad33/vestige)
+  <!-- verified: 2026-06-26 -->
+  - Local-first memory MCP server for coding agents, written in Rust with a
+    SQLite store. Uses FSRS-6 retention scheduling, prediction-error gating on
+    writes, spreading activation, and hybrid retrieval, and exposes provenance
+    and correction tools over MCP for Claude Code, Cursor, VS Code, and Codex.
 - [Zep / Graphiti](https://github.com/getzep/graphiti)
   - Zep builds a temporal knowledge graph (Graphiti) where every stored fact
     carries a validity window. Conflicting facts are not stacked — the older
