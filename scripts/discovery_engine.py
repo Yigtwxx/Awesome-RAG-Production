@@ -13,6 +13,13 @@ import re
 from pathlib import Path
 
 import requests
+
+# Entry grammar regexes shared with pr_entry_validator.py (see entry_patterns.py).
+# Private aliases keep the module-internal names stable.
+from entry_patterns import ENTRY_ANCHOR_RE as _ENTRY_ANCHOR_RE
+from entry_patterns import ENTRY_DESC_RE as _ENTRY_DESC_RE
+from entry_patterns import REPO_URL_RE as _REPO_URL_RE
+from entry_patterns import VERIFIED_RE as _VERIFIED_RE
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
@@ -28,17 +35,6 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # GitHub *issue comment*, where relative paths like ../CONTRIBUTING.md do not
 # resolve — absolute blob URLs work both in the .github/ file and in the comment.
 REPO_BLOB = "https://github.com/Yigtwxx/awesome-rag-production/blob/main"
-
-# Matches github.com/{owner}/{repo} links; trailing delimiters end the repo group.
-_REPO_URL_RE = re.compile(r"github\.com/([\w.\-]+)/([\w.\-]+?)(?:[/?#\s\)\]\"']|$)")
-
-# Per-entry conventions (see CONTRIBUTING.md § Last Verified Date). A catalog
-# entry is a top-level link bullet `- [Name](URL)` followed by an indented
-# description sub-bullet; an optional `<!-- verified: YYYY-MM-DD -->` line in
-# between records the last human review.
-_ENTRY_ANCHOR_RE = re.compile(r"^- \[(?P<name>[^\]]+)\]\([^)]+\)\s*$")
-_ENTRY_DESC_RE = re.compile(r"^\s+- \S")
-_VERIFIED_RE = re.compile(r"<!--\s*verified:\s*(\d{4}-\d{2}-\d{2})\s*-->")
 
 # Self-refs and well-known non-tool links to ignore when scanning README.
 _SKIP_OWNERS = {"Yigtwxx", "sindresorhus", "github", "actions"}
@@ -127,7 +123,9 @@ def check_benchmark_freshness(repo_root: Path) -> None:
     date_pattern = re.compile(r"\b(\d{4}-\d{2}-\d{2})\b")
 
     try:
-        for line_no, line in enumerate(benchmarks_path.read_text(encoding="utf-8").splitlines(), 1):
+        for line_no, line in enumerate(
+            benchmarks_path.read_text(encoding="utf-8").splitlines(), 1
+        ):
             if not line.startswith("|"):
                 continue
             match = date_pattern.search(line)
@@ -207,7 +205,9 @@ def check_listed_tool_freshness(repo_root: Path) -> None:
             response = session.get(api_url, headers=headers, timeout=15)
             if response.status_code == 404:
                 # Repo deleted or renamed — flag it
-                stale_tools.append((f"{owner}/{repo}", f"https://github.com/{owner}/{repo}", -1))
+                stale_tools.append(
+                    (f"{owner}/{repo}", f"https://github.com/{owner}/{repo}", -1)
+                )
                 log.warning("Listed repo not found (404): %s/%s", owner, repo)
                 continue
             response.raise_for_status()
@@ -226,8 +226,15 @@ def check_listed_tool_freshness(repo_root: Path) -> None:
 
         if pushed_date < stale_threshold:
             days_old = (today - pushed_date).days
-            stale_tools.append((f"{owner}/{repo}", f"https://github.com/{owner}/{repo}", days_old))
-            log.info("Stale listed tool: %s/%s (%d days since last push)", owner, repo, days_old)
+            stale_tools.append(
+                (f"{owner}/{repo}", f"https://github.com/{owner}/{repo}", days_old)
+            )
+            log.info(
+                "Stale listed tool: %s/%s (%d days since last push)",
+                owner,
+                repo,
+                days_old,
+            )
 
     remaining = response.headers.get("X-RateLimit-Remaining", "?") if seen else "?"  # type: ignore[possibly-undefined]
     log.info("GitHub API rate limit remaining after tool audit: %s", remaining)
@@ -239,7 +246,9 @@ def check_listed_tool_freshness(repo_root: Path) -> None:
     output_path = repo_root / ".github" / "PROPOSED_UPDATES.md"
     try:
         with output_path.open("a", encoding="utf-8") as fh:
-            fh.write(f"\n\n## Stale Listed Tools (>{STALE_TOOL_DAYS} days since last push)\n\n")
+            fh.write(
+                f"\n\n## Stale Listed Tools (>{STALE_TOOL_DAYS} days since last push)\n\n"
+            )
             fh.write(
                 f"> Detected {len(stale_tools)} repo(s) in `README.md` that have not been "
                 f"pushed to in over {STALE_TOOL_DAYS} days. Verify each is still maintained "
@@ -384,7 +393,7 @@ def run_discovery() -> None:
     """
     MIN_STARS = 100
     DAYS_LIMIT = 90
-    PER_PAGE = 50       # fetch a wider pool so new candidates survive filtering
+    PER_PAGE = 50  # fetch a wider pool so new candidates survive filtering
     DISPLAY_LIMIT = 15  # show at most this many new candidates
 
     github_token: str | None = os.getenv("GITHUB_TOKEN")
@@ -406,9 +415,13 @@ def run_discovery() -> None:
     if github_token:
         headers["Authorization"] = f"token {github_token}"
     else:
-        log.warning("GITHUB_TOKEN not set — unauthenticated requests have low rate limits.")
+        log.warning(
+            "GITHUB_TOKEN not set — unauthenticated requests have low rate limits."
+        )
 
-    log.info("Starting discovery (stars >= %d, updated after %s)", MIN_STARS, cutoff_date)
+    log.info(
+        "Starting discovery (stars >= %d, updated after %s)", MIN_STARS, cutoff_date
+    )
 
     output_path = REPO_ROOT / ".github" / "PROPOSED_UPDATES.md"
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -433,14 +446,18 @@ def run_discovery() -> None:
 
     # Drop repos already in the list or on the out-of-scope denylist so the feed
     # surfaces only genuinely new candidates worth triaging.
-    listed = {f"{owner}/{repo}".lower() for owner, repo in _listed_repo_slugs(REPO_ROOT)}
+    listed = {
+        f"{owner}/{repo}".lower() for owner, repo in _listed_repo_slugs(REPO_ROOT)
+    }
     skip = listed | OUT_OF_SCOPE_REPOS
     new_projects = [
         p for p in projects if (p.get("full_name") or "").lower() not in skip
     ]
     log.info(
         "Discovery: %d fetched, %d new after filtering (%d already-listed/out-of-scope removed)",
-        len(projects), len(new_projects), len(projects) - len(new_projects),
+        len(projects),
+        len(new_projects),
+        len(projects) - len(new_projects),
     )
     candidates = new_projects[:DISPLAY_LIMIT]
 
@@ -471,17 +488,27 @@ def run_discovery() -> None:
             for project in candidates:
                 name: str = project.get("full_name") or project.get("name", "unknown")
                 html_url: str = project.get("html_url", "")
-                description: str = (project.get("description") or "No description provided.").replace("|", "-").replace("\n", " ")
+                description: str = (
+                    (project.get("description") or "No description provided.")
+                    .replace("|", "-")
+                    .replace("\n", " ")
+                )
                 stars: int = project.get("stargazers_count", 0)
                 pushed_at: str = (project.get("pushed_at") or "")[:10]
 
                 if len(description) > 100:
                     description = description[:97] + "..."
 
-                fh.write(f"| [{name}]({html_url}) | {stars} | {description} | {pushed_at} |\n")
+                fh.write(
+                    f"| [{name}]({html_url}) | {stars} | {description} | {pushed_at} |\n"
+                )
                 log.info("Candidate: %s (%d stars, pushed %s)", name, stars, pushed_at)
 
-    log.info("Discovery complete — %d candidate(s) written to %s", len(candidates), output_path)
+    log.info(
+        "Discovery complete — %d candidate(s) written to %s",
+        len(candidates),
+        output_path,
+    )
     check_benchmark_freshness(REPO_ROOT)
     check_listed_tool_freshness(REPO_ROOT)
     check_entry_verification_age(REPO_ROOT)

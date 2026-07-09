@@ -1,0 +1,13 @@
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# Pre-existing long report-string literals; new code must stay under 88.
+"scripts/discovery_engine.py" = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
