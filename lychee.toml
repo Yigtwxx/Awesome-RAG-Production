@@ -1,0 +1,29 @@
+# Shared lychee configuration.
+# Consumed by both link-check.yml (weekly, whole repo) and
+# pr-validation.yml (per-PR, changed files only) so the two jobs cannot drift.
+
+timeout = 30
+max_retries = 3
+retry_wait_time = 5
+user_agent = "Mozilla/5.0 (compatible; GitHub Actions Link Checker)"
+accept = ["200", "204", "301", "302", "307", "308", "403", "429"]
+
+# Domains that block automated checkers (bot walls, aggressive rate limits).
+exclude = [
+  'sebastianraschka\.com',
+  'hastie\.su\.domains',
+  'openai\.com',
+  'towardsdatascience\.com',
+  'medium\.com',
+  'doordash\.engineering',
+  'engineering\.linkedin\.com',
+  'shopify\.engineering',
+  'anthropic\.com',
+  'discord\.com',
+  'perplexity\.ai',
+  'notion\.com',
+  'airbnb\.com',
+  'stripe\.com',
+  'aima\.cs\.berkeley\.edu',
+  'amazon\.com',
+]

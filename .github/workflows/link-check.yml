@@ -19,31 +19,11 @@ jobs:
       - name: Link Checker
         uses: lycheeverse/lychee-action@8646ba30535128ac92d33dfc9133794bfdd9b411 # v2.8.0
         with:
-          # Check all markdown files with robust configuration.
+          # Check all markdown files; shared config lives in lychee.toml.
           args: >-
+            --config lychee.toml
             --verbose
             --no-progress
-            --user-agent "Mozilla/5.0 (compatible; GitHub Actions Link Checker)"
-            --max-retries 3
-            --retry-wait-time 5
-            --timeout 30
-            --accept 200,204,301,302,307,308,403,429
-            --exclude 'sebastianraschka.com'
-            --exclude 'hastie.su.domains'
-            --exclude 'openai.com'
-            --exclude 'towardsdatascience.com'
-            --exclude 'medium.com'
-            --exclude 'doordash.engineering'
-            --exclude 'engineering.linkedin.com'
-            --exclude 'shopify.engineering'
-            --exclude 'anthropic.com'
-            --exclude 'discord.com'
-            --exclude 'perplexity.ai'
-            --exclude 'notion.com'
-            --exclude 'airbnb.com'
-            --exclude 'stripe.com'
-            --exclude 'aima.cs.berkeley.edu'
-            --exclude 'amazon.com'
             '*.md' '**/*.md'
           # Broken links are reported but do not fail the workflow — curated lists
           # accumulate external rot over time; failures here are signal, not gate.
