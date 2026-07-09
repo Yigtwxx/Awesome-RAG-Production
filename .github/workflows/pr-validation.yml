@@ -1,0 +1,166 @@
+name: PR Validation
+
+# Deliberately NO workflow-level `paths:` filter: path-filtered workflows
+# produce zero check lines when skipped. Instead the `changes` job computes
+# what changed and downstream jobs gate on its outputs — jobs skipped by a
+# job-level `if` still render as (grey, passing) check lines and satisfy
+# branch protection.
+
+on:
+  pull_request:
+    # `edited` re-runs the PR body policy the moment the description is fixed.
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-validation-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      has_content_md: ${{ steps.detect.outputs.has_content_md }}
+      has_md: ${{ steps.detect.outputs.has_md }}
+      has_python: ${{ steps.detect.outputs.has_python }}
+      md_files: ${{ steps.detect.outputs.md_files }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+      - name: Classify changed files
+        id: detect
+        run: |
+          BASE="origin/${GITHUB_BASE_REF}"
+          git diff --name-only --diff-filter=ACMR "${BASE}...HEAD" > /tmp/changed.txt
+          # Sanitize: only [A-Za-z0-9._/-] names survive (defense against
+          # crafted filenames reaching shell-interpolated contexts below).
+          MD=$(grep -E '^[A-Za-z0-9._/-]+\.md$' /tmp/changed.txt || true)
+          CONTENT=$(echo "$MD" | grep -E '^[A-Za-z0-9._-]+\.md$' \
+            | grep -vE '^(CONTRIBUTING|CODE_OF_CONDUCT|CHANGELOG|ROADMAP|SECURITY)\.md$' || true)
+          PY=$(grep -E '^(scripts/|tests/|pyproject\.toml)' /tmp/changed.txt || true)
+          {
+            echo "has_content_md=$([ -n "$CONTENT" ] && echo true || echo false)"
+            echo "has_md=$([ -n "$MD" ] && echo true || echo false)"
+            echo "has_python=$([ -n "$PY" ] && echo true || echo false)"
+            echo "md_files=$(echo $MD | tr '\n' ' ')"
+          } >> "$GITHUB_OUTPUT"
+
+  entry-validation:
+    name: Entry ${{ matrix.check }}
+    needs: changes
+    if: needs.changes.outputs.has_content_md == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      # A format failure must not hide an ordering or duplicate failure.
+      fail-fast: false
+      matrix:
+        check:
+          - format
+          - alphabetical
+          - duplicates
+          - verified-markers
+          - style-bans
+          - evidence-tags
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          # The validator derives changed files from base...HEAD itself.
+          fetch-depth: 0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.12'
+      # Stdlib-only validator: no pip install needed.
+      - name: Run ${{ matrix.check }} check
+        run: >
+          python scripts/pr_entry_validator.py
+          --check "${{ matrix.check }}"
+          --base-ref "origin/${GITHUB_BASE_REF}"
+
+  pr-body-policy:
+    name: PR body policy
+    needs: changes
+    if: >
+      needs.changes.outputs.has_content_md == 'true' &&
+      !contains(github.event.pull_request.labels.*.name, 'policy-exempt')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.12'
+      - name: Validate PR body
+        env:
+          # Body goes through an env var, never inline interpolation —
+          # PR descriptions are untrusted input.
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          printf '%s' "$PR_BODY" > /tmp/pr_body.txt
+          python scripts/pr_entry_validator.py --check pr-body \
+            --pr-body-file /tmp/pr_body.txt \
+            --base-ref "origin/${GITHUB_BASE_REF}"
+
+  links-changed:
+    name: Links (changed files)
+    needs: changes
+    if: needs.changes.outputs.has_md == 'true'
+    runs-on: ubuntu-latest
+    # Advisory: external link rot is signal, not a merge gate.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Check links in changed files
+        uses: lycheeverse/lychee-action@8646ba30535128ac92d33dfc9133794bfdd9b411 # v2.8.0
+        with:
+          args: >-
+            --config lychee.toml
+            --no-progress
+            ${{ needs.changes.outputs.md_files }}
+          fail: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  python-tests:
+    name: pytest
+    needs: changes
+    if: needs.changes.outputs.has_python == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r scripts/requirements.txt pytest
+      - run: pytest
+
+  ruff-lint:
+    name: ruff lint
+    needs: changes
+    if: needs.changes.outputs.has_python == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.12'
+      - run: pip install ruff
+      - run: ruff check .
+
+  ruff-format:
+    name: ruff format
+    needs: changes
+    if: needs.changes.outputs.has_python == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.12'
+      - run: pip install ruff
+      - run: ruff format --check .
