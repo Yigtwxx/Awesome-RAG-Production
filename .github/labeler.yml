@@ -1,0 +1,50 @@
+# Area labels applied by .github/workflows/pr-labeler.yml (actions/labeler).
+# One-time setup: create the area/* labels in the repo before first run.
+
+area/catalog:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'README.md'
+
+area/topic-guides:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'benchmarks.md'
+          - 'blogs.md'
+          - 'books.md'
+          - 'chunking-strategies.md'
+          - 'datasets.md'
+          - 'embedding-model-selection.md'
+          - 'FAQ.md'
+          - 'rag-pitfalls.md'
+          - 'showcase.md'
+          - 'vector-database-comparison.md'
+
+area/tooling:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'scripts/**'
+          - 'tests/**'
+          - 'pyproject.toml'
+
+area/ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**'
+          - 'lychee.toml'
+          - '.markdownlint-cli2.jsonc'
+
+area/docs-site:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs-site/**'
+
+area/meta:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'CONTRIBUTING.md'
+          - 'CODE_OF_CONDUCT.md'
+          - 'SECURITY.md'
+          - 'ROADMAP.md'
+          - 'CHANGELOG.md'
+          - 'LICENSE'

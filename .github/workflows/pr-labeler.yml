@@ -1,0 +1,55 @@
+name: PR Labels
+
+# pull_request_target runs with an elevated token, so this workflow NEVER
+# checks out or executes PR code: the labeler reads its config via the API
+# and the size job works from the event payload alone.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: pr-labels-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  area:
+    name: Area labels
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@b8dd2d9be0f68b860e7dae5dae7d772984eacd6d # v6.2.0
+        with:
+          sync-labels: true
+
+  size:
+    name: Size label
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const total = pr.additions + pr.deletions;
+            const size =
+              total < 10 ? 'XS' :
+              total < 50 ? 'S' :
+              total < 200 ? 'M' :
+              total < 600 ? 'L' : 'XL';
+            const wanted = `size/${size}`;
+            const { owner, repo } = context.repo;
+            const issue_number = pr.number;
+            // Create-if-missing, then swap any stale size/* label.
+            try {
+              await github.rest.issues.createLabel({ owner, repo, name: wanted, color: 'ededed' });
+            } catch (e) { /* already exists */ }
+            const { data: labels } = await github.rest.issues.listLabelsOnIssue({ owner, repo, issue_number });
+            for (const l of labels) {
+              if (l.name.startsWith('size/') && l.name !== wanted) {
+                await github.rest.issues.removeLabel({ owner, repo, issue_number, name: l.name });
+              }
+            }
+            await github.rest.issues.addLabels({ owner, repo, issue_number, labels: [wanted] });
