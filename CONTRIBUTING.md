@@ -166,6 +166,42 @@ git commit -m "Add [Resource Name] to [Category Name]"
 
 ---
 
+## CI Checks on Pull Requests
+
+Every PR runs an automated validation suite. Blocking checks must pass before
+merge; advisory checks report problems without blocking.
+
+| Check | Enforces | Gate |
+| :--- | :--- | :--- |
+| `Entry format` | Two-line entry format, description ends with punctuation, marker indentation (§ 3) | Blocking |
+| `Entry alphabetical` | Alphabetical order within sections (§ 3) | Blocking |
+| `Entry duplicates` | No duplicate names/URLs across all content files (§ 1) | Blocking |
+| `Entry verified-markers` | Valid `verified: YYYY-MM-DD` syntax and placement (§ 5) | Blocking |
+| `Entry style-bans` | No emoji or bold inline labels in entries (§ 3) | Blocking |
+| `Entry evidence-tags` | Numeric claims carry a `[3P]`/`[V]`/`[A]` tag (§ 4) | Blocking |
+| `PR body policy` | Checklist ticked; Engineering Context filled when claims are added (§ 4) | Blocking |
+| `pytest` / `ruff lint` / `ruff format` | Python tooling quality (only when `scripts/`, `tests/`, or `pyproject.toml` change) | Blocking |
+| `Markdown Lint` | markdownlint rules (`.markdownlint-cli2.jsonc`) | Blocking |
+| `Links (changed files)` | Liveness of links in changed markdown files | Advisory |
+| `awesome-lint` | Upstream awesome-list conventions | Advisory |
+| `Area labels` / `Size label` | Automatic PR labeling | Non-gating |
+
+Escape hatches (maintainer-reviewed, use sparingly):
+
+- `<!-- no-alphabetical -->` after a heading exempts that section from
+  alphabetical ordering (for intentionally curated order).
+- `<!-- allow-duplicate -->` on the line directly above an entry allows an
+  intentional cross-listing (e.g. README ↔ topic guide).
+- The `policy-exempt` label (maintainer-applied) skips the PR body policy.
+
+Run the same checks locally before pushing:
+
+```bash
+python scripts/pr_entry_validator.py --check all README.md
+```
+
+---
+
 ## License
 
 By contributing, you agree that your contributions will be licensed under the

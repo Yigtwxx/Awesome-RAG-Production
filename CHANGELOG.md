@@ -5,6 +5,32 @@ adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); as a
 curated list, this repository does not use semantic versions. Planned work is
 tracked in [ROADMAP.md](ROADMAP.md).
 
+## 2026-07
+
+### Added
+
+- PR validation suite: every pull request now runs ~15 automated checks
+  (OpenClaw-inspired). A new `pr-validation` workflow fans out
+  `scripts/pr_entry_validator.py` across six blocking entry checks (format,
+  alphabetical order, duplicates, verified markers, style bans, evidence
+  tags), validates the PR body against the template policy, link-checks the
+  changed files (advisory), and runs `pytest`/`ruff` when Python tooling
+  changes. A `pr-labeler` workflow adds `area/*` and `size/*` labels.
+- Shared entry-grammar module (`scripts/entry_patterns.py`) reused by the
+  discovery engine and the PR validator, plus unit tests for every check.
+- Shared `lychee.toml` so the weekly link checker and the per-PR link check
+  use one configuration; `pyproject.toml` with `ruff` and `pytest` settings.
+- CONTRIBUTING: new "CI Checks on Pull Requests" section documenting each
+  check, its gate, and the `<!-- no-alphabetical -->` /
+  `<!-- allow-duplicate -->` escape hatches (now marking intentionally
+  curated sections and cross-listings).
+
+### Fixed
+
+- Evidence hygiene: reworded two unsourced numeric claims (ARES, PrivateGPT)
+  and tagged the managed-SLA figure in `vector-database-comparison.md` as
+  vendor-stated, per the Evidence Tier policy.
+
 ## 2026-06
 
 ### Added

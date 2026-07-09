@@ -61,7 +61,7 @@ footprint. Engines with quantization (scalar/product) or disk-backed indexes
 | **Ops burden** | Near-zero | You own upgrades, backups, scaling |
 | **Data sovereignty** | Data leaves your VPC (unless BYOC) | Full control |
 | **Cost shape** | Predictable opex, scales with usage | Capex/infra + engineering time |
-| **SLA** | Provider-backed (~99.9%, see [benchmarks.md §7](benchmarks.md#7-reliability--sla)) | Operator-managed; no external SLA |
+| **SLA** | Provider-backed (~99.9% \[V\], see [benchmarks.md §7](benchmarks.md#7-reliability--sla)) | Operator-managed; no external SLA |
 
 If you have no dedicated infra/SRE capacity, a managed service is almost always
 cheaper once engineering time is priced in — until you reach a scale where

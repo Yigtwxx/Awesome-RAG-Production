@@ -246,14 +246,19 @@ Learn from production RAG implementations at scale. These companies have battle-
 
 ### Success Stories
 
+<!-- no-alphabetical -->
+
+<!-- allow-duplicate -->
 - [LinkedIn — Approximate Nearest Neighbor Search at Scale (Galene)](https://engineering.linkedin.com/blog/2020/scaling-approximate-nearest-neighbor-search-with-galene)
   - Custom ANN implementation (Galene) built on top of Lucene for professional recommendations at LinkedIn scale.
     Key insight: a custom ANN layer on a battle-tested search engine outperforms a standalone vector DB when ranking signals are deeply domain-specific.
 
+<!-- allow-duplicate -->
 - [DoorDash — Personalized Store Feed with Vector Retrieval](https://doordash.engineering/2023/08/01/improving-store-feed-ranking-with-vector-retrieval/)
   - Vector retrieval layer added to the store-feed ranking pipeline, reducing cold-start latency and improving personalization.
     Demonstrates how retrieval augmentation integrates alongside traditional ranking signals in an existing production recommendation system.
 
+<!-- allow-duplicate -->
 - [Discord — Message Search at Trillion Scale](https://discord.com/blog/how-discord-stores-trillions-of-messages)
   - Custom ANN search + Rust microservices + ScyllaDB for indexing and retrieving trillions of messages. Key insight: Rust-based infrastructure enables ANN search at this scale.
 
@@ -407,6 +412,8 @@ selection criteria, MTEB caveats, dimensionality vs. cost, and when to fine-tune
 
 ## Embedding Fine-tuning
 
+<!-- no-alphabetical -->
+
 Generic MTEB rankings break down on domain-specific corpora (legal, medical, code,
 financial). Fine-tuning a base embedding model on your own labeled pairs consistently
 outperforms off-the-shelf models for in-domain retrieval — without the cost of
@@ -445,6 +452,7 @@ training from scratch. See also: [rag-pitfalls.md — Embedding Model Selection]
     cross-encoder architectures. Provides flexible loss functions (InfoNCE,
     distillation), BEIR evaluation integration, and multi-GPU training — suited
     for rigorous research-grade fine-tuning pipelines.
+<!-- allow-duplicate -->
 - [RAGatouille](https://github.com/AnswerDotAI/RAGatouille)
   - A Pythonic wrapper for ColBERT late-interaction models. Enables indexing,
     retrieval, and fine-tuning of ColBERT-based models with a minimal API,
@@ -479,6 +487,8 @@ decision framework by scale, deployment, filtering, hybrid search, and cost.
 ---
 
 ## Data & Index Versioning
+
+<!-- no-alphabetical -->
 
 Production RAG indices drift over time: embedding models are upgraded, schema
 changes reshape chunk boundaries, and knowledge bases grow. Without versioning,
@@ -524,6 +534,8 @@ when a model change degrades retrieval quality.
 ---
 
 ## Chunking & Document Processing
+
+<!-- no-alphabetical -->
 
 How you split documents into chunks is one of the most underrated decisions in a RAG pipeline.
 The wrong chunking strategy silently degrades retrieval quality regardless of how good your embedding model is.
@@ -573,6 +585,8 @@ chunk size and overlap, tooling, and how to evaluate chunking on your corpus.
 ---
 
 ## Retrieval & Reranking
+
+<!-- no-alphabetical -->
 
 **Hybrid Search:**
 A retrieval strategy that linearly combines Dense Vector Search (semantic
@@ -629,6 +643,8 @@ are the main themes?") that standard vector search struggles to address.
     graph and integrates with LangChain's Neo4j vector + graph retrieval.
 
 ## Query Transformation & Routing
+
+<!-- no-alphabetical -->
 
 Raw user queries are rarely optimal for retrieval — they may be ambiguous, contain typos, be too vague, or require multi-hop reasoning.
 Query transformation is the pre-retrieval step that rewrites or expands the query to maximize recall.
@@ -946,7 +962,8 @@ This approach scales better than human evaluation and provides consistent, autom
 
 - [ARES (Automated RAG Evaluation System)](https://github.com/stanford-futuredata/ARES)
   - Stanford's research project that fine-tunes small LLMs as judges specifically
-    for RAG evaluation, achieving GPT-4-level accuracy at 1/10th the cost.
+    for RAG evaluation, targeting GPT-4-level judge accuracy at a fraction of
+    the cost.
 - [AutoEvals](https://github.com/braintrustdata/autoevals)
   - A tool for quickly and easily evaluating AI model outputs using best
     practices, including LLM-as-a-judge and heuristic methods.
@@ -1133,10 +1150,12 @@ different bottleneck — deploying them in combination yields compounding return
     *before* it hits the embedding model or vector DB.
 - [PrivateGPT](https://github.com/zylon-ai/private-gpt)
   - A production-ready project that allows you to run RAG pipelines completely
-    offline. It ensures 100% data privacy by keeping all ingestion and inference
+    offline. It ensures full data privacy by keeping all ingestion and inference
     local, perfect for highly regulated industries.
 
 ## LLM Gateways & Routing
+
+<!-- no-alphabetical -->
 
 An LLM gateway sits between your application and one or more LLM providers.
 It centralizes authentication, enforces rate limits, aggregates cost metrics, enables provider failover,
@@ -1191,6 +1210,8 @@ and often layers caching on top — without requiring per-provider changes to ap
 ---
 
 ## FinOps & Cost Management
+
+<!-- no-alphabetical -->
 
 Inference cost is often the largest operational expense in a production RAG system,
 yet it is frequently treated as an afterthought. FinOps for RAG means quantifying

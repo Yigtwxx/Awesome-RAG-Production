@@ -8,6 +8,8 @@ benchmarks and domain-specific corpora.
 
 ## The Leaderboards
 
+<!-- no-alphabetical -->
+
 Before choosing a model, check these live leaderboards:
 
 - [MTEB (Massive Text Embedding Benchmark)](https://huggingface.co/spaces/mteb/leaderboard)
@@ -125,6 +127,8 @@ types — spanning bio-medical IR, fact-checking, argument retrieval, and more.
 ## Synthetic Data Generation
 
 Don't have a dataset? Generate one from your own internal documents.
+
+<!-- no-alphabetical -->
 
 - [Ragas Synthetic Data Generator](https://docs.ragas.io/en/stable/)
   - Create "Golden Datasets" (Question-Answer-Context triples) automatically.

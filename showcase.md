@@ -23,6 +23,7 @@ running Retrieval-Augmented Generation at scale.
 
 ### [Discord](https://discord.com/)
 
+<!-- allow-duplicate -->
 - [How Discord Scaled Vector Search](https://discord.com/blog/how-discord-stores-trillions-of-messages)
   - A masterclass in ANN retrieval at trillion-message scale — Rust-based microservices with ScyllaDB for metadata, used in Clyde and search.
 
@@ -55,6 +56,8 @@ running Retrieval-Augmented Generation at scale.
 ---
 
 ## Must-Watch Talks
+
+<!-- no-alphabetical -->
 
 - [Jerry Liu (LlamaIndex) - Building Production-Ready RAG Applications](https://www.youtube.com/watch?v=TRjq7t2Ms5I)
   - *Venue:* AI Engineer Summit, 2023
