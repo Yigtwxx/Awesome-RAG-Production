@@ -673,6 +673,10 @@ See [rag-pitfalls.md — No Query Transformation](rag-pitfalls.md#retrieval-stra
   - A high-speed semantic decision layer for routing queries to the appropriate
     retriever, index, or tool. Classifies incoming queries by semantic similarity
     to predefined route examples (no LLM inference required for routing itself).
+- [Zoom Search](https://github.com/goofrey/zoom-search)
+  <!-- verified: 2026-07-10 -->
+  - Agent-ready search and evidence tool that combines query rewriting, source
+    zoom-in, sourced answer synthesis, and MCP integration for auditable RAG workflows.
 - [LlamaIndex RouterQueryEngine](https://docs.llamaindex.ai/en/stable/module_guides/querying/router/)
   - LLM-powered query router that selects the best retriever or tool from a
     defined set based on query content — suitable for multi-index RAG deployments
