@@ -347,6 +347,11 @@ Choose the right framework for your use case with this production-focused compar
 
 ## Data Ingestion & Parsing
 
+- [BlazeDocs](https://blazedocs.io)
+  - Hosted PDF-to-Markdown conversion for RAG ingestion. AI OCR for scanned
+    documents with table and image extraction, exposed as a REST API, npm CLI,
+    and web app — a managed alternative when self-hosting a parser isn't
+    worth the operational overhead.
 - [Crawl4AI](https://github.com/unclecode/crawl4ai)
   - An open-source web crawler purpose-built for LLM pipelines. Converts web
     pages into clean, structured markdown or JSON ready for ingestion — with
