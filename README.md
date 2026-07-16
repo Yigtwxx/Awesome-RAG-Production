@@ -1116,6 +1116,11 @@ different bottleneck — deploying them in combination yields compounding return
     and reuses their computed attention states. Significant throughput and latency
     gains for self-hosted RAG deployments where a long system prompt is repeated
     across all queries.
+- [KV Cache Store](https://kvcachestore.com/)
+  - Hosted registry and open-source Rust CLI for precomputing, quantizing, verifying,
+    and sharing KV-cache artifacts across self-hosted RAG and long-context inference
+    runs. Use it to reuse attention states across prompts and cut prefill cost without
+    changing the serving engine.
 
 **When to Cache What:**
 
