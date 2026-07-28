@@ -952,6 +952,13 @@ Groundedness, and Answer Relevance.
     LlamaIndex, and DSPy pipelines with feedback functions that score each
     retrieval-and-generation step, emitting OpenTelemetry traces for both
     development debugging and production monitoring.
+- [Verbatim Citation Gate](https://github.com/Palo-Alto-AI-Research-Lab/verbatim-citation-gate)
+  <!-- verified: 2026-07-28 -->
+  - Catches fabricated citations before the answer reaches the user by first
+    checking, with no LLM call, that every quoted span appears verbatim in the
+    retrieved context, then escalating only the survivors to a burden-of-proof
+    judge. Framework-agnostic, so it drops in front of an existing pipeline
+    rather than replacing its evaluator.
 
 ### LLM-as-Judge Evaluation
 
