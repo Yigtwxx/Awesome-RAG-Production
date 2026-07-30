@@ -373,6 +373,11 @@ Choose the right framework for your use case with this production-focused compar
     data across 100+ languages. Its PP-StructureV3 pipeline recovers tables,
     formulas, and reading order, providing a self-hostable parsing layer for
     document-heavy RAG ingestion.
+- [Reducto](https://reducto.ai/)
+  <!-- verified: 2026-07-30 -->
+  - Managed document intelligence platform for parsing, extracting, and
+    classifying complex PDFs, spreadsheets, and office files into structured
+    outputs for RAG ingestion.
 - [Unstructured](https://github.com/Unstructured-IO/unstructured)
   - Open-source pipelines for preprocessing complex, unstructured data.
 
