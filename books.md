@@ -32,7 +32,7 @@ A curated collection of essential books for Retrieval Augmented Generation (RAG)
 - [Hands-On Large Language Models](https://www.amazon.com/Hands-Large-Language-Models-Understanding/dp/1098150969)
   - Jay Alammar, Maarten Grootendorst (2024). A visual and practical guide to
     understanding and using LLMs effectively.
-- [Natural Language Processing with Transformers](https://transformersbook.com/)
+- [Natural Language Processing with Transformers](https://www.amazon.com/Natural-Language-Processing-Transformers-Revised/dp/1098136799)
   - Lewis Tunstall, Leandro von Werra, Thomas Wolf (2022). Build, train, and
     deploy state-of-the-art NLP models using the Hugging Face ecosystem.
 

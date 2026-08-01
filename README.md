@@ -367,6 +367,11 @@ Choose the right framework for your use case with this production-focused compar
 - [OmniParse](https://github.com/adithya-s-k/omniparse)
   - Universal parser for ingesting any data type (documents, multimedia, web)
     into RAG-ready formats.
+- [OpenDataLoader PDF](https://github.com/opendataloader-project/opendataloader-pdf)
+  <!-- verified: 2026-08-01 -->
+  - Apache-2.0 PDF parser that emits AI-ready structured output while checking
+    document accessibility, giving ingestion pipelines a self-hostable path for
+    layout-heavy PDFs without a per-page API bill.
 - [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)
   <!-- verified: 2026-06-25 -->
   - Apache-2.0 OCR toolkit that turns PDFs and images into structured, LLM-ready
@@ -399,7 +404,7 @@ selection criteria, MTEB caveats, dimensionality vs. cost, and when to fine-tune
 | Model | Strengths | Context Window | Hosting | Best For | Evidence |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | [OpenAI text-embedding-3-large](https://platform.openai.com/docs/guides/embeddings) | High retrieval nDCG@10 | 8,191 tokens | API | General English retrieval | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
-| [Cohere embed-v4](https://docs.cohere.com/docs/embed-2) | Multilingual, int8 support | 512 tokens | API + self-host | Multilingual + cost-efficient | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
+| [Cohere embed-v4](https://docs.cohere.com/docs/cohere-embed) | Multimodal, multilingual, int8 support | 128,000 tokens | API + self-host | Multilingual + cost-efficient | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
 | [Voyage voyage-3](https://docs.voyageai.com/docs/embeddings) | Top MTEB retrieval scores | 32,000 tokens | API | Long-context retrieval | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
 | [BAAI BGE-M3](https://huggingface.co/BAAI/bge-m3) | Multi-lingual, multi-granularity | 8,192 tokens | Self-host | Open-weight multilingual | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
 | [Nomic nomic-embed-text-v1.5](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5) | Long context, Apache 2.0 license | 8,192 tokens | Self-host / API | Open, long-context | — |
@@ -518,7 +523,7 @@ when a model change degrades retrieval quality.
 | :--- | :--- | :--- |
 | [DVC](https://github.com/iterative/dvc) | Dataset & model versioning (Git-like) | Tracking raw data, embeddings, and model artifacts in a Git-compatible workflow |
 | [lakeFS](https://github.com/treeverse/lakeFS) | Git-for-data on object storage | Branching and merging large datasets on S3/GCS/Azure — zero-copy snapshots |
-| [Pachyderm](https://github.com/pachyderm/pachyderm) | Data-versioned pipeline orchestration | End-to-end provenance tracking across ingestion → embedding → index pipelines |
+| [Pachyderm](https://github.com/pachyderm/pachyderm) | Data-versioned pipeline orchestration (upstream stalled since 2025) | End-to-end provenance tracking across ingestion → embedding → index pipelines |
 | [Oxen](https://github.com/Oxen-AI/Oxen) | Fast dataset version control | ML dataset iteration with commit history, branching, and large-file support |
 
 - [DVC](https://github.com/iterative/dvc)
@@ -533,9 +538,13 @@ when a model change degrades retrieval quality.
     promoting to production. Also see LanceDB's built-in versioning for
     vector-native branching (listed in [Vector Databases](#vector-databases)).
 - [Pachyderm](https://github.com/pachyderm/pachyderm)
+  <!-- verified: 2026-08-01 -->
   - A data-versioned pipeline orchestration platform. Every pipeline run is
     tied to an immutable data commit, giving full lineage from source document
-    to vector index to LLM response — critical for compliance-heavy domains.
+    to vector index to LLM response — useful in compliance-heavy domains.
+    Listed for reference: upstream has had no commits since early 2025 following
+    the HPE acquisition. For new pipelines prefer
+    [lakeFS](https://github.com/treeverse/lakeFS) or [DVC](https://github.com/iterative/dvc).
 - [Oxen](https://github.com/Oxen-AI/Oxen)
   - A fast dataset version control tool optimized for ML workflows. Supports
     branching, commit history, and large-file handling with a CLI that mirrors
@@ -565,11 +574,12 @@ chunk size and overlap, tooling, and how to evaluate chunking on your corpus.
 | Document-type aware | PDFs, code, tables, HTML | Best recall; requires per-type parsers |
 | Hierarchical / small-to-big | Multi-hop retrieval | Retrieves small chunks, returns parent context to LLM |
 
-- [chonkie](https://github.com/chonkie-ai/chonkie)
-  - A fast, lightweight chunking library purpose-built for RAG. Supports token,
-    sentence, semantic, recursive, and late-chunking strategies in a single API
-    with minimal dependencies. Optimized for throughput — suitable for batch
-    indexing pipelines.
+- [chonkie](https://github.com/feyninc/chonkie)
+  <!-- verified: 2026-08-01 -->
+  - A fast, lightweight ingestion and chunking library purpose-built for RAG.
+    Supports token, sentence, semantic, recursive, and late-chunking strategies
+    in a single API with minimal dependencies. Optimized for throughput —
+    suitable for batch indexing pipelines.
 - [LlamaIndex SemanticSplitterNodeParser](https://docs.llamaindex.ai/en/stable/module_guides/loading/node_parsers/modules/)
   - Splits documents at semantically meaningful boundaries by embedding adjacent
     sentences and measuring cosine distance. Produces more coherent chunks than
@@ -619,16 +629,24 @@ zero-shot retrieval performance.
   - A lightweight, serverless-friendly reranking library. It runs quantized
     cross-encoder models directly on the CPU (no Torch/GPU required), making it
     ideal for edge deployments or cost-sensitive architectures.
+- [PageIndex](https://github.com/VectifyAI/PageIndex)
+  <!-- verified: 2026-08-01 -->
+  - Builds a hierarchical table-of-contents index over long documents and
+    navigates it by reasoning instead of vector similarity. Useful where
+    chunk-and-embed loses structure — regulatory filings, manuals, contracts —
+    and where citing the exact section matters more than nearest-neighbour recall.
 - [psql_bm25s](https://github.com/Intelligent-Internet/psql_bm25s)
   <!-- verified: 2026-06-25 -->
   - A PostgreSQL extension for BM25-family lexical retrieval with native indexing
     and SQL top-k query APIs. It can provide the keyword retrieval leg for
     Postgres-based hybrid RAG stacks.
 - [RAGatouille](https://github.com/AnswerDotAI/RAGatouille)
+  <!-- verified: 2026-08-01 -->
   - A library that makes ColBERT (Contextualized Late Interaction over BERT)
     easy to use. ColBERT offers fine-grained token-level matching, providing
     superior retrieval quality compared to standard single-vector dense
-    retrieval.
+    retrieval. Upstream has been quiet since mid-2025 — pin your version and
+    check compatibility before adopting it in a new pipeline.
 
 **GraphRAG:**
 
@@ -644,10 +662,12 @@ are the main themes?") that standard vector search struggles to address.
   - A lightweight, hackable implementation of the GraphRAG pipeline (~1k lines).
     Ideal for understanding the algorithm or embedding it into custom systems
     without the full Microsoft GraphRAG dependency footprint.
-- [LlamaIndex KnowledgeGraphIndex](https://docs.llamaindex.ai/en/stable/module_guides/indexing/kg_index/)
-  - First-class knowledge graph indexing within the LlamaIndex ecosystem.
-    Extracts entity-relationship triples from documents and stores them in graph
-    backends (Nebula, Neo4j, TigerGraph) for traversal-based retrieval.
+- [LlamaIndex PropertyGraphIndex](https://docs.llamaindex.ai/en/stable/module_guides/indexing/lpg_index_guide/)
+  <!-- verified: 2026-08-01 -->
+  - First-class knowledge graph indexing within the LlamaIndex ecosystem, and the
+    successor to the older `KnowledgeGraphIndex`. Extracts labelled entities and
+    relations from documents via customizable extractors and stores them in graph
+    backends (Neo4j, Nebula, TigerGraph) for traversal-based retrieval.
 - [Neo4j LLM Knowledge Graph Builder](https://github.com/neo4j-labs/llm-graph-builder)
   - An end-to-end application that extracts knowledge graphs from unstructured
     documents into Neo4j using LLMs. Provides a UI for exploring the resulting
@@ -730,10 +750,12 @@ their retrieval strategy based on intermediate results.
     together on complex RAG tasks.
 - [LangGraph](https://github.com/langchain-ai/langgraph) — see [Frameworks & Orchestration](#frameworks--orchestration) for the full entry.
   - The canonical choice for cyclic, stateful agentic workflows with human-in-the-loop control and memory persistence.
-- [OpenAI Assistants API](https://platform.openai.com/docs/assistants/overview)
-  - A managed service for building agent-like experiences. It provides built-in
-    retrieval capabilities, code interpreter, and function calling with minimal
-    infrastructure overhead.
+- [OpenAI Responses API](https://developers.openai.com/api/docs/assistants/migration)
+  <!-- verified: 2026-08-01 -->
+  - A managed service for building agent-like experiences, providing built-in
+    retrieval, code interpreter, and function calling with minimal infrastructure
+    overhead. Replaces the Assistants API, which sunsets on 2026-08-26 — the
+    linked migration guide maps Threads to Conversations and Runs to Responses.
 - [RAGFlow](https://github.com/infiniflow/ragflow) — see [Frameworks & Orchestration](#frameworks--orchestration) for the full entry.
   - Extends the core RAGFlow engine with agentic capabilities: dynamic document re-ranking, query decomposition, and adaptive retrieval strategies based on query complexity.
 
@@ -842,9 +864,11 @@ pipeline and preserving layout information that text extraction destroys.
 ### Frameworks & Tools
 
 - [Byaldi](https://github.com/AnswerDotAI/byaldi)
+  <!-- verified: 2026-08-01 -->
   - A thin, production-friendly wrapper around ColPali that provides a simple
     index/query API for late-interaction vision-document retrieval. The fastest
-    path to deploying ColPali without writing research code.
+    path to deploying ColPali without writing research code. Upstream has been
+    quiet since early 2025; for new work consider using ColPali directly.
 - [ColPali](https://github.com/illuin-tech/colpali)
   - A vision-language model that achieves state-of-the-art results on the ViDoRe
     document retrieval benchmark by treating each page as an image. It eliminates
@@ -979,24 +1003,30 @@ This approach scales better than human evaluation and provides consistent, autom
 **Core Frameworks:**
 
 - [ARES (Automated RAG Evaluation System)](https://github.com/stanford-futuredata/ARES)
+  <!-- verified: 2026-08-01 -->
   - Stanford's research project that fine-tunes small LLMs as judges specifically
-    for RAG evaluation, targeting GPT-4-level judge accuracy at a fraction of
-    the cost.
+    for RAG evaluation, targeting frontier-model judge accuracy at a fraction of
+    the cost. A research codebase — upstream activity has been sparse since 2025;
+    treat it as a reference implementation rather than a maintained dependency.
 - [AutoEvals](https://github.com/braintrustdata/autoevals)
   - A tool for quickly and easily evaluating AI model outputs using best
     practices, including LLM-as-a-judge and heuristic methods.
-- [G-Eval](https://github.com/nlpyang/geval)
-  - A framework that uses GPT-4 with chain-of-thought reasoning to evaluate text
-    generation quality. It achieves human-level correlation on summarization and
-    dialogue tasks.
+- [G-Eval](https://deepeval.com/docs/metrics-llm-evals)
+  <!-- verified: 2026-08-01 -->
+  - A framework that uses an LLM with chain-of-thought reasoning to evaluate text
+    generation quality, reporting human-level correlation on summarization and
+    dialogue tasks. The link points to DeepEval's maintained implementation; the
+    original research repo (`nlpyang/geval`) is no longer updated.
 - [LangChain Evaluators](https://docs.langchain.com/oss/python/langchain/overview)
   - Built-in evaluation chains for criteria-based scoring, pairwise comparison,
     and embedding distance. Seamlessly integrates with LangSmith for
     production monitoring.
-- [Prometheus](https://github.com/prometheus-eval/prometheus)
-  - An open-source LLM specifically trained for evaluation tasks. Unlike using
-    GPT-4 as a judge, Prometheus is optimized for scoring consistency and can run
-    locally for cost-sensitive deployments.
+- [Prometheus](https://github.com/prometheus-eval/prometheus-eval)
+  <!-- verified: 2026-08-01 -->
+  - An open-source LLM specifically trained for evaluation tasks. Unlike calling a
+    frontier model as a judge, Prometheus is optimized for scoring consistency and
+    can run locally for cost-sensitive deployments. Use the `prometheus-eval`
+    repository — the original `prometheus` repo has had no commits since 2023.
 
 **Key Metrics:**
 
@@ -1009,8 +1039,8 @@ This approach scales better than human evaluation and provides consistent, autom
 
 **Best Practices:**
 
-- Use frontier models (GPT-4o, Claude Opus) for critical evaluations — highest agreement with humans.
-- Fine-tune smaller models (Llama 3 8B) as judges for cost/latency optimization.
+- Use current frontier models for critical evaluations — highest agreement with humans.
+- Fine-tune smaller open-weight models (7–8B class) as judges for cost/latency optimization.
 - Chain-of-Thought prompting improves judge consistency and human alignment (G-Eval, EACL 2024).
 - Always validate judge performance against human labels on a sample (100–200 examples).
 - Be aware of position bias — LLMs tend to favor earlier options in pairwise comparisons.
@@ -1053,14 +1083,31 @@ This approach scales better than human evaluation and provides consistent, autom
     the complexity of adaptive batching and multi-model serving, allowing you to
     deploy any model to any cloud (AWS Lambda, EC2, Kubernetes) with one
     command.
+- [KServe](https://github.com/kserve/kserve)
+  <!-- verified: 2026-08-01 -->
+  - Kubernetes-native model serving with a standard inference protocol. Provides
+    autoscaling (including scale-to-zero), canary rollouts, and an inference
+    graph for chaining retriever, reranker, and generator as separate services.
 - [Ollama](https://github.com/ollama/ollama)
   - The easiest way to run LLMs locally. While primarily for dev/local use, it
     bridges the gap between local testing and deployment by providing a standard
-    API for models like LLaMA 3, Mistral, and Gemma.
+    API for open-weight models.
 - [Ray Serve](https://github.com/ray-project/ray)
   - The industry standard for scaling Python ML workloads. It allows you to
     compose complex pipelines (e.g., Retriever + Reranker + LLM) where each
     component scales independently across a cluster of machines.
+- [SkyPilot](https://github.com/skypilot-org/skypilot)
+  <!-- verified: 2026-08-01 -->
+  - Runs inference and indexing jobs across clouds and Kubernetes from one
+    spec, picking the cheapest available region and recovering from spot
+    preemptions automatically — the practical lever for GPU cost on
+    self-hosted RAG serving.
+- [Triton Inference Server](https://github.com/triton-inference-server/server)
+  <!-- verified: 2026-08-01 -->
+  - NVIDIA's production inference server. Serves embedding, reranking, and
+    generation models side by side from one process with dynamic batching and
+    concurrent model execution, so a RAG pipeline's several models share GPUs
+    instead of each holding their own.
 - [vLLM](https://github.com/vllm-project/vllm)
   - A high-performance inference engine known for PagedAttention. It maximizes
     GPU memory utilization, allowing you to serve larger models or handle higher
@@ -1107,10 +1154,12 @@ different bottleneck — deploying them in combination yields compounding return
     Add a `cache_control` breakpoint in the API request — no infrastructure
     changes required.
 - [GPTCache](https://github.com/zilliztech/GPTCache)
-  - The canonical open-source semantic cache for LLM applications. It intercepts
-    LLM calls, runs similarity search over a cache store, and returns hits without
-    calling the model — with pluggable similarity functions, eviction policies,
-    and storage backends (Redis, Milvus, SQLite).
+  <!-- verified: 2026-08-01 -->
+  - A widely referenced open-source semantic cache for LLM applications. It
+    intercepts LLM calls, runs similarity search over a cache store, and returns
+    hits without calling the model — with pluggable similarity functions, eviction
+    policies, and storage backends (Redis, Milvus, SQLite). Upstream commit
+    activity has slowed considerably; verify maintenance status before adopting.
 - [LangChain Cache](https://python.langchain.com/docs/integrations/llm_caching/)
   - Built-in exact-match and semantic LLM caching across a broad backend matrix
     (in-memory, Redis, SQLite, MongoDB, Cassandra, GPTCache). One-line setup for
