@@ -693,6 +693,7 @@ See [rag-pitfalls.md — No Query Transformation](rag-pitfalls.md#retrieval-stra
 | Query Routing | Classify query intent and dispatch to the appropriate retriever | Multi-index or multi-domain deployments |
 
 - [LlamaIndex Query Transformations](https://docs.llamaindex.ai/en/stable/module_guides/deploying/query_engine/)
+  <!-- verified: 2026-08-01 -->
   - First-class support for HyDE, multi-query, step-back, and sub-question
     decomposition within the LlamaIndex query engine. Each transformation is a
     composable module that slots into existing pipelines without restructuring.
