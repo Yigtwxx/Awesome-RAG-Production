@@ -8,13 +8,17 @@ in the [Changelog](CHANGELOG.md).
 
 ## Near-term
 
-- Diagnose and restore the weekly discovery output cadence — `.github/PROPOSED_UPDATES.md` was last regenerated on 2026-05-11 despite the weekly schedule.
-- Triage the current discovery candidates with explicit accept / reject notes against the production-infrastructure scope (see the [FAQ](FAQ.md)).
+- Re-verify the benchmark rows the weekly audit still flags as stale — the vendor
+  figures in [§1 Vector Databases](benchmarks.md#1-vector-databases),
+  [§4 Caching](benchmarks.md#4-caching-prompt--semantic), and
+  [§7 Reliability / SLA](benchmarks.md#7-reliability--sla) predate the current
+  365-day window and their sources have not been independently re-checked.
 - Add a CI check that validates every `benchmarks.md` row against the six-field schema (Metric, Value, Tag, Source, Date, Methodology) and a valid evidence tag.
+- Strengthen the thinnest sections — Structured & SQL RAG, FinOps & Cost Management, Tutorials, and Real-World Case Studies each carry only two or three entries.
 
 ## Mid-term
 
-- Unit tests for `scripts/discovery_engine.py` covering the remaining URL parsing and discovery markdown generation (the verified-date audit is now tested).
+- Unit tests for `scripts/discovery_engine.py` covering URL parsing and discovery markdown generation (the verified-date, benchmark-freshness, and rate-limit paths are now tested).
 - Extend the decision tree beyond frameworks and vector databases to embedding selection, reranking, and chunking strategy.
 
 ## Longer-term

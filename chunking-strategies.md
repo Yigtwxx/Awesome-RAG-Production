@@ -83,7 +83,7 @@ A newer approach: embed the entire document (or a long window) with a long-conte
 model first, then pool token embeddings into per-chunk vectors. Each chunk's
 embedding therefore "knows" its global context, mitigating the context-loss
 problem of naive splitting. Supported by libraries like
-[chonkie](https://github.com/chonkie-ai/chonkie).
+[chonkie](https://github.com/feyninc/chonkie).
 
 ---
 
@@ -123,7 +123,7 @@ the section heading or a short document summary *into* each chunk's text
 
 | Tool | Strategies | Best for |
 | :--- | :--- | :--- |
-| [chonkie](https://github.com/chonkie-ai/chonkie) | Token, sentence, recursive, semantic, late | Fast, low-dependency batch indexing |
+| [chonkie](https://github.com/feyninc/chonkie) | Token, sentence, recursive, semantic, late | Fast, low-dependency batch indexing |
 | [LangChain RecursiveCharacterTextSplitter](https://python.langchain.com/docs/how_to/recursive_text_splitter/) | Recursive | General-purpose default |
 | [LlamaIndex SemanticSplitterNodeParser](https://docs.llamaindex.ai/en/stable/module_guides/loading/node_parsers/modules/) | Semantic | Coherent chunks for narrative/technical docs |
 | [semchunk](https://github.com/umarbutler/semchunk) | Statistical semantic | Low-cost semantic splitting, no embedder at chunk time |

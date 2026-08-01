@@ -5,6 +5,67 @@ adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); as a
 curated list, this repository does not use semantic versions. Planned work is
 tracked in [ROADMAP.md](ROADMAP.md).
 
+## 2026-08
+
+### Added
+
+- Safety net for the CI bypass: a new `main-validation` workflow replays the
+  entry checks and Python tooling against whatever lands on `main`. Fork PRs
+  from first-time contributors sit behind "Approve and run workflows", so
+  merging one without approving its checks meant the PR suite never ran at
+  all — the checks were absent, not failing. Failures now open a
+  `main-validation` tracking issue that closes itself once `main` is green.
+- Broken links have an owner again: the weekly link checker renders its
+  findings through `scripts/link_report.py` into a long-lived `broken-links`
+  issue, fingerprinted so an unchanged set refreshes the body instead of
+  commenting every Monday. Previously the results went only to a job summary.
+- Shared `.github/scripts/tracking-issue.sh` helper backing all three
+  tracking issues. It selects the lowest-numbered bot-authored issue with a
+  matching title, so a stray issue can no longer silently take over a feed.
+- `.github/DISCOVERY_TRIAGE.md` — durable accept/reject record for discovery
+  candidates, seeding the `OUT_OF_SCOPE_REPOS` denylist.
+- New entries: KServe, SkyPilot, Triton Inference Server (Deployment &
+  Serving), OpenDataLoader PDF (Data Ingestion), PageIndex (Retrieval).
+- Root `.gitattributes` pinning `*.sh` / `*.yml` to LF, so a CRLF checkout on
+  Windows cannot break a script on the Linux runners.
+
+### Fixed
+
+- **The benchmark freshness check never matched anything.** Its regex required
+  a full `YYYY-MM-DD`, but every date in `benchmarks.md` is written `2024` or
+  `2022-12`, so it scanned 36 table rows, matched zero, and reported "all
+  benchmark rows are current" every week. It now reads each table's Date
+  column (located from the header, so an arXiv id in a Source cell is never
+  mistaken for a date) and accepts partial dates, resolving them to the end of
+  the period. A `(paper)` marker exempts fixed publication dates.
+- Weekly discovery could lose an entire run: if every GitHub API request
+  failed, `check_listed_tool_freshness` raised `NameError` on an unbound
+  `response`, which propagated out and skipped the report-posting step
+  entirely. Fixed with a sentinel, plus `if: always()` on the posting step.
+- `check_benchmark_freshness` did not create `.github/` before writing, so its
+  report was silently lost whenever it ran before the discovery step.
+- Dead and misdirected links: `chonkie` (moved to `feyninc/chonkie`),
+  LlamaIndex `KnowledgeGraphIndex` (superseded by `PropertyGraphIndex`),
+  Pinecone SLA (99.9% → 99.95%, new URL), the Transformers book, and the
+  Anthropic prompt-caching docs (moved to `platform.claude.com`).
+- Cohere embed-v4 was listed with a 512-token context window — that is the v3
+  figure; v4 is a 128K-token multimodal model. Corrected in both the README
+  table and `embedding-model-selection.md`.
+- OpenAI Assistants API sunsets 2026-08-26; the entry now points at the
+  Responses API migration guide.
+- Stale-upstream notes for Pachyderm, ARES, RAGatouille, Byaldi, and GPTCache;
+  Prometheus and G-Eval now point at their maintained successors.
+
+### Changed
+
+- `<!-- verified: YYYY-MM-DD -->` is now **required** on entries a PR adds, and
+  CI enforces it. Existing marker-less entries are grandfathered, and the
+  weekly audit no longer reports them — that count never moved and drowned out
+  the findings that needed action.
+- `.github/PROPOSED_UPDATES.md` is no longer tracked. It was both committed and
+  gitignored, so it stayed frozen at a 2026-05-11 snapshot and made the roadmap
+  chase a discovery outage that was not happening.
+
 ## 2026-07
 
 ### Added

@@ -35,7 +35,7 @@ average.
 | Model | Strengths | Context | Hosting | Best for | Evidence |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | [OpenAI text-embedding-3-large](https://platform.openai.com/docs/guides/embeddings) | High retrieval nDCG@10 | 8,191 | API | General English retrieval | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
-| [Cohere embed-v4](https://docs.cohere.com/docs/embed-2) | Multilingual, int8 support | 512 | API + self-host | Multilingual + cost-efficient | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
+| [Cohere embed-v4](https://docs.cohere.com/docs/cohere-embed) | Multimodal, multilingual, int8 support | 128,000 | API + self-host | Multilingual + cost-efficient | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
 | [Voyage voyage-3](https://docs.voyageai.com/docs/embeddings) | Top MTEB retrieval scores | 32,000 | API | Long-context retrieval | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
 | [BAAI BGE-M3](https://huggingface.co/BAAI/bge-m3) | Multilingual, multi-granularity | 8,192 | Self-host | Open-weight multilingual | [\[3P\]](benchmarks.md#2-embeddings--retrieval) |
 | [Nomic nomic-embed-text-v1.5](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5) | Long context, Apache 2.0 | 8,192 | Self-host / API | Open, long-context | — |

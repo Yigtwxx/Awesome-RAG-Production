@@ -1,5 +1,9 @@
 name: Weekly Link Checker
 
+# Finds broken links across the catalog and gives them an owner: a single
+# long-lived `broken-links` tracking issue. The previous version wrote only to
+# a job summary, so confirmed 404s sat unnoticed for months.
+
 on:
   schedule:
     # Every Monday at 06:00 UTC (synchronized with discovery workflow).
@@ -8,6 +12,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   link-check:
@@ -17,16 +22,79 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Link Checker
+        id: lychee
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
           # Check all markdown files; shared config lives in lychee.toml.
           args: >-
             --config lychee.toml
-            --verbose
             --no-progress
             '*.md' '**/*.md'
+          format: json
+          output: ./lychee/out.json
+          # Raw JSON in the run summary is unreadable; the rendered report below
+          # replaces it.
+          jobSummary: false
           # Broken links are reported but do not fail the workflow — curated lists
-          # accumulate external rot over time; failures here are signal, not gate.
+          # accumulate external rot over time. The tracking issue is the signal,
+          # not a red X.
           fail: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Render report
+        run: |
+          python scripts/link_report.py \
+            --input ./lychee/out.json \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            > /tmp/broken-links.md
+          cat /tmp/broken-links.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open or update the tracking issue
+        if: steps.lychee.outputs.exit_code != 0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          # shellcheck source=.github/scripts/tracking-issue.sh
+          . .github/scripts/tracking-issue.sh
+
+          NUM=$(find_or_create_tracking_issue \
+            "broken-links" \
+            "Broken links in the catalog" \
+            /tmp/broken-links.md \
+            "Long-lived issue tracking broken links found by the weekly audit")
+
+          # Compare the new fingerprint against the one already on the issue.
+          # Same set of URLs -> refresh the body only. Commenting every Monday
+          # about unchanged rot is what made the previous report ignorable.
+          OLD_BODY=$(gh issue view "$NUM" --repo "$GH_REPO" --json body --jq .body)
+          OLD_FP=$(printf '%s' "$OLD_BODY" | grep -oE 'broken-links-fingerprint: [0-9a-f]+' | awk '{print $2}' || true)
+          NEW_FP=$(grep -oE 'broken-links-fingerprint: [0-9a-f]+' /tmp/broken-links.md | awk '{print $2}' || true)
+
+          gh issue edit "$NUM" --repo "$GH_REPO" --body-file /tmp/broken-links.md
+
+          if [ "$OLD_FP" != "$NEW_FP" ]; then
+            gh issue comment "$NUM" --repo "$GH_REPO" --body-file /tmp/broken-links.md
+          else
+            echo "::notice::Broken-link set unchanged; refreshed the issue body without commenting."
+          fi
+
+      - name: Close the tracking issue when everything resolves
+        if: steps.lychee.outputs.exit_code == 0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          # shellcheck source=.github/scripts/tracking-issue.sh
+          . .github/scripts/tracking-issue.sh
+
+          NUM=$(find_open_tracking_issue "broken-links" "Broken links in the catalog")
+          if [ -z "$NUM" ]; then
+            echo "No open broken-links issue — nothing to close."
+            exit 0
+          fi
+
+          gh issue comment "$NUM" --repo "$GH_REPO" \
+            --body "All catalog links resolved on the latest run. Closing; the weekly audit will reopen this if rot returns."
+          gh issue close "$NUM" --repo "$GH_REPO"

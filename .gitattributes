@@ -1,0 +1,8 @@
+# Keep shell scripts LF-only so they run correctly on Linux CI runners,
+# regardless of the contributor's platform or core.autocrlf setting. A CRLF
+# script fails on the runner with `bash: $'\r': command not found`.
+*.sh text eol=lf
+
+# Workflow and config files are read by Linux tooling too — keep them LF.
+*.yml text eol=lf
+*.yaml text eol=lf

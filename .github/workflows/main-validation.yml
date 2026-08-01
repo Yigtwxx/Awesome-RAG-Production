@@ -1,0 +1,235 @@
+name: Main Validation
+
+# Safety net for changes that reach `main` without passing PR Validation.
+#
+# Fork PRs from first-time contributors sit behind "Approve and run workflows".
+# When they are merged without that approval, every job in pr-validation.yml is
+# skipped entirely — the checks never run, they do not fail. This workflow
+# replays them against what actually landed, so a bypass is loud instead of
+# silent.
+#
+# Why a separate file rather than a `push:` trigger on pr-validation.yml: three
+# of that file's invariants break on a push event. Its concurrency group keys on
+# the PR number (constant on push, so each push would cancel the previous run —
+# the opposite of a safety net), its pr-body-policy `if` dereferences
+# `pull_request.labels` (null on push, so the job would run with an empty body
+# and fail every time), and its `changes` job hardcodes `GITHUB_BASE_REF` (empty
+# on push). The validation logic itself lives in scripts/pr_entry_validator.py,
+# so the duplication here is a thin matrix invocation, not real logic.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: main-validation-${{ github.ref }}
+  # Never cancel: every commit that lands on main deserves its own verdict.
+  cancel-in-progress: false
+
+jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      base: ${{ steps.base.outputs.base }}
+      has_content_md: ${{ steps.detect.outputs.has_content_md }}
+      has_python: ${{ steps.detect.outputs.has_python }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Resolve diff base
+        id: base
+        env:
+          # Event payload values go through env vars, never inline
+          # interpolation — the standard set by pr-validation.yml.
+          BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          BASE="$BEFORE_SHA"
+          # Empty (workflow_dispatch), all-zeros (branch creation), or
+          # unreachable (history rewritten by a force-push) -> last commit only.
+          if [ -z "$BASE" ] \
+             || [ "$BASE" = "0000000000000000000000000000000000000000" ] \
+             || ! git cat-file -e "${BASE}^{commit}" 2>/dev/null; then
+            BASE=$(git rev-parse HEAD^ 2>/dev/null || git rev-parse HEAD)
+            echo "::notice::github.event.before unusable; falling back to $BASE"
+          fi
+          echo "base=$BASE" >> "$GITHUB_OUTPUT"
+      - name: Classify changed files
+        id: detect
+        env:
+          BASE: ${{ steps.base.outputs.base }}
+        run: |
+          git diff --name-only --diff-filter=ACMR "${BASE}...HEAD" > /tmp/changed.txt
+          # Sanitize: only [A-Za-z0-9._/-] names survive (defense against
+          # crafted filenames reaching shell-interpolated contexts).
+          MD=$(grep -E '^[A-Za-z0-9._/-]+\.md$' /tmp/changed.txt || true)
+          CONTENT=$(echo "$MD" | grep -E '^[A-Za-z0-9._-]+\.md$' \
+            | grep -vE '^(CONTRIBUTING|CODE_OF_CONDUCT|CHANGELOG|ROADMAP|SECURITY)\.md$' || true)
+          PY=$(grep -E '^(scripts/|tests/|pyproject\.toml)' /tmp/changed.txt || true)
+          {
+            echo "has_content_md=$([ -n "$CONTENT" ] && echo true || echo false)"
+            echo "has_python=$([ -n "$PY" ] && echo true || echo false)"
+          } >> "$GITHUB_OUTPUT"
+
+  entry-validation:
+    name: Entry ${{ matrix.check }} (main)
+    needs: changes
+    if: needs.changes.outputs.has_content_md == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      # A format failure must not hide an ordering or duplicate failure.
+      fail-fast: false
+      matrix:
+        check:
+          - format
+          - alphabetical
+          - duplicates
+          - verified-markers
+          - style-bans
+          - evidence-tags
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      # Stdlib-only validator: no pip install needed.
+      - name: Run ${{ matrix.check }} check
+        env:
+          BASE: ${{ needs.changes.outputs.base }}
+        run: >
+          python scripts/pr_entry_validator.py
+          --check "${{ matrix.check }}"
+          --base-ref "$BASE"
+
+  # Note: the PR body policy is the one check this safety net cannot replay —
+  # a push event carries no PR description. It stays PR-only by design.
+
+  python-tests:
+    name: pytest (main)
+    needs: changes
+    if: needs.changes.outputs.has_python == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r scripts/requirements.txt pytest
+      - run: pytest
+
+  ruff-lint:
+    name: ruff lint (main)
+    needs: changes
+    if: needs.changes.outputs.has_python == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - run: pip install ruff
+      - run: ruff check .
+
+  ruff-format:
+    name: ruff format (main)
+    needs: changes
+    if: needs.changes.outputs.has_python == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - run: pip install ruff
+      - run: ruff format --check .
+
+  notify-failure:
+    name: Report failure
+    needs: [changes, entry-validation, python-tests, ruff-lint, ruff-format]
+    # `contains(needs.*.result, 'failure')` ignores `skipped`, which is the
+    # normal case when only non-content files changed.
+    if: always() && contains(needs.*.result, 'failure')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Open or update the tracking issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          R_ENTRY: ${{ needs.entry-validation.result }}
+          R_PYTEST: ${{ needs.python-tests.result }}
+          R_LINT: ${{ needs.ruff-lint.result }}
+          R_FMT: ${{ needs.ruff-format.result }}
+        run: |
+          # shellcheck source=.github/scripts/tracking-issue.sh
+          . .github/scripts/tracking-issue.sh
+
+          {
+            echo "Validation failed on \`main\` at \`$SHA\`."
+            echo
+            echo "| Job | Result |"
+            echo "| :--- | :--- |"
+            echo "| Entry validation | $R_ENTRY |"
+            echo "| pytest | $R_PYTEST |"
+            echo "| ruff lint | $R_LINT |"
+            echo "| ruff format | $R_FMT |"
+            echo
+            echo "[Run log]($RUN_URL)"
+            echo
+            echo "This means a change reached \`main\` without passing PR validation."
+            echo "Fork PRs from first-time contributors require manual workflow"
+            echo "approval — merging one without approving its checks lands here."
+          } > /tmp/main-validation.md
+
+          NUM=$(find_or_create_tracking_issue \
+            "main-validation" \
+            "Main branch validation is failing" \
+            /tmp/main-validation.md \
+            "Tracks validation failures on the main branch")
+
+          gh issue edit "$NUM" --repo "$GH_REPO" --body-file /tmp/main-validation.md
+          gh issue comment "$NUM" --repo "$GH_REPO" --body-file /tmp/main-validation.md
+
+  notify-recovery:
+    name: Close tracking issue on green
+    needs: [changes, entry-validation, python-tests, ruff-lint, ruff-format]
+    if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Close the tracking issue if one is open
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          # shellcheck source=.github/scripts/tracking-issue.sh
+          . .github/scripts/tracking-issue.sh
+
+          NUM=$(find_open_tracking_issue \
+            "main-validation" "Main branch validation is failing")
+
+          if [ -z "$NUM" ]; then
+            echo "No open main-validation issue — nothing to close."
+            exit 0
+          fi
+
+          gh issue comment "$NUM" --repo "$GH_REPO" \
+            --body "Main validation is green again as of \`$SHA\`. Closing."
+          gh issue close "$NUM" --repo "$GH_REPO"
