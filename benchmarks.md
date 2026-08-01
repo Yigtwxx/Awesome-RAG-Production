@@ -18,7 +18,13 @@
 > **Methodology note:** Benchmark numbers are always hardware- and workload-dependent.
 > Row values are starting points, not guarantees for your cluster.
 >
-> *Last reviewed: 2026-05-08*
+> **Dates and staleness:** the `Date` column is the publication or last-refresh
+> date of the *cited source*, not of this file. A date marked `(paper)` is a
+> fixed publication date and is exempt from the automated staleness audit —
+> a peer-reviewed result does not expire. Vendor docs and leaderboard snapshots
+> are never exempt; the weekly audit flags them once they pass 365 days.
+>
+> *Last reviewed: 2026-08-01*
 
 ---
 
@@ -89,9 +95,9 @@ evidence for this is robust:
 
 | Comparison | Improvement | Tag | Source | Date | Methodology |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| Cross-encoder vs bi-encoder (BEIR zero-shot, nDCG@10) | +4 points average | \[3P\] | [arxiv.org/abs/2212.06121](https://arxiv.org/abs/2212.06121) | 2022-12 | 15 BEIR datasets, zero-shot |
-| Cross-encoder vs bi-encoder (MS MARCO, nDCG@10) | up to +10 points | \[3P\] | [arxiv.org/abs/2212.06121](https://arxiv.org/abs/2212.06121) | 2022-12 | In-domain, full fine-tune |
-| ColBERT + RoBERTa cross-encoder (MS MARCO DEV-SMALL, MRR@10) | 0.863 | \[3P\] | [arxiv.org/abs/2212.06121](https://arxiv.org/abs/2212.06121) | 2022-12 | Combining late-interaction + cross-encoder |
+| Cross-encoder vs bi-encoder (BEIR zero-shot, nDCG@10) | +4 points average | \[3P\] | [arxiv.org/abs/2212.06121](https://arxiv.org/abs/2212.06121) | 2022-12 (paper) | 15 BEIR datasets, zero-shot |
+| Cross-encoder vs bi-encoder (MS MARCO, nDCG@10) | up to +10 points | \[3P\] | [arxiv.org/abs/2212.06121](https://arxiv.org/abs/2212.06121) | 2022-12 (paper) | In-domain, full fine-tune |
+| ColBERT + RoBERTa cross-encoder (MS MARCO DEV-SMALL, MRR@10) | 0.863 | \[3P\] | [arxiv.org/abs/2212.06121](https://arxiv.org/abs/2212.06121) | 2022-12 (paper) | Combining late-interaction + cross-encoder |
 
 **Domain variability:** Reranking gains vary substantially by domain (technical
 docs, legal, medical, conversational). The "4 nDCG@10 points" figure is an
@@ -107,8 +113,9 @@ smaller. No single number applies universally — evaluate on your own corpus
 
 | Provider | Metric | Value | Tag | Source | Date | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Anthropic (Claude) | Input token cost on cache hit | 10% of standard price (−90%) | \[V\] | [Anthropic Prompt Caching Docs](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) | 2024 (active doc) | Cache TTL: 5 min. Requires `cache_control` breakpoint in request |
-| Anthropic (Claude) | Latency reduction on cache hit | Up to −85% | \[V\] | [Anthropic Prompt Caching Docs](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) | 2024 (active doc) | Long-context prompts; figures are upper-bound under ideal conditions |
+| Anthropic (Claude) | Input token cost on cache hit | ~10% of standard price (−90%) | \[V\] | [Anthropic Prompt Caching Docs](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) | 2026-08-01 | Requires a `cache_control` breakpoint. Cache TTL is 5 min by default, 1 h optional |
+| Anthropic (Claude) | Cache *write* cost premium | 1.25× standard price (5 min TTL), 2× (1 h TTL) | \[V\] | [Anthropic Prompt Caching Docs](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) | 2026-08-01 | The break-even point: 5-min TTL pays off from the second read, 1-h TTL from the third |
+| Anthropic (Claude) | Latency reduction on cache hit | Up to −85% | \[V\] | [Anthropic Prompt Caching Docs](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) | 2024 (active doc) | Long-context prompts; figures are upper-bound under ideal conditions. Not re-verified — see [§ Gaps](#9-gaps--not-publicly-measured) |
 | OpenAI (GPT-4o / o-series) | Input token price on cache hit | 50% discount | \[V\] | [OpenAI Prompt Caching](https://openai.com/index/api-prompt-caching/) | 2024-10 | Automatic, no code changes; min. 1,024 cached tokens |
 | OpenAI (GPT-4o / o-series) | Latency reduction on cache hit | Up to −80% | \[V\] | [OpenAI Prompt Caching Docs](https://platform.openai.com/docs/guides/prompt-caching) | 2024-10 | Input-token processing overhead removed |
 
@@ -132,8 +139,8 @@ transferable. See [§ Gaps](#9-gaps--not-publicly-measured).
 
 | System | Metric | Value | Tag | Source | Date | Hardware / Config |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| vLLM (PagedAttention) | Throughput vs FasterTransformer + Orca | 2–4× improvement | \[3P\] | [arxiv.org/abs/2309.06180](https://arxiv.org/abs/2309.06180) (SOSP 2023) | 2023-09 | A100 80GB; same latency SLO; LLaMA / OPT models |
-| vLLM (PagedAttention) | KV cache memory waste | <4% (vs 60–80% in prior systems) | \[3P\] | [arxiv.org/abs/2309.06180](https://arxiv.org/abs/2309.06180) (SOSP 2023) | 2023-09 | OS virtual memory analogy; all measured model sizes |
+| vLLM (PagedAttention) | Throughput vs FasterTransformer + Orca | 2–4× improvement | \[3P\] | [arxiv.org/abs/2309.06180](https://arxiv.org/abs/2309.06180) (SOSP 2023) | 2023-09 (paper) | A100 80GB; same latency SLO; LLaMA / OPT models |
+| vLLM (PagedAttention) | KV cache memory waste | <4% (vs 60–80% in prior systems) | \[3P\] | [arxiv.org/abs/2309.06180](https://arxiv.org/abs/2309.06180) (SOSP 2023) | 2023-09 (paper) | OS virtual memory analogy; all measured model sizes |
 
 **Note:** These numbers are from the original 2023 publication. vLLM has evolved
 substantially; for current benchmarks run `vllm/benchmarks/` against your own
@@ -163,7 +170,7 @@ confirming this specific figure was found. If you have the original source, plea
 
 | Provider | Published SLA | Tag | Source | Date |
 | :--- | :--- | :--- | :--- | :--- |
-| Pinecone | 99.9% uptime (Serverless) | \[V\] | [Pinecone SLA](https://www.pinecone.io/sla/) | 2024 |
+| Pinecone | 99.95% uptime | \[V\] | [Pinecone Security & Reliability](https://www.pinecone.io/security/) | 2026-08-01 |
 | Weaviate Cloud | 99.9% uptime | \[V\] | [Weaviate SLA](https://weaviate.io/service/sla) | 2024 |
 | Qdrant Cloud | 99.9% uptime | \[V\] | [Qdrant Cloud SLA](https://qdrant.tech/cloud/) | 2024 |
 
