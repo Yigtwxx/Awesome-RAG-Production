@@ -480,6 +480,57 @@ def check_verified_markers(
     return findings
 
 
+def check_new_entry_markers(
+    files: Sequence[Path],
+    added: Mapping[str, list[tuple[int, str]]],
+    repo_root: Path,
+) -> list[Finding]:
+    """Entries whose anchor line this diff ADDS must carry a verified marker.
+
+    Forward-looking by construction (CONTRIBUTING.md § 5): only anchor lines
+    present in ``added`` are considered, so the grandfathered backlog of
+    marker-less entries is never reported. An empty ``added`` map — a local
+    whole-file sweep with no ``--base-ref`` — makes this a no-op.
+
+    Two properties make this mechanical rather than heuristic:
+
+    - ``added_lines_from_git`` runs ``git diff -U0``, which emits no context
+      lines, so every line in ``added`` is a genuine addition. Keying on the
+      *anchor* line means edits to only a description, only the marker, or
+      surrounding lines never fire.
+    - ``ENTRY_ANCHOR_RE`` requires the anchor line to end right after the link,
+      so the ``- [Name](url) - Author.`` attribution style used by blogs.md and
+      datasets.md never parses as an entry and is immune by construction.
+
+    Renaming an entry or changing its URL rewrites the anchor and therefore
+    counts as new. That is intended: § 5 requires a marker for new *or
+    substantially edited* entries.
+    """
+    findings: list[Finding] = []
+    for path in files:
+        rel = _rel(path, repo_root)
+        added_lines = {line_no for line_no, _ in added.get(rel, [])}
+        if not added_lines:
+            continue
+        for entry in parse_entries(path):
+            if entry.line_no not in added_lines:
+                continue  # pre-existing anchor, untouched by this diff
+            if entry.desc_line is None:
+                continue  # bare reference-list link, not a catalog entry
+            if entry.verified is None:
+                findings.append(
+                    Finding(
+                        rel,
+                        entry.line_no,
+                        "verified-markers",
+                        f"new entry '{entry.name}' must carry a "
+                        "`<!-- verified: YYYY-MM-DD -->` marker on the line "
+                        "below the link (CONTRIBUTING.md § 5)",
+                    )
+                )
+    return findings
+
+
 def _entry_blocks(path: Path, lines: Sequence[str]) -> list[list[int]]:
     """Per entry, the 0-based line indices of its block (anchor..desc end)."""
     blocks: list[list[int]] = []
@@ -776,7 +827,7 @@ def main(argv: list[str] | None = None) -> int:
     # Diff-scoped checks: with --base-ref use real added lines; without it
     # (local sweeps) treat every line of the given files as added.
     added: dict[str, list[tuple[int, str]]] = {}
-    if any(c in checks for c in ("evidence-tags", "pr-body")):
+    if any(c in checks for c in ("evidence-tags", "pr-body", "verified-markers")):
         if args.base_ref:
             added = added_lines_from_git(args.base_ref, files, repo_root)
         else:
@@ -794,6 +845,13 @@ def main(argv: list[str] | None = None) -> int:
             findings += check_duplicates(files, repo_root)
         elif check == "verified-markers":
             findings += check_verified_markers(files, repo_root, today)
+            # Without --base-ref nothing is genuinely "new": the whole-file
+            # fallback above marks every line as added, which would flag every
+            # grandfathered entry and break the local sweep CONTRIBUTING tells
+            # contributors to run. Pass an empty map instead.
+            findings += check_new_entry_markers(
+                files, added if args.base_ref else {}, repo_root
+            )
         elif check == "style-bans":
             findings += check_style_bans(files, repo_root)
         elif check == "evidence-tags":

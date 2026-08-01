@@ -358,6 +358,134 @@ def test_check_verified_markers_orphan_marker_flagged(tmp_path: Path) -> None:
     )
 
 
+# --- new-entry markers --------------------------------------------------------
+
+
+def test_check_new_entry_markers_added_entry_without_marker_flagged(
+    tmp_path: Path,
+) -> None:
+    repo = _make_repo(
+        tmp_path,
+        readme=(
+            "- [Qdrant](https://github.com/qdrant/qdrant)\n"
+            "  - High-performance vector database.\n"
+        ),
+    )
+    added = {
+        "README.md": [
+            (1, "- [Qdrant](https://github.com/qdrant/qdrant)"),
+            (2, "  - High-performance vector database."),
+        ]
+    }
+    findings = v.check_new_entry_markers([repo / "README.md"], added, repo)
+    assert any("must carry a" in m for m in _checks(findings)), (
+        f"Expected a missing-marker finding, got {_checks(findings)}"
+    )
+
+
+def test_check_new_entry_markers_added_entry_with_marker_passes(
+    tmp_path: Path,
+) -> None:
+    repo = _make_repo(
+        tmp_path,
+        readme=(
+            "- [Qdrant](https://github.com/qdrant/qdrant)\n"
+            "  <!-- verified: 2026-06-20 -->\n"
+            "  - High-performance vector database.\n"
+        ),
+    )
+    added = {
+        "README.md": [
+            (1, "- [Qdrant](https://github.com/qdrant/qdrant)"),
+            (2, "  <!-- verified: 2026-06-20 -->"),
+            (3, "  - High-performance vector database."),
+        ]
+    }
+    findings = v.check_new_entry_markers([repo / "README.md"], added, repo)
+    assert findings == [], f"Expected no findings, got {_checks(findings)}"
+
+
+def test_check_new_entry_markers_description_only_edit_not_flagged(
+    tmp_path: Path,
+) -> None:
+    """Rewording a description must not demand a marker on an old entry."""
+    repo = _make_repo(
+        tmp_path,
+        readme=(
+            "- [Qdrant](https://github.com/qdrant/qdrant)\n"
+            "  - Reworded description only.\n"
+        ),
+    )
+    # -U0 emits no context lines, so only the description line is "added".
+    added = {"README.md": [(2, "  - Reworded description only.")]}
+    findings = v.check_new_entry_markers([repo / "README.md"], added, repo)
+    assert findings == [], (
+        f"Anchor untouched, so no marker is required, got {_checks(findings)}"
+    )
+
+
+def test_check_new_entry_markers_untouched_entry_not_flagged(tmp_path: Path) -> None:
+    """The grandfathered backlog in files this PR did not touch stays silent."""
+    repo = _make_repo(
+        tmp_path,
+        readme=(
+            "- [Qdrant](https://github.com/qdrant/qdrant)\n"
+            "  - Pre-existing entry with no marker.\n"
+        ),
+        blogs=("- [New Blog](https://example.com/blog) - Author.\n"),
+    )
+    added = {"blogs.md": [(1, "- [New Blog](https://example.com/blog) - Author.")]}
+    findings = v.check_new_entry_markers(
+        [repo / "README.md", repo / "blogs.md"], added, repo
+    )
+    assert findings == [], (
+        f"PR must not be blamed for untouched files, got {_checks(findings)}"
+    )
+
+
+def test_check_new_entry_markers_attribution_entry_not_flagged(tmp_path: Path) -> None:
+    """blogs.md/datasets.md attribution one-liners never parse as entries."""
+    repo = _make_repo(
+        tmp_path,
+        blogs=("- [Some Blog](https://example.com/blog) - Jane Doe.\n"),
+    )
+    added = {"blogs.md": [(1, "- [Some Blog](https://example.com/blog) - Jane Doe.")]}
+    findings = v.check_new_entry_markers([repo / "blogs.md"], added, repo)
+    assert findings == [], (
+        f"Attribution entries are immune by construction, got {_checks(findings)}"
+    )
+
+
+def test_check_new_entry_markers_bare_reference_link_not_flagged(
+    tmp_path: Path,
+) -> None:
+    """A link bullet with no description sub-bullet is not a catalog entry."""
+    repo = _make_repo(
+        tmp_path,
+        readme=("- [More lists](https://example.com/more)\n\nFollowing prose.\n"),
+    )
+    added = {"README.md": [(1, "- [More lists](https://example.com/more)")]}
+    findings = v.check_new_entry_markers([repo / "README.md"], added, repo)
+    assert findings == [], (
+        f"Bare reference links are not entries, got {_checks(findings)}"
+    )
+
+
+def test_check_new_entry_markers_empty_added_map_is_noop(tmp_path: Path) -> None:
+    """A local sweep with no --base-ref must never flag the existing catalog."""
+    repo = _make_repo(
+        tmp_path,
+        readme=(
+            "- [Qdrant](https://github.com/qdrant/qdrant)\n"
+            "  - Entry with no marker.\n"
+            "- [Weaviate](https://github.com/weaviate/weaviate)\n"
+            "  - Another entry with no marker.\n"
+        ),
+    )
+    findings = v.check_new_entry_markers([repo / "README.md"], {}, repo)
+    assert findings == [], f"Empty added map must be a no-op, got {_checks(findings)}"
+
+
 # --- style-bans ---------------------------------------------------------------
 
 
