@@ -378,6 +378,12 @@ Choose the right framework for your use case with this production-focused compar
   - Managed document intelligence platform for parsing, extracting, and
     classifying complex PDFs, spreadsheets, and office files into structured
     outputs for RAG ingestion.
+- [Semark](https://github.com/KingsleyOWO/Semark)
+  <!-- verified: 2026-07-24 -->
+  - An Apache-2.0 document-processing pipeline that combines MinerU evidence
+    with optional local VLM/LLM review to turn forms, flowcharts, tables, and
+    screenshot-heavy manuals into semantic Markdown, structured chunks, source
+    maps, and split documents for RAG ingestion.
 - [Unstructured](https://github.com/Unstructured-IO/unstructured)
   - Open-source pipelines for preprocessing complex, unstructured data.
 
