@@ -143,11 +143,15 @@ Rules:
 - The date is **ISO 8601** (`YYYY-MM-DD`) — the day you confirmed the entry by hand.
 - The comment sits on its own line, indented two spaces, **directly under the link**
   and before the description. It is invisible in the rendered page.
-- It is optional but **expected for new or substantially edited entries**. There is no
-  bulk backfill requirement; coverage grows as entries are touched.
+- It is **required for new or substantially edited entries**, and CI enforces it
+  (`Entry verified-markers`). Renaming an entry or changing its URL counts as a
+  substantial edit, because both rewrite the link line.
+- Entries that predate the rule are **grandfathered** — there is no bulk backfill
+  requirement, and the weekly audit never reports them. Coverage grows as entries
+  are touched.
 - A marker is considered stale after **180 days** (matching the 6-month activity rule).
-  [`discovery_engine.py`](scripts/discovery_engine.py) reports stale markers and overall
-  coverage in the weekly freshness audit, alongside the automated `pushed_at` signal.
+  [`discovery_engine.py`](scripts/discovery_engine.py) reports stale markers in the
+  weekly freshness audit, alongside the automated `pushed_at` signal.
 - "Verified" means *a human checked the link, description, and production relevance* — it
   complements, and does not replace, the automated activity check.
 
@@ -176,7 +180,7 @@ merge; advisory checks report problems without blocking.
 | `Entry format` | Two-line entry format, description ends with punctuation, marker indentation (§ 3) | Blocking |
 | `Entry alphabetical` | Alphabetical order within sections (§ 3) | Blocking |
 | `Entry duplicates` | No duplicate names/URLs across all content files (§ 1) | Blocking |
-| `Entry verified-markers` | Valid `verified: YYYY-MM-DD` syntax and placement (§ 5) | Blocking |
+| `Entry verified-markers` | Valid `verified: YYYY-MM-DD` syntax and placement; entries added by the PR must carry one (§ 5) | Blocking |
 | `Entry style-bans` | No emoji or bold inline labels in entries (§ 3) | Blocking |
 | `Entry evidence-tags` | Numeric claims carry a `[3P]`/`[V]`/`[A]` tag (§ 4) | Blocking |
 | `PR body policy` | Checklist ticked; Engineering Context filled when claims are added (§ 4) | Blocking |
@@ -185,6 +189,19 @@ merge; advisory checks report problems without blocking.
 | `Links (changed files)` | Liveness of links in changed markdown files | Advisory |
 | `awesome-lint` | Upstream awesome-list conventions | Advisory |
 | `Area labels` / `Size label` | Automatic PR labeling | Non-gating |
+
+### Safety net on `main`
+
+Fork PRs from first-time contributors sit behind GitHub's "Approve and run
+workflows" gate. Merging one without approving its checks means the PR suite
+never ran at all — the checks are absent, not failing. `Main Validation` replays
+the entry checks and Python tooling against whatever landed on `main`, so a
+bypass surfaces instead of passing silently. On failure it opens a
+`main-validation` tracking issue and closes it once `main` is green again.
+
+The PR body policy is the one check the safety net cannot replay: a push event
+carries no PR description. Approve the workflows on fork PRs so it runs where it
+belongs.
 
 Escape hatches (maintainer-reviewed, use sparingly):
 
@@ -199,6 +216,14 @@ Run the same checks locally before pushing:
 ```bash
 python scripts/pr_entry_validator.py --check all README.md
 ```
+
+Pass the files you touched. The diff-scoped rules (new-entry markers, evidence
+tags) stay quiet in this mode, so a clean run here means "nothing structurally
+wrong", not "the PR checks will pass" — CI compares against the base branch.
+Adding `--base-ref` locally reproduces that comparison, but only on a **clean
+working tree**: line numbers come from the diff while the files are read from
+disk, so uncommitted edits shift them out of alignment and produce phantom
+findings.
 
 ---
 
