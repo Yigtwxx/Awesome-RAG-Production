@@ -37,8 +37,8 @@ A resource may be flagged for removal or deprecation when any of the following a
 **Process:**
 
 - The weekly [discovery_engine](scripts/discovery_engine.py) automatically flags
-  listed repos that exceed 180 days without a push into
-  `.github/PROPOSED_UPDATES.md` under the "Stale Listed Tools" section.
+  listed repos that exceed 180 days without a push, under the "Stale Listed
+  Tools" section of the report it posts to the discovery-feed issue.
 - A maintainer reviews flagged entries and either (a) confirms the tool is still
   maintained (e.g., stable release cadence) and updates the flag threshold, or
   (b) opens a PR to remove or annotate the entry.

@@ -26,4 +26,7 @@ exclude = [
   'stripe\.com',
   'aima\.cs\.berkeley\.edu',
   'amazon\.com',
+  # GitHub serves /stargazers as 404 to unauthenticated clients, so the star
+  # badge's link target fails the audit while working fine for real visitors.
+  'github\.com/.*/stargazers',
 ]

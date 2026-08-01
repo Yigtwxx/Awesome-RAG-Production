@@ -27,7 +27,7 @@ They are excellent projects, but they are **end-user applications and low-code
 platforms**, while this list focuses on **infrastructure building blocks** for
 engineering teams that assemble and operate their own production RAG pipelines —
 ingestion, retrieval, evaluation, observability, serving, and so on. The weekly
-[discovery feed](.github/PROPOSED_UPDATES.md) regularly surfaces these projects
+[discovery feed](.github/DISCOVERY_TRIAGE.md) regularly surfaces these projects
 as raw candidates, and they are triaged against this scope rule.
 
 ### Which framework or vector database is "best"?
