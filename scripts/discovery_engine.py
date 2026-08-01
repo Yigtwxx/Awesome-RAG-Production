@@ -6,6 +6,7 @@ benchmarks.md for stale citations. Results are written to
 GitHub issue comment.
 """
 
+import calendar
 import datetime
 import logging
 import os
@@ -36,13 +37,20 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # resolve — absolute blob URLs work both in the .github/ file and in the comment.
 REPO_BLOB = "https://github.com/Yigtwxx/awesome-rag-production/blob/main"
 
+# Markdown table separator cell, e.g. `:---`, `---`, `:---:`.
+TABLE_SEPARATOR_RE = re.compile(r"^:?-{3,}:?$")
+
+# A benchmarks.md Date cell marked `(paper)` cites a fixed publication date and
+# is exempt from the staleness check. See parse_row_date.
+PAPER_CITATION_RE = re.compile(r"\(paper\)", re.IGNORECASE)
+
 # Self-refs and well-known non-tool links to ignore when scanning README.
 _SKIP_OWNERS = {"Yigtwxx", "sindresorhus", "github", "actions"}
 _SKIP_REPOS = {"awesome", "awesome-list", ".github"}
 
 # Repos repeatedly surfaced by topic:rag but out of scope for this infrastructure
 # list. Seeded from documented "out-of-scope" triage verdicts (see the triage
-# record in .github/PROPOSED_UPDATES.md / FAQ § Scope). Matched on lowercased
+# record in .github/DISCOVERY_TRIAGE.md / FAQ § Scope). Matched on lowercased
 # owner/repo. Extend as new noise appears. Note: already-listed repos do NOT
 # belong here — README dedup handles those automatically.
 OUT_OF_SCOPE_REPOS = {
@@ -52,13 +60,23 @@ OUT_OF_SCOPE_REPOS = {
     "flowiseai/flowise",
     "mintplex-labs/anything-llm",
     "jeecgboot/jeecgboot",
+    "khoj-ai/khoj",
+    "cinnamon/kotaemon",
+    "labring/fastgpt",
+    "onyx-dot-app/onyx",
+    "simstudioai/sim",
     # Meta-lists, tutorials, educational guides (no production-infra focus).
     "shubhamsaboo/awesome-llm-apps",
     "dair-ai/prompt-engineering-guide",
     "datawhalechina/hello-agents",
+    "datawhalechina/happy-llm",
+    "patchy631/ai-engineering-hub",
+    "hkuds/deeptutor",
     # Coding-assistant / session-memory plugins (not RAG infra).
     "safishamsi/graphify",
     "thedotmack/claude-mem",
+    # General-purpose scrapers — ingestion-adjacent but not RAG infrastructure.
+    "scrapegraphai/scrapegraph-ai",
 }
 
 
@@ -105,48 +123,118 @@ def _listed_repo_slugs(repo_root: Path) -> set[tuple[str, str]]:
     return slugs
 
 
-def check_benchmark_freshness(repo_root: Path) -> None:
-    """Parse benchmarks.md for rows with YYYY-MM-DD dates older than STALE_DAYS.
+def _row_cells(line: str) -> list[str]:
+    """Split a markdown table row into trimmed cell texts."""
+    return [cell.strip() for cell in line.strip().strip("|").split("|")]
 
-    Appends a warning section to PROPOSED_UPDATES.md when stale rows are found.
-    Exits silently when benchmarks.md is absent or no stale rows exist.
+
+def _date_column_index(header: str) -> int | None:
+    """Index of the header cell naming a date column, if any."""
+    for index, cell in enumerate(_row_cells(header)):
+        if "date" in cell.lower():
+            return index
+    return None
+
+
+def parse_row_date(text: str) -> datetime.date | None:
+    """Interpret a Date cell as the latest calendar day it could refer to.
+
+    benchmarks.md dates are deliberately coarse — a leaderboard snapshot may be
+    known only to the year (``2025``), a paper only to the month (``2022-12``),
+    and some carry a suffix (``2024 (active doc)``). Partial dates resolve to
+    the END of the period (``2024`` -> 2024-12-31) so a row is only ever flagged
+    when even the most generous reading is stale.
+
+    Returns None when the cell holds no date at all (e.g. "Ongoing"), which is
+    how non-date columns and prose cells opt out. A cell marked ``(paper)`` also
+    returns None: a peer-reviewed publication date is a fixed historical fact,
+    not a freshness signal, so nagging about it every week is noise. Mark a row
+    that way only when the citation is a published paper whose result does not
+    expire — a vendor doc or leaderboard snapshot is not exempt.
+    """
+    if PAPER_CITATION_RE.search(text):
+        return None
+    match = re.search(r"\b(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?\b", text)
+    if not match:
+        return None
+    year, month, day = match.group(1), match.group(2), match.group(3)
+    try:
+        if day:
+            return datetime.date(int(year), int(month), int(day))
+        if month:
+            last_day = calendar.monthrange(int(year), int(month))[1]
+            return datetime.date(int(year), int(month), last_day)
+        return datetime.date(int(year), 12, 31)
+    except (ValueError, calendar.IllegalMonthError):
+        return None
+
+
+def check_benchmark_freshness(
+    repo_root: Path, today: datetime.date | None = None
+) -> None:
+    """Flag benchmarks.md rows whose cited source is older than STALE_DAYS.
+
+    Reads the Date cell of each table rather than scanning whole lines: a naive
+    line-wide date regex matches arXiv identifiers (``abs/2212.06121``) and
+    other incidental digits, which is why the previous version silently matched
+    nothing at all and reported "all rows current" every week.
+
+    Each table's date column is located from its header row, so tables that use
+    "Snapshot Date" or omit a date column entirely are handled without
+    configuration. Appends a warning section to PROPOSED_UPDATES.md when stale
+    rows are found; exits silently otherwise. ``today`` is injectable for
+    deterministic tests.
     """
     STALE_DAYS = 365
     benchmarks_path = repo_root / "benchmarks.md"
     if not benchmarks_path.exists():
         return
 
-    today = datetime.date.today()
+    today = today or datetime.date.today()
     stale_threshold = today - datetime.timedelta(days=STALE_DAYS)
     stale_rows: list[tuple[int, int, str]] = []
 
-    date_pattern = re.compile(r"\b(\d{4}-\d{2}-\d{2})\b")
-
     try:
-        for line_no, line in enumerate(
-            benchmarks_path.read_text(encoding="utf-8").splitlines(), 1
-        ):
-            if not line.startswith("|"):
-                continue
-            match = date_pattern.search(line)
-            if not match:
-                continue
-            try:
-                row_date = datetime.date.fromisoformat(match.group(1))
-            except ValueError:
-                continue
-            if row_date < stale_threshold:
-                days_old = (today - row_date).days
-                stale_rows.append((line_no, days_old, line.strip()[:120]))
+        lines = benchmarks_path.read_text(encoding="utf-8").splitlines()
     except OSError as exc:
         log.warning("Benchmark freshness check skipped: %s", exc)
         return
+
+    date_column: int | None = None
+    for line_no, line in enumerate(lines, 1):
+        if not line.startswith("|"):
+            date_column = None  # table ended
+            continue
+
+        cells = _row_cells(line)
+        if all(TABLE_SEPARATOR_RE.match(cell) for cell in cells if cell):
+            continue  # `| :--- | :--- |` separator directly under the header
+
+        # A row followed by a separator is the header: learn its date column.
+        nxt = lines[line_no] if line_no < len(lines) else ""
+        if nxt.strip().startswith("|") and all(
+            TABLE_SEPARATOR_RE.match(cell) for cell in _row_cells(nxt) if cell
+        ):
+            date_column = _date_column_index(line)
+            continue
+
+        if date_column is None or date_column >= len(cells):
+            continue
+        row_date = parse_row_date(cells[date_column])
+        if row_date is None:
+            continue
+        if row_date < stale_threshold:
+            days_old = (today - row_date).days
+            stale_rows.append((line_no, days_old, line.strip()[:120]))
 
     if not stale_rows:
         log.info("Freshness check: all benchmark rows are current.")
         return
 
     output_path = repo_root / ".github" / "PROPOSED_UPDATES.md"
+    # Create the directory rather than assuming an earlier audit already did:
+    # if discovery fails before this runs, the report would be lost silently.
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     try:
         with output_path.open("a", encoding="utf-8") as fh:
             fh.write(f"\n\n## Stale Benchmark Citations (>{STALE_DAYS} days old)\n\n")
@@ -199,6 +287,10 @@ def check_listed_tool_freshness(repo_root: Path) -> None:
     stale_tools: list[tuple[str, str, int]] = []  # (owner/repo, url, days_since_push)
 
     session = _build_session()
+    # Sentinel: every request in the loop below may raise, leaving no response to
+    # read the rate-limit header from. Without this the check raises NameError and
+    # takes the whole weekly report down with it.
+    response: requests.Response | None = None
     for owner, repo in sorted(seen):
         api_url = f"https://api.github.com/repos/{owner}/{repo}"
         try:
@@ -236,7 +328,11 @@ def check_listed_tool_freshness(repo_root: Path) -> None:
                 days_old,
             )
 
-    remaining = response.headers.get("X-RateLimit-Remaining", "?") if seen else "?"  # type: ignore[possibly-undefined]
+    remaining = (
+        response.headers.get("X-RateLimit-Remaining", "?")
+        if response is not None
+        else "?"
+    )
     log.info("GitHub API rate limit remaining after tool audit: %s", remaining)
 
     if not stale_tools:
@@ -279,10 +375,15 @@ def check_entry_verification_age(
     catalog entry (a top-level ``- [Name](URL)`` bullet with an indented
     description) may carry one verified marker on the line in between.
 
-    Appends two things to PROPOSED_UPDATES.md when relevant:
-    - a detailed table of entries whose marker is older than VERIFIED_STALE_DAYS;
-    - a one-line coverage summary counting entries that lack a marker (kept as a
-      count, not a list, because the convention is rolled out incrementally).
+    Appends a report to PROPOSED_UPDATES.md **only when at least one marker is
+    stale** — a table of entries older than VERIFIED_STALE_DAYS, plus a one-line
+    coverage summary for context.
+
+    Missing markers are never a finding on their own. The convention is
+    forward-looking (CONTRIBUTING § 5): new and substantially edited entries must
+    carry a marker, but the historical backlog is deliberately grandfathered.
+    Reporting it weekly produced a number that never moved and drowned out the
+    findings that do need action.
 
     Offline by design — reads only README.md. Malformed dates are skipped
     silently. ``today`` is injectable for deterministic tests.
@@ -346,8 +447,12 @@ def check_entry_verification_age(
             days_old = (today - verified_date).days
             stale_entries.append((index + 1, anchor.group("name"), days_old))
 
-    if not stale_entries and not missing:
-        log.info("Entry verification check: %d entries, all current.", total_entries)
+    if not stale_entries:
+        log.info(
+            "Entry verification: %d/%d entries carry a review date, none stale.",
+            total_entries - missing,
+            total_entries,
+        )
         return
 
     output_path = repo_root / ".github" / "PROPOSED_UPDATES.md"
@@ -362,22 +467,18 @@ def check_entry_verification_age(
                 f"({missing} missing). See "
                 f"[CONTRIBUTING § Last Verified Date]({REPO_BLOB}/CONTRIBUTING.md#5-last-verified-date-per-entry-review).\n\n"
             )
-            if stale_entries:
-                fh.write(
-                    f"> {len(stale_entries)} entr(y/ies) reviewed more than "
-                    f"{VERIFIED_STALE_DAYS} days ago — re-verify the link, description, "
-                    f"and production relevance, then bump the date.\n\n"
-                )
-                fh.write("| Line | Entry | Days Since Review |\n")
-                fh.write("| :--- | :--- | :--- |\n")
-                for line_no, name, days_old in stale_entries:
-                    safe_name = name.replace("|", "\\|")
-                    fh.write(f"| {line_no} | {safe_name} | {days_old} |\n")
+            fh.write(
+                f"> {len(stale_entries)} entr(y/ies) reviewed more than "
+                f"{VERIFIED_STALE_DAYS} days ago — re-verify the link, description, "
+                f"and production relevance, then bump the date.\n\n"
+            )
+            fh.write("| Line | Entry | Days Since Review |\n")
+            fh.write("| :--- | :--- | :--- |\n")
+            for line_no, name, days_old in stale_entries:
+                safe_name = name.replace("|", "\\|")
+                fh.write(f"| {line_no} | {safe_name} | {days_old} |\n")
         log.warning(
-            "Entry verification: %d stale, %d missing (of %d entries) flagged.",
-            len(stale_entries),
-            missing,
-            total_entries,
+            "Entry verification: %d stale entr(y/ies) flagged.", len(stale_entries)
         )
     except OSError as exc:
         log.error("Could not write entry verification report: %s", exc)

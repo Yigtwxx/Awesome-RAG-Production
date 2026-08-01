@@ -31,6 +31,10 @@ jobs:
         run: python scripts/discovery_engine.py
 
       - name: Post Results to Tracking Issue
+        # Always post, even when the engine exits non-zero. The script writes a
+        # failure note into the report on request errors, and a partial report
+        # beats silently losing the whole week's audit.
+        if: always()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
@@ -41,33 +45,21 @@ jobs:
             exit 0
           fi
 
-          BODY=$(cat "$REPORT_FILE")
+          # shellcheck source=.github/scripts/tracking-issue.sh
+          . .github/scripts/tracking-issue.sh
 
-          # Ensure the tracking label exists (idempotent — no-op if already present).
-          gh label create "discovery-feed" \
-            --repo "$GH_REPO" \
-            --description "Long-lived issue receiving weekly RAG discovery results" \
-            --color "0E8A16" \
-            --force
+          cat > /tmp/feed-seed.md <<'SEED'
+          This issue receives automated weekly RAG discovery results. Each Monday a
+          new comment is added with trending repositories, stale listed tools, and
+          any stale benchmark citations detected in `benchmarks.md`.
+          SEED
 
-          # Find or create the long-lived tracking issue (label: discovery-feed).
-          ISSUE_NUM=$(gh issue list \
-            --repo "$GH_REPO" \
-            --label "discovery-feed" \
-            --state open \
-            --json number \
-            --jq '.[0].number // empty')
-
-          if [ -z "$ISSUE_NUM" ]; then
-            ISSUE_NUM=$(gh issue create \
-              --repo "$GH_REPO" \
-              --title "Weekly RAG Discovery Feed" \
-              --label "discovery-feed" \
-              --body "This issue receives automated weekly RAG discovery results. Each Monday a new comment is added with trending repositories and any stale benchmark citations detected in \`benchmarks.md\`.")
-            # gh issue create returns the URL; extract the number.
-            ISSUE_NUM=$(echo "$ISSUE_NUM" | grep -oE '[0-9]+$')
-          fi
+          ISSUE_NUM=$(find_or_create_tracking_issue \
+            "discovery-feed" \
+            "Weekly RAG Discovery Feed" \
+            /tmp/feed-seed.md \
+            "Long-lived issue receiving weekly RAG discovery results")
 
           gh issue comment "$ISSUE_NUM" \
             --repo "$GH_REPO" \
-            --body "$BODY"
+            --body-file "$REPORT_FILE"
