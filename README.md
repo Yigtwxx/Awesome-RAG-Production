@@ -1140,6 +1140,7 @@ different bottleneck — deploying them in combination yields compounding return
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | [Anthropic Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) | Prompt prefix | Provider | Anthropic infra | Long system prompts, large contexts | [\[V\]](benchmarks.md#4-caching-prompt--semantic) |
 | [GPTCache](https://github.com/zilliztech/GPTCache) | Exact + Semantic | Application | Redis / Milvus / SQLite | Reducing duplicate LLM calls | — |
+| [KV Cache Store](https://github.com/kvcachestore/kvcdn-cli) | KV-cache | Application | Hosted / R2 | Reusing precomputed KV-cache artifacts across runs | — |
 | [LangChain Cache](https://python.langchain.com/docs/integrations/llm_caching/) | Exact + Semantic | Application | In-memory / Redis / SQLite | LangChain-native pipelines | — |
 | [LiteLLM Cache](https://docs.litellm.ai/docs/proxy/caching) | Exact + Semantic | Gateway | Redis / S3 / Disk | Multi-provider routing with cache | — |
 | [OpenAI Prompt Caching](https://platform.openai.com/docs/guides/prompt-caching) | Prompt prefix | Provider | OpenAI infra | GPT-4o / o-series, shared prefixes | [\[V\]](benchmarks.md#4-caching-prompt--semantic) |
@@ -1161,6 +1162,12 @@ different bottleneck — deploying them in combination yields compounding return
     hits without calling the model — with pluggable similarity functions, eviction
     policies, and storage backends (Redis, Milvus, SQLite). Upstream commit
     activity has slowed considerably; verify maintenance status before adopting.
+- [KV Cache Store](https://github.com/kvcachestore/kvcdn-cli)
+  <!-- verified: 2026-08-02 -->
+  - Hosted registry and open-source Rust CLI for precomputing, quantizing,
+    verifying, and sharing KV-cache artifacts across self-hosted RAG and
+    long-context inference runs. Use it to reuse attention states across prompts
+    and cut prefill cost without changing the serving engine.
 - [LangChain Cache](https://python.langchain.com/docs/integrations/llm_caching/)
   - Built-in exact-match and semantic LLM caching across a broad backend matrix
     (in-memory, Redis, SQLite, MongoDB, Cassandra, GPTCache). One-line setup for
