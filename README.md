@@ -662,6 +662,11 @@ are the main themes?") that standard vector search struggles to address.
   - A lightweight, hackable implementation of the GraphRAG pipeline (~1k lines).
     Ideal for understanding the algorithm or embedding it into custom systems
     without the full Microsoft GraphRAG dependency footprint.
+- [AutoGraft](https://github.com/jules-gd-dev/autograft-lib)
+  <!-- verified: 2026-08-08 -->
+  - A fast, drop-in Python middleware for Neo4j GraphRAG that drastically reduces LLM entity resolution costs.
+    It intercepts nodes from extractors and uses a 3-layer approach (Deterministic B-Tree -> HNSW Vector -> LLM)
+    to prevent duplicates at $O(N \log M)$ complexity.
 - [LlamaIndex PropertyGraphIndex](https://docs.llamaindex.ai/en/stable/module_guides/indexing/lpg_index_guide/)
   <!-- verified: 2026-08-01 -->
   - First-class knowledge graph indexing within the LlamaIndex ecosystem, and the
