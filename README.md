@@ -664,9 +664,9 @@ are the main themes?") that standard vector search struggles to address.
     without the full Microsoft GraphRAG dependency footprint.
 - [AutoGraft](https://github.com/jules-gd-dev/autograft-lib)
   <!-- verified: 2026-08-08 -->
-  - A fast, drop-in Python middleware for Neo4j GraphRAG that drastically reduces LLM entity resolution costs.
-    It intercepts nodes from extractors and uses a 3-layer approach (Deterministic B-Tree -> HNSW Vector -> LLM)
-    to prevent duplicates at $O(N \log M)$ complexity.
+  - A fast, drop-in Python middleware for Neo4j GraphRAG that cuts LLM entity-resolution cost ~99.8%.
+    It intercepts nodes from extractors and uses a 3-layer cascade (deterministic fuzzy matching -> vector cosine similarity -> LLM arbiter)
+    to deduplicate entities at ingestion.
 - [LlamaIndex PropertyGraphIndex](https://docs.llamaindex.ai/en/stable/module_guides/indexing/lpg_index_guide/)
   <!-- verified: 2026-08-01 -->
   - First-class knowledge graph indexing within the LlamaIndex ecosystem, and the
