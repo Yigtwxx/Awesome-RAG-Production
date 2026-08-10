@@ -126,7 +126,7 @@ types — spanning bio-medical IR, fact-checking, argument retrieval, and more.
 
 ## Industrial & Field Service
 
-- [Industrial Manual RAG Evaluation Pack](https://github.com/kylecoutray/private-ai-pilot-toolkit/tree/main/assets/industrial-manual-rag-eval)
+- [Industrial Manual RAG Evaluation Pack](https://github.com/kylecoutray/industrial-manual-rag-eval)
   <!-- verified: 2026-08-10 -->
   - Small synthetic corpus with current and superseded manuals,
     neighboring-equipment traps, service-bulletin precedence, restricted and
