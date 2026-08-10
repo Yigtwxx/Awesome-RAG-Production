@@ -124,6 +124,18 @@ types — spanning bio-medical IR, fact-checking, argument retrieval, and more.
 
 ---
 
+## Industrial & Field Service
+
+- [Industrial Manual RAG Evaluation Pack](https://github.com/kylecoutray/private-ai-pilot-toolkit/tree/main/assets/industrial-manual-rag-eval)
+  <!-- verified: 2026-08-10 -->
+  - Small synthetic corpus with current and superseded manuals,
+    neighboring-equipment traps, service-bulletin precedence, restricted and
+    withdrawn sources, twelve expected-answer cases, and critical-failure
+    scoring. Maintained by InHouse Compute; every product and procedure is
+    fictional and not for real equipment.
+
+---
+
 ## Synthetic Data Generation
 
 Don't have a dataset? Generate one from your own internal documents.
