@@ -1236,6 +1236,7 @@ and often layers caching on top — without requiring per-provider changes to ap
 | [Helicone](https://github.com/Helicone/helicone) | Self-host / Cloud | OpenAI + Anthropic | Built-in | Fine-grained token analytics | Cost optimization and prompt versioning |
 | [OpenRouter](https://openrouter.ai/) | Managed | 100+ models | — | Per-request | Unified model marketplace, no infra |
 | [Cloudflare AI Gateway](https://developers.cloudflare.com/ai-gateway/) | Managed (edge) | Major providers | Built-in | Real-time analytics | Edge-deployed, global routing |
+| [AI Router](https://ai-router.dev/) | Managed | OpenAI-compatible catalog | — | Per-key usage visibility | Unified generation and embeddings with model discovery |
 
 - [LiteLLM](https://github.com/BerriAI/litellm)
   - An OpenAI-compatible proxy and SDK wrapper supporting 100+ LLM providers
