@@ -963,6 +963,11 @@ document collections.
 Reliable RAG requires measuring the **RAG Triad**: Context Relevance,
 Groundedness, and Answer Relevance.
 
+- [Agent QA](https://github.com/vostride/agent-qa)
+  <!-- verified: 2026-08-16 -->
+  - End-to-end QA agent for user-facing web and mobile workflows around
+    production RAG applications. Persistent run memory and self-healing target
+    integration regressions rather than retrieval quality.
 - [Braintrust](https://www.braintrust.dev/)
   - An enterprise-grade platform for evaluating and logging LLM outputs. It
     excels at "Online Evaluation," allowing you to score real-world user
