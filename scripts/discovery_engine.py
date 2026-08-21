@@ -50,49 +50,102 @@ _SKIP_REPOS = {"awesome", "awesome-list", ".github"}
 
 # Repos repeatedly surfaced by topic:rag but out of scope for this infrastructure
 # list. Seeded from documented "out-of-scope" triage verdicts (see the triage
-# record in .github/DISCOVERY_TRIAGE.md / FAQ § Scope). Matched on lowercased
-# owner/repo. Extend as new noise appears. Note: already-listed repos do NOT
-# belong here — README dedup handles those automatically.
-OUT_OF_SCOPE_REPOS = {
+# record in .github/DISCOVERY_TRIAGE.md / FAQ § Scope).
+#
+# Each entry maps the slug as written at triage time to the repository's GitHub
+# id. The slug is for humans reading the diff; the id is what actually matches.
+# A rejected project that moves org keeps its id but changes its slug, so
+# slug-only matching silently re-admits it: graphify was rejected as
+# safishamsi/graphify on 2026-08-01, moved to Graphify-Labs/graphify, and came
+# back as the top candidate for three consecutive weekly reports. Its id
+# (1200597263) never changed.
+#
+# Adding an entry: `gh api repos/<owner>/<name> --jq .id`. A None id still
+# matches by slug, but loses rename protection and is warned about at run time;
+# tests/test_discovery_engine.py enforces that every entry carries one.
+# Already-listed repos do NOT belong here — README dedup handles those.
+OUT_OF_SCOPE_REPOS: dict[str, int | None] = {
     # End-user apps / low-code platforms.
-    "langgenius/dify",
-    "open-webui/open-webui",
-    "flowiseai/flowise",
-    "mintplex-labs/anything-llm",
-    "jeecgboot/jeecgboot",
-    "khoj-ai/khoj",
-    "cinnamon/kotaemon",
-    "labring/fastgpt",
-    "onyx-dot-app/onyx",
-    "simstudioai/sim",
-    "1panel-dev/maxkb",
-    "coze-dev/coze-studio",
-    "tencent/weknora",
-    "eosphoros-ai/db-gpt",
-    "arc53/docsgpt",
+    "langgenius/dify": 626805178,
+    "open-webui/open-webui": 701547123,
+    "flowiseai/flowise": 621803253,
+    "mintplex-labs/anything-llm": 649170660,
+    "jeecgboot/jeecgboot": 159152904,
+    "khoj-ai/khoj": 396569538,
+    "cinnamon/kotaemon": 777111718,
+    "labring/fastgpt": 605673387,
+    "onyx-dot-app/onyx": 633262635,
+    "simstudioai/sim": 912559512,
+    "1panel-dev/maxkb": 691347156,
+    "coze-dev/coze-studio": 1008726722,
+    "tencent/weknora": 1024118326,
+    "eosphoros-ai/db-gpt": 627480054,
+    "arc53/docsgpt": 596516907,
     # General agent platforms / runtimes — agent infra, not RAG infra.
-    "elizaos/eliza",
+    "elizaos/eliza": 826170402,
     # Meta-lists, tutorials, educational guides (no production-infra focus).
-    "shubhamsaboo/awesome-llm-apps",
-    "dair-ai/prompt-engineering-guide",
-    "datawhalechina/hello-agents",
-    "datawhalechina/happy-llm",
-    "patchy631/ai-engineering-hub",
-    "hkuds/deeptutor",
-    "bojieli/ai-agent-book",
-    "nirdiamant/genai_agents",
-    "nirdiamant/agents-towards-production",
-    "accumulatemore/cv",
-    "liyupi/ai-guide",
+    "shubhamsaboo/awesome-llm-apps": 793375104,
+    "dair-ai/prompt-engineering-guide": 579082810,
+    "datawhalechina/hello-agents": 1052050442,
+    "datawhalechina/happy-llm": 806854629,
+    "patchy631/ai-engineering-hub": 876064934,
+    "hkuds/deeptutor": 1124219907,
+    "bojieli/ai-agent-book": 1053118194,
+    "nirdiamant/genai_agents": 854807707,
+    "nirdiamant/agents-towards-production": 1003143578,
+    "accumulatemore/cv": 476314415,
+    "liyupi/ai-guide": 931950959,
     # Template / demo galleries.
-    "pathwaycom/llm-app",
+    "pathwaycom/llm-app": 668195240,
     # Coding-assistant / session-memory plugins (not RAG infra).
-    "safishamsi/graphify",
-    "graphify-labs/graphify",
-    "thedotmack/claude-mem",
+    # Same repository under both slugs: rejected under the first, moved to the
+    # second. Kept as a pair so the rename stays visible in the source.
+    "safishamsi/graphify": 1200597263,
+    "graphify-labs/graphify": 1200597263,
+    "thedotmack/claude-mem": 1048065319,
     # General-purpose scrapers — ingestion-adjacent but not RAG infrastructure.
-    "scrapegraphai/scrapegraph-ai",
+    "scrapegraphai/scrapegraph-ai": 749126547,
 }
+
+# Ids are what the filter actually matches on; the dict keys stay the readable
+# record of why each repo is here.
+OUT_OF_SCOPE_REPO_IDS = {
+    repo_id for repo_id in OUT_OF_SCOPE_REPOS.values() if repo_id is not None
+}
+
+
+def is_out_of_scope(project: dict) -> bool:
+    """Return True when a search result is on the out-of-scope denylist.
+
+    Matches on the immutable repository id first so a rejected project that
+    changes owner or name stays rejected, and falls back to the slug for
+    entries whose id has not been filled in yet.
+    """
+    if project.get("id") in OUT_OF_SCOPE_REPO_IDS:
+        return True
+    return (project.get("full_name") or "").lower() in OUT_OF_SCOPE_REPOS
+
+
+def filter_candidates(
+    projects: list[dict], listed_slugs: set[str]
+) -> tuple[list[dict], int, int]:
+    """Drop already-listed and out-of-scope repos from search results.
+
+    Returns the surviving projects plus how many were removed by each rule, so
+    the caller can log the split instead of a single opaque total.
+    """
+    kept: list[dict] = []
+    listed_hits = 0
+    denied_hits = 0
+    for project in projects:
+        if (project.get("full_name") or "").lower() in listed_slugs:
+            listed_hits += 1
+            continue
+        if is_out_of_scope(project):
+            denied_hits += 1
+            continue
+        kept.append(project)
+    return kept, listed_hits, denied_hits
 
 
 def _build_session() -> requests.Session:
@@ -565,15 +618,20 @@ def run_discovery() -> None:
     listed = {
         f"{owner}/{repo}".lower() for owner, repo in _listed_repo_slugs(REPO_ROOT)
     }
-    skip = listed | OUT_OF_SCOPE_REPOS
-    new_projects = [
-        p for p in projects if (p.get("full_name") or "").lower() not in skip
-    ]
+    unresolved = [slug for slug, rid in OUT_OF_SCOPE_REPOS.items() if rid is None]
+    if unresolved:
+        log.warning(
+            "Denylist entries without a repo id (slug-only, no rename protection): %s",
+            ", ".join(sorted(unresolved)),
+        )
+
+    new_projects, listed_hits, denied_hits = filter_candidates(projects, listed)
     log.info(
-        "Discovery: %d fetched, %d new after filtering (%d already-listed/out-of-scope removed)",
+        "Discovery: %d fetched, %d new after filtering (%d already listed, %d out of scope)",
         len(projects),
         len(new_projects),
-        len(projects) - len(new_projects),
+        listed_hits,
+        denied_hits,
     )
     candidates = new_projects[:DISPLAY_LIMIT]
 

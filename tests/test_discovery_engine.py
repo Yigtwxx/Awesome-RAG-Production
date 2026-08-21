@@ -292,3 +292,73 @@ def test_tool_freshness_all_requests_fail_does_not_raise(
     assert report == "", (
         f"No repo could be audited, so nothing to flag, got: {report!r}"
     )
+
+
+# --- Out-of-scope denylist -------------------------------------------------
+#
+# The denylist used to match on `owner/name`. When a rejected project moved
+# org, its slug changed while its id did not, so the entry stopped matching and
+# an already-rejected repo returned to the top of three consecutive weekly
+# reports. These tests pin the id-first behaviour that replaced it.
+
+
+def _search_item(full_name: str, repo_id: int) -> dict[str, Any]:
+    """Return the subset of a GitHub search result the filter actually reads."""
+    return {"id": repo_id, "full_name": full_name}
+
+
+def test_denylisted_repo_still_matches_after_a_rename() -> None:
+    slug, repo_id = next(
+        (slug, rid)
+        for slug, rid in discovery_engine.OUT_OF_SCOPE_REPOS.items()
+        if rid is not None
+    )
+    renamed = _search_item("BrandNewOrg/rebranded-name", repo_id)
+
+    assert discovery_engine.is_out_of_scope(renamed), (
+        f"{slug} moved org and slipped past the denylist; id {repo_id} is unchanged"
+    )
+
+
+def test_denylist_falls_back_to_the_slug_when_the_id_is_unknown(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setitem(discovery_engine.OUT_OF_SCOPE_REPOS, "acme/no-id-yet", None)
+
+    assert discovery_engine.is_out_of_scope(_search_item("Acme/No-Id-Yet", 999_001))
+
+
+def test_repo_absent_from_the_denylist_is_not_filtered() -> None:
+    assert not discovery_engine.is_out_of_scope(
+        _search_item("some-org/genuinely-new", 999_002)
+    )
+
+
+def test_filter_candidates_splits_listed_from_out_of_scope() -> None:
+    denied_id = next(
+        rid for rid in discovery_engine.OUT_OF_SCOPE_REPOS.values() if rid is not None
+    )
+    projects = [
+        _search_item("qdrant/qdrant", 999_003),
+        _search_item("Renamed/still-out-of-scope", denied_id),
+        _search_item("some-org/genuinely-new", 999_004),
+    ]
+
+    kept, listed_hits, denied_hits = discovery_engine.filter_candidates(
+        projects, {"qdrant/qdrant"}
+    )
+
+    assert [p["full_name"] for p in kept] == ["some-org/genuinely-new"]
+    assert (listed_hits, denied_hits) == (1, 1)
+
+
+def test_every_denylist_entry_carries_a_repo_id() -> None:
+    """Ratchet: a slug-only entry silently loses rename protection.
+
+    Fill it in with `gh api repos/<owner>/<name> --jq .id`.
+    """
+    unresolved = sorted(
+        slug for slug, rid in discovery_engine.OUT_OF_SCOPE_REPOS.items() if rid is None
+    )
+
+    assert unresolved == [], f"denylist entries missing a repo id: {unresolved}"
