@@ -680,6 +680,39 @@ are the main themes?") that standard vector search struggles to address.
     documents into Neo4j using LLMs. Provides a UI for exploring the resulting
     graph and integrates with LangChain's Neo4j vector + graph retrieval.
 
+**Context Compression:**
+
+Retrieval decides which passages reach the model; compression decides how much of
+each one does. A reranker drops whole documents, while a compressor shortens what
+survives — stripping boilerplate, repeated JSON keys, and log noise before the
+prompt is assembled. It attacks the same context-window and cost pressure from the
+opposite end, and the two compose.
+
+- [headroom](https://github.com/headroomlabs-ai/headroom)
+  <!-- verified: 2026-08-21 -->
+  - An Apache-2.0 compression layer for everything an agent reads — tool outputs,
+    logs, files, and retrieved chunks — shipped as a library, a proxy, and an MCP
+    server, so it slots in front of an existing pipeline instead of replacing it.
+    Its compressors are content-aware and reversible, and run locally rather than
+    calling out to another model.
+- [LLMLingua](https://github.com/microsoft/LLMLingua)
+  <!-- verified: 2026-08-21 -->
+  - Microsoft Research's prompt-compression family (EMNLP 2023, ACL 2024), which
+    uses a small language model to drop low-information tokens from the prompt and
+    the KV-cache. The published research lineage makes it the reference point for
+    compression quality, though upstream commit activity has slowed — check
+    maintenance status before adopting it in a new pipeline.
+
+**Compression trade-offs:**
+
+- Compression is lossy by construction. Measure answer quality on your own eval
+  set before and after; published ratios come from someone else's workload, and
+  structured data compresses far better than prose.
+- Aggressive token removal can strip the exact identifier, figure, or negation a
+  grounded answer depends on. Protect quoted spans and citation anchors explicitly.
+- Every compressor adds a step in the hot path — latency for all of them, and for
+  model-based compressors an additional failure domain in front of the LLM.
+
 ## Query Transformation & Routing
 
 <!-- no-alphabetical -->
