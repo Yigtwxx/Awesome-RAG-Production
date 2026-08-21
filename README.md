@@ -333,9 +333,13 @@ Choose the right framework for your use case with this production-focused compar
     "Always-Live" RAG by syncing vector indices in real-time as the underlying
     data source changes, without full re-indexing.
 - [R2R](https://github.com/SciPhi-AI/R2R)
-  - A production-ready agentic retrieval system with a RESTful API, multimodal
-    ingestion, hybrid search, and an automatic knowledge-graph pipeline — designed
-    to ship RAG-powered applications without building infrastructure from scratch.
+  <!-- verified: 2026-08-21 -->
+  - An agentic retrieval system with a RESTful API, multimodal ingestion, hybrid
+    search, and an automatic knowledge-graph pipeline — designed to ship
+    RAG-powered applications without building infrastructure from scratch.
+    Upstream has been quiet since late 2025 with no release since v3.6.5
+    (2025-06); pin your version and check maintenance status before adopting it
+    for new work.
 - [RAGFlow](https://github.com/infiniflow/ragflow)
   - An end-to-end RAG engine designed for deep document understanding. It handles
     complex layouts (PDFs, tables, images) natively and includes a built-in
@@ -365,8 +369,11 @@ Choose the right framework for your use case with this production-focused compar
 - [Marker](https://github.com/datalab-to/marker)
   - High-efficiency PDF, EPUB to Markdown converter using vision models.
 - [OmniParse](https://github.com/adithya-s-k/omniparse)
+  <!-- verified: 2026-08-21 -->
   - Universal parser for ingesting any data type (documents, multimedia, web)
-    into RAG-ready formats.
+    into RAG-ready formats. Upstream has been quiet since late 2025 and the
+    project has never cut a tagged release; for a maintained alternative in the
+    same slot see OpenDataLoader PDF or PaddleOCR below.
 - [OpenDataLoader PDF](https://github.com/opendataloader-project/opendataloader-pdf)
   <!-- verified: 2026-08-01 -->
   - Apache-2.0 PDF parser that emits AI-ready structured output while checking
@@ -538,7 +545,7 @@ when a model change degrades retrieval quality.
     promoting to production. Also see LanceDB's built-in versioning for
     vector-native branching (listed in [Vector Databases](#vector-databases)).
 - [Pachyderm](https://github.com/pachyderm/pachyderm)
-  <!-- verified: 2026-08-01 -->
+  <!-- verified: 2026-08-21 -->
   - A data-versioned pipeline orchestration platform. Every pipeline run is
     tied to an immutable data commit, giving full lineage from source document
     to vector index to LLM response — useful in compliance-heavy domains.
@@ -641,7 +648,7 @@ zero-shot retrieval performance.
     and SQL top-k query APIs. It can provide the keyword retrieval leg for
     Postgres-based hybrid RAG stacks.
 - [RAGatouille](https://github.com/AnswerDotAI/RAGatouille)
-  <!-- verified: 2026-08-01 -->
+  <!-- verified: 2026-08-21 -->
   - A library that makes ColBERT (Contextualized Late Interaction over BERT)
     easy to use. ColBERT offers fine-grained token-level matching, providing
     superior retrieval quality compared to standard single-vector dense
@@ -659,9 +666,12 @@ are the main themes?") that standard vector search struggles to address.
     community-aware knowledge graph from documents, enabling both local
     (entity-centric) and global (theme-level) queries with LLM-generated summaries.
 - [nano-graphrag](https://github.com/gusye1234/nano-graphrag)
+  <!-- verified: 2026-08-21 -->
   - A lightweight, hackable implementation of the GraphRAG pipeline (~1k lines).
     Ideal for understanding the algorithm or embedding it into custom systems
-    without the full Microsoft GraphRAG dependency footprint.
+    without the full Microsoft GraphRAG dependency footprint. Listed as a
+    reference implementation rather than a dependency: it is deliberately small
+    and finished, and upstream has been quiet since early 2026.
 - [LightRAG](https://github.com/HKUDS/LightRAG)
   <!-- verified: 2026-08-21 -->
   - Pairs graph traversal with dual-level vector retrieval and supports
@@ -894,7 +904,7 @@ pipeline and preserving layout information that text extraction destroys.
 
 | Tool | Best For | Modalities | Retrieval Style | Production Maturity | Evidence |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| [Byaldi](https://github.com/AnswerDotAI/byaldi) | Quick ColPali deployment | Document pages (image) | Late interaction | Early Production | — |
+| [Byaldi](https://github.com/AnswerDotAI/byaldi) | Quick ColPali deployment | Document pages (image) | Late interaction | Unmaintained since 2025-01 | — |
 | [ColPali](https://github.com/illuin-tech/colpali) | Layout-rich PDF retrieval | Document pages (image) | Late interaction | Research → Production | [\[3P\]](benchmarks.md#9-gaps--not-publicly-measured) |
 | [Jina CLIP v2](https://huggingface.co/jinaai/jina-clip-v2) | Multilingual vision search | Text + Image | Bi-encoder | Production | — |
 | [LlamaIndex Multi-Modal](https://docs.llamaindex.ai/en/stable/module_guides/models/multi_modal/) | End-to-end multimodal RAG | Text + Image | Framework module | Production | — |
@@ -905,7 +915,7 @@ pipeline and preserving layout information that text extraction destroys.
 ### Frameworks & Tools
 
 - [Byaldi](https://github.com/AnswerDotAI/byaldi)
-  <!-- verified: 2026-08-01 -->
+  <!-- verified: 2026-08-21 -->
   - A thin, production-friendly wrapper around ColPali that provides a simple
     index/query API for late-interaction vision-document retrieval. The fastest
     path to deploying ColPali without writing research code. Upstream has been
@@ -975,10 +985,14 @@ document collections.
 ### Frameworks & Tools
 
 - [Vanna](https://github.com/vanna-ai/vanna)
+  <!-- verified: 2026-08-21 -->
   - A Python framework for accurate Text-to-SQL generation using LLMs with
     agentic retrieval. It trains a retrieval model on your schema, DDL, and
     prior question-SQL pairs so queries stay faithful to the actual database
-    structure rather than hallucinating columns or table names.
+    structure rather than hallucinating columns or table names. The repository
+    was archived in February 2026 immediately after the 2.0 release, with no
+    successor named; the code is MIT and still installable, but it will not
+    receive fixes. For new work prefer [WrenAI](https://github.com/Canner/WrenAI).
 - [WrenAI](https://github.com/Canner/WrenAI)
   - An open-source context layer that enriches SQL generation with business
     semantics, examples, and governance rules — enabling AI agents to query
@@ -1050,7 +1064,7 @@ This approach scales better than human evaluation and provides consistent, autom
 **Core Frameworks:**
 
 - [ARES (Automated RAG Evaluation System)](https://github.com/stanford-futuredata/ARES)
-  <!-- verified: 2026-08-01 -->
+  <!-- verified: 2026-08-21 -->
   - Stanford's research project that fine-tunes small LLMs as judges specifically
     for RAG evaluation, targeting frontier-model judge accuracy at a fraction of
     the cost. A research codebase — upstream activity has been sparse since 2025;
@@ -1069,11 +1083,14 @@ This approach scales better than human evaluation and provides consistent, autom
     and embedding distance. Seamlessly integrates with LangSmith for
     production monitoring.
 - [Prometheus](https://github.com/prometheus-eval/prometheus-eval)
-  <!-- verified: 2026-08-01 -->
+  <!-- verified: 2026-08-21 -->
   - An open-source LLM specifically trained for evaluation tasks. Unlike calling a
     frontier model as a judge, Prometheus is optimized for scoring consistency and
     can run locally for cost-sensitive deployments. Use the `prometheus-eval`
     repository — the original `prometheus` repo has had no commits since 2023.
+    Note that `prometheus-eval` has itself been quiet since mid-2025; the
+    released model weights remain usable, but treat the harness as a research
+    artifact rather than a maintained dependency.
 
 **Key Metrics:**
 
@@ -1203,12 +1220,13 @@ different bottleneck — deploying them in combination yields compounding return
     changes required. Cache writes carry a premium, so the break-even point is
     the second read on a 5-minute TTL and the third on a 1-hour TTL.
 - [GPTCache](https://github.com/zilliztech/GPTCache)
-  <!-- verified: 2026-08-01 -->
+  <!-- verified: 2026-08-21 -->
   - A widely referenced open-source semantic cache for LLM applications. It
     intercepts LLM calls, runs similarity search over a cache store, and returns
     hits without calling the model — with pluggable similarity functions, eviction
-    policies, and storage backends (Redis, Milvus, SQLite). Upstream commit
-    activity has slowed considerably; verify maintenance status before adopting.
+    policies, and storage backends (Redis, Milvus, SQLite). Upstream has had no
+    commits since mid-2025 and no release since 2024-08; verify maintenance
+    status before adopting.
 - [LangChain Cache](https://python.langchain.com/docs/integrations/llm_caching/)
   - Built-in exact-match and semantic LLM caching across a broad backend matrix
     (in-memory, Redis, SQLite, MongoDB, Cassandra, GPTCache). One-line setup for
@@ -1356,11 +1374,15 @@ before — not after — cost becomes a budget crisis.
 | [Helicone](https://github.com/Helicone/helicone) | Observability + cost attribution | Fine-grained token analytics per user, team, or feature (see [LLM Gateways](#llm-gateways--routing)) |
 
 - [tokencost](https://github.com/AgentOps-AI/tokencost)
-  - A lightweight Python library that counts tokens and looks up the current
+  <!-- verified: 2026-08-21 -->
+  - A lightweight Python library that counts tokens and looks up the
     price-per-token for 400+ LLM models without making a live API call. Useful
     for pre-flight cost estimation in CI pipelines, budget guardrails, and
     prompt optimization loops — ensure a context window fits a cost budget
-    before it reaches production.
+    before it reaches production. Its last release was 2025-08 and upstream has
+    been quiet since; a bundled price table that stops tracking provider pricing
+    is worse than no table, so verify the models you care about against current
+    provider pricing before trusting a budget guardrail built on it.
 - [OpenMeter](https://github.com/openmeterio/openmeter)
   - An open-source usage metering and billing platform. Ingests usage events
     (token counts, API calls, compute seconds) and exposes per-customer,
