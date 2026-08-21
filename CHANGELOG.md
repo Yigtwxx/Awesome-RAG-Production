@@ -78,7 +78,37 @@ tracked in [ROADMAP.md](ROADMAP.md).
   serving a 289-byte JavaScript redirect stub, so no status code ever signalled
   the move. Following it to the live document showed the figure was wrong too:
   the SLA is tiered per quarter (99.5% Flex, 99.9% Premium shared, 99.95%
-  Premium dedicated), not a flat 99.9%.
+  Premium dedicated), not a flat 99.9%. The Qdrant Cloud row turned out to have
+  the same shape — a flat 99.9% cited to a marketing page, where the real SLA
+  commits 99.5% Standard / 99.9% Premium / up to 99.95% Premium Multi-AZ.
+- **Three benchmark numbers were not supported by the sources they cited.**
+  The Milvus recall row (`~0.995` on SIFT-128) pointed at a page publishing QPS
+  and response time only, for Milvus 2.2, and crediting a harness it does not
+  use. Both prompt-caching latency figures — Anthropic "up to −85%", OpenAI
+  "up to −80%" — appear nowhere in the provider documentation quoted for them;
+  both providers describe latency qualitatively and commit to numbers only on
+  price. All three moved to § Gaps. The caching *cost* rows are documented and
+  stay.
+- Provider documentation moved without the entries following:
+  `docs.anthropic.com` now redirects to `platform.claude.com`, and
+  `platform.openai.com/docs` to `developers.openai.com`. Both resolved through
+  redirects, so no link checker would have flagged either.
+- **Vanna was archived upstream in February 2026 and still listed as active**,
+  first under Structured & SQL RAG. Soft-deprecated per the Removal &
+  Deprecation Policy: the entry stays, states that it is archived, and points at
+  WrenAI. The weekly audit could not have caught it — reading `pushed_at` alone,
+  a project that archives right after a release reads as merely 200 days quiet.
+  `check_listed_tool_freshness` now reports archived repos in their own section,
+  ahead of the push-age table and never folded into it.
+- Maintenance notes for the four stale entries that had none (tokencost, R2R,
+  OmniParse, nano-graphrag), and corrections to three that had gone wrong:
+  Prometheus pointed readers from a dead repo to `prometheus-eval`, which is
+  itself dormant; GPTCache's "slowed considerably" understated 13 months of
+  silence; Byaldi's comparison row still claimed "Early Production" for a repo
+  untouched since 2025-01.
+- `check_listed_tool_freshness` wrote its report without creating `.github/`
+  first, unlike both sibling audits. CI checkouts always have the directory, so
+  it never bit in production, but the report was discardable by accident.
 
 ### Changed
 
@@ -94,10 +124,10 @@ tracked in [ROADMAP.md](ROADMAP.md).
   rejected and seeded into the denylist. Verdicts recorded in
   `.github/DISCOVERY_TRIAGE.md`.
 - Two maintenance backlogs that had been scrolling past inside the weekly feed
-  were split into their own issues rather than left implicit: nine stale
-  benchmark citations, and eleven listed tools past the 180-day activity rule
-  (one of which, Vanna, is archived upstream — a state the freshness audit
-  reads as merely 200 days quiet).
+  were split into their own issues and then cleared: nine stale benchmark
+  citations re-read against their sources, and eleven listed tools given a
+  deprecate-or-keep decision each. Dates that were merely imprecise were
+  sharpened to the source's own publication date rather than refreshed to today.
 
 ## 2026-07
 
