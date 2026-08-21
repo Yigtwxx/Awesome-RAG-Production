@@ -17,6 +17,48 @@ infrastructure building blocks.
 
 ---
 
+## 2026-08-21
+
+Triaged from the 2026-08-03, 2026-08-10, and 2026-08-17 discovery reports
+(16 unique candidates after deduplication across the three cycles).
+
+| Project | Verdict |
+| :--- | :--- |
+| [promptfoo](https://github.com/promptfoo/promptfoo) | **Accepted** — MIT, declarative evals with CLI and CI/CD gating plus adversarial red-teaming; listed under Evaluation & Benchmarking. |
+| [LightRAG](https://github.com/HKUDS/LightRAG) | **Accepted** — the 2026-08-01 deferral is resolved: incremental updates, a server, and pluggable production storage (PostgreSQL, Neo4j, MongoDB, OpenSearch) are now shipped; listed under Retrieval & Reranking § GraphRAG. |
+| [headroom](https://github.com/headroomlabs-ai/headroom) | **Deferred (blocked on a scope decision)** — Apache-2.0 context compression for tool outputs and RAG chunks, actively developed. It is not a cache, so Caching & Performance is the wrong home; listing it means opening a context-compression subsection. That is a maintainer call, not a triage call. |
+| [Graphify](https://github.com/Graphify-Labs/graphify) | **Reject (already rejected)** — same project as `safishamsi/graphify`, moved orgs; a code knowledge graph for coding assistants, explicitly vector-store-free. Both slugs are now on the denylist. |
+| [llm-app](https://github.com/pathwaycom/llm-app) | **Reject** (was Deferred 2026-08-01) — ready-to-run template gallery, not an infrastructure building block. Resolving the deferral so it stops recurring weekly. |
+| [WeKnora](https://github.com/Tencent/WeKnora) | **Reject** — end-user knowledge platform and self-maintaining wiki; out of scope per FAQ. Non-standard license (`NOASSERTION`). |
+| [MaxKB](https://github.com/1Panel-dev/MaxKB) | **Reject** — enterprise agent platform with a visual builder; out of scope per FAQ. |
+| [coze-studio](https://github.com/coze-dev/coze-studio) | **Reject** — all-in-one visual agent development platform; out of scope per FAQ. |
+| [DB-GPT](https://github.com/eosphoros-ai/DB-GPT) | **Reject** — end-to-end AI-plus-data assistant product. The Structured & SQL RAG section lists composable pieces (Vanna, WrenAI), not platforms. |
+| [DocsGPT](https://github.com/arc53/DocsGPT) | **Reject** — end-user chat-with-your-documents application; out of scope per FAQ. |
+| [eliza](https://github.com/elizaOS/eliza) | **Reject** — general agentic operating system; agent infrastructure, not RAG infrastructure. |
+| [ai-agent-book](https://github.com/bojieli/ai-agent-book) | **Reject** — book manuscript with companion code; educational, no production-infrastructure focus. |
+| [GenAI_Agents](https://github.com/NirDiamant/GenAI_Agents) | **Reject** — tutorial collection. |
+| [agents-towards-production](https://github.com/NirDiamant/agents-towards-production) | **Reject** — tutorial collection; the production framing is pedagogical, not a shippable component. |
+| [ai-guide](https://github.com/liyupi/ai-guide) | **Reject** — general AI resource collection and beginner tutorials. |
+| [CV](https://github.com/AccumulateMore/CV) | **Reject** — deep-learning lecture notes; not RAG-related at all. |
+
+All rejects above are seeded into `OUT_OF_SCOPE_REPOS` in
+[discovery_engine.py](../scripts/discovery_engine.py) so they stop reappearing.
+
+**Backlog not covered by this triage** — the same reports carry two other
+sections that need separate passes:
+
+- *Stale Benchmark Citations* — 10 rows in `benchmarks.md` older than 365 days.
+  One of them (Weaviate Cloud SLA) was fixed in #86; the other nine still need
+  their sources re-verified or moved to § Gaps.
+- *Stale Listed Tools* — 11 listed repos with no push in over 180 days
+  (byaldi 566d, pachyderm 560d, ARES 507d, prometheus-eval 479d,
+  RAGatouille 457d, GPTCache 402d, tokencost 346d, R2R 283d, omniparse 248d,
+  nano-graphrag 202d, vanna 196d). RAGatouille and GPTCache already carry
+  inline maintenance warnings; the rest need a deprecate-or-keep decision per
+  the Removal & Deprecation Policy.
+
+---
+
 ## 2026-08-01
 
 Triaged from the 2026-07-27 discovery report.
