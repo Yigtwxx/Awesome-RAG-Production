@@ -1184,22 +1184,24 @@ different bottleneck — deploying them in combination yields compounding return
 
 | Tool | Cache Type | Layer | Backend | Best For | Evidence |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| [Anthropic Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) | Prompt prefix | Provider | Anthropic infra | Long system prompts, large contexts | [\[V\]](benchmarks.md#4-caching-prompt--semantic) |
+| [Anthropic Prompt Caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) | Prompt prefix | Provider | Anthropic infra | Long system prompts, large contexts | [\[V\]](benchmarks.md#4-caching-prompt--semantic) |
 | [GPTCache](https://github.com/zilliztech/GPTCache) | Exact + Semantic | Application | Redis / Milvus / SQLite | Reducing duplicate LLM calls | — |
 | [LangChain Cache](https://python.langchain.com/docs/integrations/llm_caching/) | Exact + Semantic | Application | In-memory / Redis / SQLite | LangChain-native pipelines | — |
 | [LiteLLM Cache](https://docs.litellm.ai/docs/proxy/caching) | Exact + Semantic | Gateway | Redis / S3 / Disk | Multi-provider routing with cache | — |
-| [OpenAI Prompt Caching](https://platform.openai.com/docs/guides/prompt-caching) | Prompt prefix | Provider | OpenAI infra | GPT-4o / o-series, shared prefixes | [\[V\]](benchmarks.md#4-caching-prompt--semantic) |
+| [OpenAI Prompt Caching](https://developers.openai.com/api/docs/guides/prompt-caching) | Prompt prefix | Provider | OpenAI infra | GPT-4o / o-series, shared prefixes | [\[V\]](benchmarks.md#4-caching-prompt--semantic) |
 | [RedisVL Semantic Cache](https://github.com/redis/redis-vl-python) | Semantic | Application | Redis Stack | Existing Redis infra, sub-ms lookup | — |
 | [vLLM Automatic Prefix Caching](https://docs.vllm.ai/en/latest/features/automatic_prefix_caching.html) | KV-cache | Inference engine | GPU memory | Self-hosted RAG, shared system prompts | [\[3P\]](benchmarks.md#5-llm-serving) |
 
 ### Tools
 
-- [Anthropic Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
-  - Provider-side prefix cache for Claude models that delivers up to 90% cost
-    reduction and 85% latency reduction on cached context
-    (\[V\] [Anthropic docs](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) · 2024).
+- [Anthropic Prompt Caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)
+  <!-- verified: 2026-08-21 -->
+  - Provider-side prefix cache for Claude models that bills cache reads at about
+    10% of the standard input price
+    (\[V\] [Anthropic docs](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) · 2026-08-01).
     Add a `cache_control` breakpoint in the API request — no infrastructure
-    changes required.
+    changes required. Cache writes carry a premium, so the break-even point is
+    the second read on a 5-minute TTL and the third on a 1-hour TTL.
 - [GPTCache](https://github.com/zilliztech/GPTCache)
   <!-- verified: 2026-08-01 -->
   - A widely referenced open-source semantic cache for LLM applications. It
@@ -1215,11 +1217,13 @@ different bottleneck — deploying them in combination yields compounding return
   - Gateway-level caching across 100+ LLM providers with per-route TTL control,
     Redis/S3/Disk backends, and cache-control headers. Pairs with the LiteLLM
     proxy for a unified cost-management and caching layer.
-- [OpenAI Prompt Caching](https://platform.openai.com/docs/guides/prompt-caching)
+- [OpenAI Prompt Caching](https://developers.openai.com/api/docs/guides/prompt-caching)
+  <!-- verified: 2026-08-21 -->
   - Automatic prefix caching for GPT-4o and o-series models; requires zero code
-    changes and delivers a 50% input-token discount on cache hits
-    (\[V\] [OpenAI announcement](https://openai.com/index/api-prompt-caching/) · 2024-10).
-    Effective when system prompts or retrieved context blocks exceed 1,024 tokens.
+    changes and delivered a 50% input-token discount on cache hits at launch
+    (\[V\] [OpenAI announcement](https://openai.com/index/api-prompt-caching/) · 2024-10),
+    though current docs state the discount varies by model. Effective when system
+    prompts or retrieved context blocks exceed 1,024 tokens.
 - [RedisVL Semantic Cache](https://github.com/redis/redis-vl-python)
   - A Redis Stack–backed semantic cache library with sub-millisecond lookup
     latency. Leverages Redis Vector Sets for similarity search and supports
