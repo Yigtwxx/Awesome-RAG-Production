@@ -362,3 +362,91 @@ def test_every_denylist_entry_carries_a_repo_id() -> None:
     )
 
     assert unresolved == [], f"denylist entries missing a repo id: {unresolved}"
+
+
+# --- Archived listed tools -------------------------------------------------
+#
+# The audit read `pushed_at` only. Vanna archived in 2026-02 right after a
+# release, so it surfaced as merely 200 days quiet — the mildest entry in that
+# week's table — while archival is the strongest removal signal the policy has.
+
+
+class _StubSession:
+    """Returns one canned GitHub API payload for every repo lookup."""
+
+    def __init__(self, payload: dict[str, Any]) -> None:
+        self._payload = payload
+
+    def get(self, *args: Any, **kwargs: Any) -> Any:
+        payload = self._payload
+
+        class _Response:
+            status_code = 200
+            headers: dict[str, str] = {}
+
+            @staticmethod
+            def raise_for_status() -> None:
+                return None
+
+            @staticmethod
+            def json() -> dict[str, Any]:
+                return payload
+
+        return _Response()
+
+
+def _one_tool_repo(tmp_path: Path) -> Path:
+    return _make_repo(
+        tmp_path,
+        "- [Vanna](https://github.com/vanna-ai/vanna)\n  - Text-to-SQL framework.\n",
+    )
+
+
+def test_archived_repo_is_reported_even_when_recently_pushed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Archival must not be hidden behind a fresh push date."""
+    today = datetime.date.today().isoformat()
+    monkeypatch.setattr(
+        discovery_engine,
+        "_build_session",
+        lambda: _StubSession({"archived": True, "pushed_at": f"{today}T00:00:00Z"}),
+    )
+
+    discovery_engine.check_listed_tool_freshness(_one_tool_repo(tmp_path))
+
+    report = _report(tmp_path)
+    assert "## Archived Listed Tools" in report, report
+    assert "vanna-ai/vanna" in report
+
+
+def test_archived_repo_is_not_also_listed_as_stale(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """One repo, one verdict — archival supersedes push age."""
+    monkeypatch.setattr(
+        discovery_engine,
+        "_build_session",
+        lambda: _StubSession({"archived": True, "pushed_at": "2020-01-01T00:00:00Z"}),
+    )
+
+    discovery_engine.check_listed_tool_freshness(_one_tool_repo(tmp_path))
+
+    report = _report(tmp_path)
+    assert "## Archived Listed Tools" in report
+    assert "Stale Listed Tools" not in report, report
+
+
+def test_active_repo_produces_no_archived_section(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    today = datetime.date.today().isoformat()
+    monkeypatch.setattr(
+        discovery_engine,
+        "_build_session",
+        lambda: _StubSession({"archived": False, "pushed_at": f"{today}T00:00:00Z"}),
+    )
+
+    discovery_engine.check_listed_tool_freshness(_one_tool_repo(tmp_path))
+
+    assert _report(tmp_path) == ""

@@ -329,9 +329,15 @@ def check_listed_tool_freshness(repo_root: Path) -> None:
     """Audit GitHub repos already listed in README.md for staleness.
 
     Extracts all github.com/{owner}/{repo} URLs from README.md, queries the
-    GitHub API for each repo's last push date, and appends a warning table to
-    PROPOSED_UPDATES.md for any repo that hasn't been pushed to in the last
-    STALE_TOOL_DAYS days (aligned with CONTRIBUTING's 6-month activity rule).
+    GitHub API for each repo, and appends warning tables to PROPOSED_UPDATES.md
+    for repos that are archived upstream, or that have not been pushed to in the
+    last STALE_TOOL_DAYS days (aligned with CONTRIBUTING's 6-month activity rule).
+
+    Archived repos get their own table and are never folded into the push-age
+    one. A project can archive right after shipping a release and so read as only
+    mildly quiet — Vanna archived in 2026-02 and surfaced at 200 days, the
+    mildest number in that week's report — which hides the strongest removal
+    signal the Removal & Deprecation Policy recognises behind the weakest one.
 
     Skips the repo's own organisation link and the canonical awesome-list badge.
     Exits silently when README.md is absent or no stale tools are found.
@@ -353,6 +359,7 @@ def check_listed_tool_freshness(repo_root: Path) -> None:
     today = datetime.date.today()
     stale_threshold = today - datetime.timedelta(days=STALE_TOOL_DAYS)
     stale_tools: list[tuple[str, str, int]] = []  # (owner/repo, url, days_since_push)
+    archived_tools: list[tuple[str, str, str]] = []  # (owner/repo, url, last_push)
 
     session = _build_session()
     # Sentinel: every request in the loop below may raise, leaving no response to
@@ -377,6 +384,18 @@ def check_listed_tool_freshness(repo_root: Path) -> None:
             continue
 
         pushed_raw: str = (data.get("pushed_at") or "")[:10]
+
+        if data.get("archived"):
+            archived_tools.append(
+                (
+                    f"{owner}/{repo}",
+                    f"https://github.com/{owner}/{repo}",
+                    pushed_raw or "unknown",
+                )
+            )
+            log.warning("Archived listed tool: %s/%s", owner, repo)
+            continue
+
         if not pushed_raw:
             continue
         try:
@@ -403,12 +422,37 @@ def check_listed_tool_freshness(repo_root: Path) -> None:
     )
     log.info("GitHub API rate limit remaining after tool audit: %s", remaining)
 
-    if not stale_tools:
+    if not stale_tools and not archived_tools:
         log.info("Tool freshness check: all listed repos are current.")
         return
 
     output_path = repo_root / ".github" / "PROPOSED_UPDATES.md"
+    # The two sibling audits already do this; this one did not, so its report was
+    # lost whenever it ran before anything had created .github/.
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     try:
+        if archived_tools:
+            with output_path.open("a", encoding="utf-8") as fh:
+                fh.write("\n\n## Archived Listed Tools\n\n")
+                fh.write(
+                    f"> Detected {len(archived_tools)} repo(s) in `README.md` that are "
+                    f"archived on GitHub. Archival is an explicit end-of-life signal, so "
+                    f"these need a decision regardless of how recently they were pushed "
+                    f"to — see the [Removal & Deprecation Policy]"
+                    f"({REPO_BLOB}/CONTRIBUTING.md#removal--deprecation-policy).\n\n"
+                )
+                fh.write("| Repo | Last Push | URL |\n")
+                fh.write("| :--- | :--- | :--- |\n")
+                for slug, url, last_push in archived_tools:
+                    fh.write(f"| {slug} | {last_push} | {url} |\n")
+            log.warning(
+                "Tool freshness: %d archived repo(s) flagged in PROPOSED_UPDATES.md",
+                len(archived_tools),
+            )
+
+        if not stale_tools:
+            return
+
         with output_path.open("a", encoding="utf-8") as fh:
             fh.write(
                 f"\n\n## Stale Listed Tools (>{STALE_TOOL_DAYS} days since last push)\n\n"
