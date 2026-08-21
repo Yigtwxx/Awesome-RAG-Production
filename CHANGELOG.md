@@ -26,6 +26,13 @@ tracked in [ROADMAP.md](ROADMAP.md).
   candidates, seeding the `OUT_OF_SCOPE_REPOS` denylist.
 - New entries: KServe, SkyPilot, Triton Inference Server (Deployment &
   Serving), OpenDataLoader PDF (Data Ingestion), PageIndex (Retrieval).
+- Retrieval & Reranking § Context Compression — a new subsection for the step
+  between retrieval and the prompt. A reranker drops whole documents; a
+  compressor shortens the ones that survive. Lists headroom and LLMLingua,
+  with trade-off notes that lead with lossiness, because a compressor that
+  silently drops a cited identifier fails in a way token counts do not show.
+- New entries: promptfoo (Evaluation & Benchmarking), LightRAG (Retrieval &
+  Reranking § GraphRAG), headroom and LLMLingua (Context Compression).
 - Root `.gitattributes` pinning `*.sh` / `*.yml` to LF, so a CRLF checkout on
   Windows cannot break a script on the Linux runners.
 
@@ -55,6 +62,23 @@ tracked in [ROADMAP.md](ROADMAP.md).
   Responses API migration guide.
 - Stale-upstream notes for Pachyderm, ARES, RAGatouille, Byaldi, and GPTCache;
   Prometheus and G-Eval now point at their maintained successors.
+- **The out-of-scope denylist could be defeated by a rename.** It matched on
+  `owner/name`, so a rejected project only had to move org to reappear:
+  graphify was rejected as `safishamsi/graphify`, moved to
+  `Graphify-Labs/graphify`, and came back as the top discovery candidate three
+  weeks running while its GitHub id never changed. The denylist is now
+  `slug -> id` — the slug stays as the readable record of why a repo is there,
+  the id is what matches. A missing id still matches by slug, warns at run
+  time, and fails a ratchet test.
+- Discovery filtering moved out of `run_discovery` into a testable
+  `filter_candidates`, and the run log now reports already-listed and
+  out-of-scope counts separately. The single combined total was what let a
+  denylist entry stop matching without moving a visible number.
+- The Weaviate Cloud SLA row cited a URL that still returned HTTP 200 while
+  serving a 289-byte JavaScript redirect stub, so no status code ever signalled
+  the move. Following it to the live document showed the figure was wrong too:
+  the SLA is tiered per quarter (99.5% Flex, 99.9% Premium shared, 99.95%
+  Premium dedicated), not a flat 99.9%.
 
 ### Changed
 
@@ -65,6 +89,15 @@ tracked in [ROADMAP.md](ROADMAP.md).
 - `.github/PROPOSED_UPDATES.md` is no longer tracked. It was both committed and
   gitignored, so it stayed frozen at a 2026-05-11 snapshot and made the roadmap
   chase a discovery outage that was not happening.
+- Three weeks of discovery reports triaged in one pass (16 unique candidates):
+  2 accepted, 1 deferred pending a scope decision that is now resolved, 12
+  rejected and seeded into the denylist. Verdicts recorded in
+  `.github/DISCOVERY_TRIAGE.md`.
+- Two maintenance backlogs that had been scrolling past inside the weekly feed
+  were split into their own issues rather than left implicit: nine stale
+  benchmark citations, and eleven listed tools past the 180-day activity rule
+  (one of which, Vanna, is archived upstream — a state the freshness audit
+  reads as merely 200 days quiet).
 
 ## 2026-07
 
