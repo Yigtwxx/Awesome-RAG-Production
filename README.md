@@ -662,6 +662,13 @@ are the main themes?") that standard vector search struggles to address.
   - A lightweight, hackable implementation of the GraphRAG pipeline (~1k lines).
     Ideal for understanding the algorithm or embedding it into custom systems
     without the full Microsoft GraphRAG dependency footprint.
+- [LightRAG](https://github.com/HKUDS/LightRAG)
+  <!-- verified: 2026-08-21 -->
+  - Pairs graph traversal with dual-level vector retrieval and supports
+    incremental updates and selective deletion, so a changed document does not
+    force the full re-indexing pass that batch GraphRAG requires. Runs as a
+    server with pluggable production storage (PostgreSQL, Neo4j, MongoDB,
+    OpenSearch) and built-in Ragas and Langfuse hooks.
 - [LlamaIndex PropertyGraphIndex](https://docs.llamaindex.ai/en/stable/module_guides/indexing/lpg_index_guide/)
   <!-- verified: 2026-08-01 -->
   - First-class knowledge graph indexing within the LlamaIndex ecosystem, and the
@@ -978,6 +985,12 @@ Groundedness, and Answer Relevance.
     your own corpus with statistical IR metrics (Recall/NDCG/MAP/bpref) plus
     paired-bootstrap CIs and Wilcoxon p-values to call architectural winners
     with confidence before you commit infrastructure.
+- [promptfoo](https://github.com/promptfoo/promptfoo)
+  <!-- verified: 2026-08-21 -->
+  - Declarative, config-driven evals that run from the CLI and in CI/CD, so a
+    prompt or model change is gated by assertions instead of eyeballed in a
+    notebook. It also ships adversarial red-teaming and vulnerability scanning,
+    covering the security half of RAG evaluation that quality metrics alone miss.
 - [Ragas](https://github.com/explodinggradients/ragas)
   - A framework that uses an "LLM-as-a-Judge" to evaluate your pipeline. It
     calculates metrics like Faithfulness (did the answer come from the context?)

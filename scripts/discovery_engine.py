@@ -65,6 +65,13 @@ OUT_OF_SCOPE_REPOS = {
     "labring/fastgpt",
     "onyx-dot-app/onyx",
     "simstudioai/sim",
+    "1panel-dev/maxkb",
+    "coze-dev/coze-studio",
+    "tencent/weknora",
+    "eosphoros-ai/db-gpt",
+    "arc53/docsgpt",
+    # General agent platforms / runtimes — agent infra, not RAG infra.
+    "elizaos/eliza",
     # Meta-lists, tutorials, educational guides (no production-infra focus).
     "shubhamsaboo/awesome-llm-apps",
     "dair-ai/prompt-engineering-guide",
@@ -72,8 +79,16 @@ OUT_OF_SCOPE_REPOS = {
     "datawhalechina/happy-llm",
     "patchy631/ai-engineering-hub",
     "hkuds/deeptutor",
+    "bojieli/ai-agent-book",
+    "nirdiamant/genai_agents",
+    "nirdiamant/agents-towards-production",
+    "accumulatemore/cv",
+    "liyupi/ai-guide",
+    # Template / demo galleries.
+    "pathwaycom/llm-app",
     # Coding-assistant / session-memory plugins (not RAG infra).
     "safishamsi/graphify",
+    "graphify-labs/graphify",
     "thedotmack/claude-mem",
     # General-purpose scrapers — ingestion-adjacent but not RAG infrastructure.
     "scrapegraphai/scrapegraph-ai",
