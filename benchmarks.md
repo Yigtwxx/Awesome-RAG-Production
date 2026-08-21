@@ -171,7 +171,7 @@ confirming this specific figure was found. If you have the original source, plea
 | Provider | Published SLA | Tag | Source | Date |
 | :--- | :--- | :--- | :--- | :--- |
 | Pinecone | 99.95% uptime | \[V\] | [Pinecone Security & Reliability](https://www.pinecone.io/security/) | 2026-08-01 |
-| Weaviate Cloud | 99.9% uptime | \[V\] | [Weaviate SLA](https://weaviate.io/service/sla) | 2024 |
+| Weaviate Cloud | 99.5% / 99.9% / 99.95% uptime per quarter (Flex / Premium shared / Premium dedicated) | \[V\] | [Weaviate SLA](https://weaviate.io/sla) | 2026-05 |
 | Qdrant Cloud | 99.9% uptime | \[V\] | [Qdrant Cloud SLA](https://qdrant.tech/cloud/) | 2024 |
 
 Self-hosted Milvus, Chroma, pgvector, and vLLM have no provider SLA — reliability
