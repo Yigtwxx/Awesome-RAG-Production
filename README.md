@@ -857,6 +857,11 @@ distinct from the RAG knowledge base itself.
     facts from every conversation turn. Provides a unified API across
     graph-based, vector, and key-value backends; selected as the memory
     provider in the AWS Agent SDK.
+- [Mnemoverse](https://github.com/mnemoverse/mcp-memory-server)
+  - Hosted memory reachable over MCP from Claude Code, Cursor, VS Code and
+    ChatGPT with one key, so context written in one tool is readable in the
+    next. Recall ranking moves with outcomes rather than similarity alone: a
+    memory that helped is promoted, one that misled is demoted.
 - [Vestige](https://github.com/samvallad33/vestige)
   <!-- verified: 2026-06-26 -->
   - Local-first memory MCP server for coding agents, written in Rust with a
