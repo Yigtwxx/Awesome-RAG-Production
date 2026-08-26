@@ -370,7 +370,9 @@ Choose the right framework for your use case with this production-focused compar
   - High-efficiency PDF, EPUB to Markdown converter using vision models.
 - [mdgate/converters](https://github.com/mdgate/converters)
   <!-- verified: 2026-08-24 -->
-  - Pure TypeScript document-to-Markdown converters for RAG ingestion. Parses DOCX, PDF, PPTX, XLSX, iWork, HWP, email, and other office formats in Node, Cloudflare Workers, and browsers, with no Python, WASM, or native addons.
+  - Pure TypeScript document-to-Markdown converter for RAG ingestion, parsing
+    DOCX, PDF, PPTX, XLSX, iWork, HWP, email, and other office formats in Node,
+    Cloudflare Workers, and browsers without Python, WASM, or native addons.
 - [OmniParse](https://github.com/adithya-s-k/omniparse)
   <!-- verified: 2026-08-21 -->
   - Universal parser for ingesting any data type (documents, multimedia, web)
