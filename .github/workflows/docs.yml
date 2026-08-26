@@ -62,7 +62,13 @@ jobs:
 
   deploy:
     needs: build
-    if: github.ref == 'refs/heads/main'
+    # PRs build the site but never publish it. Guarding on `github.ref` alone was
+    # not enough: a run that leaves the queue after its PR has merged no longer
+    # resolves `refs/pull/N/merge` and the job fails instead of skipping, which
+    # is how a red `deploy` check landed on an already-merged PR during the
+    # 2026-08-26 Actions incident. `workflow_dispatch` stays able to deploy so a
+    # missed push run can still be replayed by hand.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
