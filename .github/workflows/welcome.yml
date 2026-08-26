@@ -1,14 +1,11 @@
 name: Welcome
 
 on:
-  pull_request_target:
-    types: [opened]
   issues:
     types: [opened]
 
 permissions:
   issues: write
-  pull-requests: write
 
 jobs:
   welcome:
@@ -22,7 +19,3 @@ jobs:
             **Thanks for starting the conversation.**
 
             We appreciate you taking the time to share your thoughts. As we aim for high-quality, production-grade resources, a maintainer will review your issue shortly to ensure it aligns with our engineering standards. In the meantime, feel free to elaborate on your use case or technical constraints.
-          pr_message: |
-            **Thank you for your contribution.**
-
-            We value the effort you've put into improving this collection. Since we maintain strict quality criteria for "Production-Grade" resources, we'll review your changes carefully to ensure they meet our standards for reliability and maintainability. Expect some feedback soon!
