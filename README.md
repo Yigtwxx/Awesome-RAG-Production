@@ -500,6 +500,7 @@ training from scratch. See also: [rag-pitfalls.md — Embedding Model Selection]
 | [pgvector](https://github.com/pgvector/pgvector) | PostgreSQL Ecosystem | Vector search capability directly within PostgreSQL. | — |
 | [Pinecone](https://www.pinecone.io/) | 10M-100M+ vectors | Zero-ops, serverless architecture. | — |
 | [Qdrant](https://github.com/qdrant/qdrant) | <50M vectors | Best filtering support and free tier. | [\[V\]](benchmarks.md#1-vector-databases) [\[3P\]](benchmarks.md#1-vector-databases) |
+| [TopK](https://github.com/topk-io/topk) | Accuracy-critical hybrid retrieval | Late-interaction (MaxSim) multi-vector retrieval, BM25, and user-defined ranking expressions in one query, with embedding and reranking models managed alongside the index. | — |
 | [Vespa](https://github.com/vespa-engine/vespa) | Web-scale hybrid serving | Battle-tested engine combining vector, tensor, text, and structured data at serving time and any scale. | — |
 | [Weaviate](https://github.com/weaviate/weaviate) | Hybrid Search | Native integration of vector and keyword search. | — |
 
