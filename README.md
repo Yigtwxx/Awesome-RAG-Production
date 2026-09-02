@@ -1305,6 +1305,7 @@ and often layers caching on top — without requiring per-provider changes to ap
 | Tool | Hosting | Provider Support | Caching | Cost Tracking | Best For |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | [LiteLLM](https://github.com/BerriAI/litellm) | Self-host / Cloud | 100+ providers | Redis / S3 / Disk | Built-in | Multi-provider routing, OpenAI-compatible proxy |
+| [Bifrost](https://github.com/maximhq/bifrost) | Self-host | Multiple providers | Semantic | Built-in | Self-hosted routing, failover, and governance |
 | [Portkey](https://github.com/Portkey-AI/gateway) | Self-host / Cloud | 200+ providers | Built-in | Dashboard | Enterprise gateway with observability |
 | [Helicone](https://github.com/Helicone/helicone) | Self-host / Cloud | OpenAI + Anthropic | Built-in | Fine-grained token analytics | Cost optimization and prompt versioning |
 | [OpenRouter](https://openrouter.ai/) | Managed | 100+ models | — | Per-request | Unified model marketplace, no infra |
@@ -1315,6 +1316,10 @@ and often layers caching on top — without requiring per-provider changes to ap
     (Anthropic, Bedrock, Azure, Gemini, local models via Ollama) with a single
     API surface. Includes gateway-level caching, per-route rate limits, fallback
     routing, and a cost dashboard. The most widely adopted open-source gateway.
+- [Bifrost](https://github.com/maximhq/bifrost)
+  <!-- verified: 2026-09-02 -->
+  - An Apache-2.0, self-hosted AI gateway for multi-provider routing, failover,
+    load balancing, observability, guardrails, and budget controls.
 - [Portkey AI Gateway](https://github.com/Portkey-AI/gateway)
   - A high-performance open-source gateway with provider failover, load balancing,
     semantic caching, and virtual API keys. Supports OpenAI-compatible endpoints
