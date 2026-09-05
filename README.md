@@ -1305,8 +1305,8 @@ and often layers caching on top — without requiring per-provider changes to ap
 | Tool | Hosting | Provider Support | Caching | Cost Tracking | Best For |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | [LiteLLM](https://github.com/BerriAI/litellm) | Self-host / Cloud | 100+ providers | Redis / S3 / Disk | Built-in | Multi-provider routing, OpenAI-compatible proxy |
-| [Bifrost](https://github.com/maximhq/bifrost) | Self-host | Multiple providers | Semantic | Built-in | Self-hosted routing, failover, and governance |
 | [Portkey](https://github.com/Portkey-AI/gateway) | Self-host / Cloud | 200+ providers | Built-in | Dashboard | Enterprise gateway with observability |
+| [Bifrost](https://github.com/maximhq/bifrost) | Self-host | 23+ providers | Semantic | Built-in | Self-hosted routing, failover, and governance |
 | [Helicone](https://github.com/Helicone/helicone) | Self-host / Cloud | OpenAI + Anthropic | Built-in | Fine-grained token analytics | Cost optimization and prompt versioning |
 | [OpenRouter](https://openrouter.ai/) | Managed | 100+ models | — | Per-request | Unified model marketplace, no infra |
 | [Cloudflare AI Gateway](https://developers.cloudflare.com/ai-gateway/) | Managed (edge) | Major providers | Built-in | Real-time analytics | Edge-deployed, global routing |
@@ -1316,14 +1316,14 @@ and often layers caching on top — without requiring per-provider changes to ap
     (Anthropic, Bedrock, Azure, Gemini, local models via Ollama) with a single
     API surface. Includes gateway-level caching, per-route rate limits, fallback
     routing, and a cost dashboard. The most widely adopted open-source gateway.
-- [Bifrost](https://github.com/maximhq/bifrost)
-  <!-- verified: 2026-09-02 -->
-  - An Apache-2.0, self-hosted AI gateway for multi-provider routing, failover,
-    load balancing, observability, guardrails, and budget controls.
 - [Portkey AI Gateway](https://github.com/Portkey-AI/gateway)
   - A high-performance open-source gateway with provider failover, load balancing,
     semantic caching, and virtual API keys. Supports OpenAI-compatible endpoints
     for 200+ providers and integrates with LangChain, LlamaIndex, and raw SDKs.
+- [Bifrost](https://github.com/maximhq/bifrost)
+  <!-- verified: 2026-09-02 -->
+  - An Apache-2.0, self-hosted AI gateway for multi-provider routing, failover,
+    load balancing, observability, guardrails, and budget controls.
 - [Helicone](https://github.com/Helicone/helicone)
   - A developer-first observability and gateway platform. One-line integration
     (change base URL) adds token-level cost tracking, latency dashboards, prompt
